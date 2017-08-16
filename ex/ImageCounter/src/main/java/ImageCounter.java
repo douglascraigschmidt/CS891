@@ -35,7 +35,7 @@ class ImageCounter {
 
         // Perform the image counting starting at the root Uri, which
         // is given an initial depth count of 1.
-        Integer totalImages = countImages(rootUri, 1);
+        int totalImages = countImages(rootUri, 1);
 
         print(TAG
               + ": there are "
@@ -52,8 +52,8 @@ class ImageCounter {
      * @param depth The current depth of the recursive processing
      * @return The number of images counted
      */
-    private Integer countImages(String pageUri,
-                                int depth) {
+    private int countImages(String pageUri,
+                            int depth) {
         print(TAG
               + ":>> Depth: " 
               + depth 
@@ -104,13 +104,13 @@ class ImageCounter {
      * @param depth The current depth of the recursive processing
      * @return The number of images counted
      */
-    private Integer countImagesImpl(String pageUri,
-                                    int depth) {
+    private int countImagesImpl(String pageUri,
+                                int depth) {
         try {
             Document page = getStartPage(pageUri);
 
             // Count the number of images in this page.
-            Integer imagesInPage = getImagesOnPage(page).size();
+            int imagesInPage = getImagesOnPage(page).size();
 
             List<Integer> listOfImagesInLinks =
                 // Return a list containing the number of images
@@ -119,10 +119,10 @@ class ImageCounter {
                                  depth);
 
             // Initialize the accumulator.
-            Integer imagesInLinks = 0;
+            int imagesInLinks = 0;
 
             // Count the number of images accessible via links in this page.
-            for (Integer count : listOfImagesInLinks)
+            for (int count : listOfImagesInLinks)
                 imagesInLinks += count;
 
             // Return the number of images on this page plus the
@@ -202,7 +202,7 @@ class ImageCounter {
     /**
      * Prints out all the Uris that were visited.
      */
-    public void printUris() {
+    void printUris() {
         System.out.println("\nUris visited during the crawl:");
 
         // Printout all the Uris in the set.

@@ -8,8 +8,7 @@ import java.util.Set;
  * Implements a simple set.
  */
 public class SimpleSet<E>
-       extends AbstractSet<E> 
-       implements Set<E> {
+       extends AbstractSet<E> {
     /**
      * The array buffer that stores all the set elements.  The
      * capacity is the length of this array buffer.
@@ -17,14 +16,14 @@ public class SimpleSet<E>
     private Object[] mElementData;
 
     /**
-     * Index to the last element in the array.
-     */
-    private int mEnd;
-
-    /**
      * The size of the set (the number of elements it contains).
      */
     private int mSize;
+
+    /**
+     * Index to the last element in the array.
+     */
+    private int mEnd;
 
     /**
      * Default initial capacity.
