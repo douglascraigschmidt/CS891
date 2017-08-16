@@ -202,6 +202,9 @@ public class DynamicBindingTest {
         set.add("am");
         set.add("Ironman");
 
+        if (set.add("Ironman"))
+            System.out.println("add() failed");
+
         if (!set.contains("I")
             || !set.contains("am")
             || !set.contains("Ironman"))
