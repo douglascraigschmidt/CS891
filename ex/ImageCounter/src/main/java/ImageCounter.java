@@ -46,7 +46,7 @@ class ImageCounter {
 
     /**
      * Main entry point into the logic for counting images
-     * asynchronously.
+     * sequentially.
      *
      * @param pageUri The URL that we're counting at this point
      * @param depth The current depth of the recursive processing
@@ -118,16 +118,13 @@ class ImageCounter {
                 crawlLinksInPage(page,
                                  depth);
 
-            // Initialize the accumulator.
-            int imagesInLinks = 0;
-
             // Count the number of images accessible via links in this page.
             for (int count : listOfImagesInLinks)
-                imagesInLinks += count;
+                imagesInPage += count;
 
             // Return the number of images on this page plus the
             // number of images accessible via links in this page.
-            return imagesInPage + imagesInLinks;
+            return imagesInPage;
         } catch (Exception e) {
             print("For '" 
                   + pageUri 
