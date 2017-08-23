@@ -30,11 +30,6 @@ public class SimpleSet<E>
      */
     private static final int DEFAULT_CAPACITY = 10;
 
-    /**
-     * Shared empty array instance used for empty instances.
-     */
-    private static final Object[] sEMPTY_ELEMENTDATA = {};
-
     /*
      * The following methods and nested class use Java 7 features.
      */
@@ -43,7 +38,7 @@ public class SimpleSet<E>
      * Constructs an empty set with an initial capacity of ten.
      */
     public SimpleSet() {
-        mElementData = sEMPTY_ELEMENTDATA;
+        mElementData = new Object[DEFAULT_CAPACITY];
     }
 
     /**
@@ -79,7 +74,7 @@ public class SimpleSet<E>
 
         // Check that there's sufficient capacity in the array,
         // expanding if it needed.
-        ensureCapacityInternal(mSize + 1);  
+        checkCapacityAndExpandIfNecessary(mSize + 1);  
 
         // Add the element at the rear of the array.
         mElementData[mEnd] = element;
@@ -96,17 +91,15 @@ public class SimpleSet<E>
      * Ensure the array is large enough to hold @a minCapacity
      * elements.  The array will be expanded if necessary.
      */
-    private void ensureCapacityInternal(int minCapacity) {
-        if (mElementData == sEMPTY_ELEMENTDATA) 
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-
+    private void checkCapacityAndExpandIfNecessary(int minCapacity) {
         if (minCapacity - mElementData.length > 0) {
             int oldCapacity = mElementData.length;
             int newCapacity = oldCapacity + (oldCapacity >> 1);
             if (newCapacity - minCapacity < 0)
                 newCapacity = minCapacity;
 
-            Object[] newElementData = new Object[newCapacity];
+            Object[] newElementData =
+                new Object[newCapacity];
 
             System.arraycopy(mElementData,
                              0,
