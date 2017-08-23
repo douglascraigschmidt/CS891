@@ -38,6 +38,7 @@ public class SimpleSet<E>
      * Constructs an empty set with an initial capacity of ten.
      */
     public SimpleSet() {
+        // Preallocate DEFAULT_CAPACITY (i.e., 10) elements.
         mElementData = new Object[DEFAULT_CAPACITY];
     }
 
