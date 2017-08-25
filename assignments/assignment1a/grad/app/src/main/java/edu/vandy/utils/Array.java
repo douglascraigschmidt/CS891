@@ -135,12 +135,7 @@ public class Array<E>
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(Array<E> a) {
-        for (int i = 0; i < a.mSize; i++) {
-            //noinspection unchecked
-            add((E) a.mElementData[i]);
-        }
-
-        return true;
+        // TODO -- you fill in here.
     }
 
     /**
@@ -153,23 +148,7 @@ public class Array<E>
      * @throws IndexOutOfBoundsException
      */
     public E remove(int index) {
-        rangeCheck(index);
-
-        //noinspection unchecked
-        E oldValue = (E) mElementData[index];
-
-        int numMoved = mSize - index - 1;
-        if (numMoved > 0)
-            System.arraycopy(mElementData,
-                             index + 1, 
-                             mElementData, 
-                             index,
-                             numMoved);
-
-        // Clear to let GC do its work.
-        mElementData[--mSize] = null;
-
-        return oldValue;
+        // TODO -- you fill in here.
     }
 
     /**
