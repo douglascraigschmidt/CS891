@@ -144,16 +144,26 @@ public class ArrayTest7 {
      */
     @Test
     public void testArrayAddAll() {
-        Array<Long> array = new Array<>();
+        Array<Long> array1 = new Array<>();
         
         // Add the random input to the end of the queue.
-        array.addAll(mRandomInput);
+        array1.addAll(mRandomInput);
 
-        assertEquals(mRandomInput.size(), array.size());
+        assertEquals(mRandomInput.size(), array1.size());
 
-        for (int i = 0; i < array.size(); i++) 
+        for (int i = 0; i < array1.size(); i++) 
             assertEquals(mRandomInput.get(i),
-                         array.get(i));
+                         array1.get(i));
+
+        Array<Long> array2 = new Array<>();
+        
+        array2.addAll(array1);
+
+        assertEquals(array1.size(), array2.size());
+
+        for (int i = 0; i < array1.size(); i++) 
+            assertEquals(array2.get(i),
+                         array1.get(i));
     }
 
     /**
