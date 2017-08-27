@@ -30,6 +30,39 @@ public class ArrayTest8 {
                     .collect(toList());
 
     /**
+     * Test the Array implementation of forEach().
+     */
+    @Test
+    public void testArrayForEach() {
+        Array<Long> a1 = new Array<>(mRandomInput);
+        Array<Long> a2 = new Array<>();
+        int originalSize = a1.size();
+
+        a1.forEach(a2::add);
+
+        assertEquals(originalSize, a2.size());
+        assertEquals(a1.size(), a2.size());
+    }
+
+    /**
+     * Test the Array implementation of replaceAll().
+     */
+    @Test
+    public void testArrayReplaceAll() {
+        Array<Long> array = new Array<>();
+
+        // Add all the random input to the queue.
+        array.addAll(mRandomInput);
+
+        // Add one to each element.
+        array.replaceAll(i -> i + 1);
+       
+        for (int i = 0; i < mRandomInput.size(); i++)
+            assertEquals(mRandomInput.get(i),
+                         Long.valueOf(array.get(i) - 1));
+    }
+
+    /**
      * Test the Array implementation of spliterator().
      */
     @Test
@@ -96,54 +129,5 @@ public class ArrayTest8 {
                     (x, y) -> (x * y));
 
         assertEquals(factorialOf20, f2);
-    }
-
-    /**
-     * Test the Array Collector implementation.
-     */
-    @Test
-    public void testArrayCollector() {
-        Array<Long> result = mRandomInput
-          .stream()
-          .sorted()
-          .collect(ArrayCollector.toArray());
-
-        Collections.sort(mRandomInput);
-
-        for (int i = 0; i < result.size(); i++)
-            assertEquals(mRandomInput.get(i), result.get(i));
-    }
-
-    /**
-     * Test the Array implementation of forEach().
-     */
-    @Test
-    public void testArrayForEach() {
-        Array<Long> a1 = new Array<>(mRandomInput);
-        Array<Long> a2 = new Array<>();
-        int originalSize = a1.size();
-
-        a1.forEach(a2::add);
-
-        assertEquals(originalSize, a2.size());
-        assertEquals(a1.size(), a2.size());
-    }
-
-    /**
-     * Test the Array implementation of replaceAll().
-     */
-    @Test
-    public void testArrayReplaceAll() {
-        Array<Long> array = new Array<>();
-
-        // Add all the random input to the queue.
-        array.addAll(mRandomInput);
-
-        // Add one to each element.
-        array.replaceAll(i -> i + 1);
-       
-        for (int i = 0; i < mRandomInput.size(); i++)
-            assertEquals(mRandomInput.get(i),
-                         Long.valueOf(array.get(i) - 1));
     }
 }
