@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 import edu.vandy.utils.Array;
-import edu.vandy.utils.ArrayCollector;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
