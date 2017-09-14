@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">ImageCrawler</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_web_view">Navigate to web page</string>
+    <!--
+        use http not https for vanderbilt because WebView complains that
+        this page has images that are referenced with http and not https
+    -->
+    <string name="default_web_view">http://www.vanderbilt.edu</string>
+    <string name="search">Search</string>
+    <string name="search_view_hint">Search…</string>
+    <string name="title_activity_image_picker">ImagePickerActivity</string>
+
+    <!-- Action mode menu strings -->
+    <string name="action_delete">Delete</string>
+    <string name="action_select_all">Select All</string>
+    <string name="action_load_defaults">Load Defaults</string>
+
+    <string name="default_image_descriptor">downloaded image</string>
+    <string name="title_activity_strategy">StrategyActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="image_load_failed">The selected URL does not have an associated image.</string>
+    <string name="selected_item_not_image_url">The selected item is not a valid image rootUrl.</string>
+    <string name="pick_image_hint">Long-click on any image to add it to this download list.</string>
+    <string name="main_activity_hint">Click on the search button to choose a web page to crawl.</string>
+</resources>
