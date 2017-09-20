@@ -56,7 +56,12 @@ public class Array<E>
      *         is negative
      */
     public Array(int initialCapacity) {
-        // TODO -- you fill in here.
+        if (initialCapacity < 0) {
+            throw new IllegalArgumentException("Array capacity cannot be negative");
+        }
+        mElementData = new Object[initialCapacity];
+        mSize=0;
+        mEnd=-1;
     }
 
     /**
@@ -68,7 +73,12 @@ public class Array<E>
      * @throws NullPointerException if the specified collection is null
      */
     public Array(Collection<? extends E> c) {
-        // TODO -- you fill in here.
+        if (c == null) {
+            throw new NullPointerException("Collection param cannot be null");
+        }
+        mElementData = c.toArray();
+        mSize = mElementData.length;
+        mEnd = mSize-1;
     }
 
     /**
@@ -77,7 +87,15 @@ public class Array<E>
      * @return <tt>true</tt> if this collection contains no elements
      */
     public boolean isEmpty() {
-        // TODO -- you fill in here.
+        if (mElementData == sEMPTY_ELEMENTDATA) {
+            mElementData = new Object[DEFAULT_CAPACITY];
+            mSize=0;
+            mEnd=-1;
+        }
+        if (mSize>0){
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -88,7 +106,7 @@ public class Array<E>
      * @return the number of elements in this collection
      */
     public int size() {
-        // TODO -- you fill in here.
+        return mSize;
     }
     
     /**
@@ -101,7 +119,16 @@ public class Array<E>
      *         this array, or -1 if this array does not contain the element
      */
     public int indexOf(Object o) {
-        // TODO -- you fill in here.
+        int counter=0;
+        if (!isEmpty()){
+            for(Object element:mElementData){
+                if (element.equals(o)){
+                    return counter;
+                }
+                counter++;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -118,7 +145,12 @@ public class Array<E>
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(Collection<? extends E> c) {
-        // TODO -- you fill in here.
+        if (c == null) {
+            throw new NullPointerException();
+        }
+        Array<E> tempArray = new Array(c);
+        addAll(tempArray);
+        return true;
     }
 
     /**
@@ -135,7 +167,17 @@ public class Array<E>
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(Array<E> a) {
-        // TODO -- you fill in here.
+        if (a == null){
+            throw new NullPointerException();
+        }
+        ensureCapacityInternal(a.size());
+        for (int i=0;i<a.size();i++) {
+            E element = a.get(i);
+            if (element!=null) {
+                add(element);
+            }
+        }
+        return true;
     }
 
     /**
@@ -148,7 +190,30 @@ public class Array<E>
      * @throws IndexOutOfBoundsException
      */
     public E remove(int index) {
-        // TODO -- you fill in here.
+        rangeCheck(index);
+        if (isEmpty()){
+            return null;
+        }
+        E oldObject = (E) mElementData[index];
+        if (index == mEnd){
+            mElementData[index]=null;
+            mSize--;
+            mEnd--;
+        }
+        else if (index==0){
+            mElementData=Arrays.copyOfRange(mElementData, index+1, mSize);
+            mSize--;
+            mEnd--;
+        }
+        else{
+            Array<E> tempArray = new  Array(Arrays.asList(Arrays.copyOfRange( mElementData, index+1, mEnd+1)));
+            mElementData = Arrays.copyOfRange(mElementData,0,index);
+            mSize=index;
+            mEnd=mSize-1;
+            addAll(tempArray);
+        }
+
+        return oldObject;
     }
 
     /**
@@ -157,7 +222,9 @@ public class Array<E>
      * Array) and throws the IndexOutOfBoundsException if it's not.
      */
     private void rangeCheck(int index) {
-        // TODO -- you fill in here.
+        if ((index < 0)||(index > mEnd)) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     /**
@@ -168,7 +235,11 @@ public class Array<E>
      * @throws IndexOutOfBoundsException
      */
     public E get(int index) {
-        // TODO -- you fill in here.
+        rangeCheck(index);
+        if (isEmpty()){
+            return null;
+        }
+        return (E) mElementData[index];
     }
 
     /**
@@ -181,7 +252,20 @@ public class Array<E>
      * @throws IndexOutOfBoundsException
      */
     public E set(int index, E element) {
-        // TODO -- you fill in here.
+        rangeCheck(index);
+        if (isEmpty()){
+            mElementData[index] = element;
+            return null;
+        }
+        if (mElementData[index]!=null){
+            E oldElement = (E) mElementData[index];
+            mElementData[index] = element;
+            return oldElement;
+        }
+        else{
+            mElementData[index] = element;
+            return null;
+        }
     }
 
     /**
@@ -191,7 +275,16 @@ public class Array<E>
      * @return {@code true}
      */
     public boolean add(E element) {
-        // TODO -- you fill in here.
+        ensureCapacityInternal(1);
+        if (isEmpty()){
+            mElementData[0] = element;
+        }
+        else {
+            mElementData[mSize] = element;
+        }
+        mSize++;
+        mEnd++;
+        return true;
     }
     
     /**
@@ -199,7 +292,14 @@ public class Array<E>
      * elements.  The array will be expanded if necessary.
      */
     private void ensureCapacityInternal(int minCapacity) {
-        // TODO -- you fill in here.
+        if (mElementData == sEMPTY_ELEMENTDATA){
+            mElementData = new Object[DEFAULT_CAPACITY];
+            mSize=0;
+            mEnd=-1;
+        }
+        if (mElementData.length-mSize < minCapacity){
+            mElementData = Arrays.copyOf(mElementData, mSize+minCapacity);
+        }
     }
 
     /**
@@ -266,7 +366,7 @@ public class Array<E>
      * sequence
      */
     public Iterator<E> iterator() {
-        // TODO - you fill in here.
+        return new ArrayIterator();
     }
 
     /**
@@ -278,12 +378,12 @@ public class Array<E>
         /**
          * Current position in the Array (defaults to 0).
          */
-        // TODO - you fill in here.
+        private int position=0;
 
         /**
          * Index of last element returned; -1 if no such element.
          */
-        // TODO - you fill in here.
+        private int lastReturn=-1;
 
         /** 
          * @return True if the iteration has more elements that
@@ -291,10 +391,10 @@ public class Array<E>
          */
         @Override
         public boolean hasNext() {
-        // TODO - you fill in here.
+            return (size()>position);
         }
 
-        /**
+        /*
          * @return The next element in the iteration
          *
          * @throws IndexOutOfBounds exception if there are no more
@@ -302,7 +402,12 @@ public class Array<E>
          */
         @Override
         public E next() {
-            // TODO - you fill in here.
+            if (position>=size()) {
+                throw new IndexOutOfBoundsException();
+            }
+            lastReturn=position;
+            position++;
+            return get(lastReturn);
         }
 
         /**
@@ -315,7 +420,14 @@ public class Array<E>
          */
         @Override
         public void remove() {
-            // TODO - you fill in here.
+            if(lastReturn==-1){
+                throw new IllegalStateException();
+            }
+            else if (position!=lastReturn){
+                Array.this.remove(lastReturn);
+                position--;
+                lastReturn--;
+            }
         }
     }
 }
