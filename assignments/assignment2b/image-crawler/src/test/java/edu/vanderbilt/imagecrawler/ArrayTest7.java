@@ -1,4 +1,4 @@
-package edu.vanderbilt.imagecrawler.current_assignment;
+package edu.vanderbilt.imagecrawler;
 
 import org.junit.Rule;
 import org.junit.Test;

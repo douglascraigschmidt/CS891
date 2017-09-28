@@ -1,4 +1,4 @@
-package edu.vanderbilt.imagecrawler.current_assignment;
+package edu.vanderbilt.imagecrawler;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
