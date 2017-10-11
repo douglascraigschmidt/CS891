@@ -178,8 +178,8 @@ public class CompletableFuturesCrawler
      * Recursively crawl through hyperlinks that are in a {@code
      * page}.
      *
-     * @return an array of integers, each of which counts how many
-     * images were downloaded/stored for each hyperlink on the page.
+     * @return An integers that counts how many images were
+     * downloaded/stored for each hyperlink on the page  
      */
     private Integer crawlHyperLinksOnPage(Crawler.Page page,
                                           int depth) {
@@ -193,6 +193,10 @@ public class CompletableFuturesCrawler
     /**
      * Use Java 8 CompletableFutures and a sequential stream to
      * download and store images asynchronously.
+     *
+     * @return A completable future to an integer that counts how many
+     * images were downloaded/stored for each of the urls {@code urls}
+     * on the page 
      */
     private CompletableFuture<Integer> processImages(Array<URL> urls) {
         // Create a sequential stream that returns a completable
