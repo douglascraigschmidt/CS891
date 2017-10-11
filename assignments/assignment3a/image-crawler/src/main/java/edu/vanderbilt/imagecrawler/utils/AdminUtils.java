@@ -93,6 +93,7 @@ public class AdminUtils {
         // HTML stub containing href links to all child images.
         String imagesStub = Stream.of(files)
                 .filter(File::isFile)
+                .filter(file -> !file.getName().endsWith(".html"))
                 .map(file -> String.format(imageFormat, file.getName()))
                 .reduce((s, s1) -> s + s1).orElse("");
 

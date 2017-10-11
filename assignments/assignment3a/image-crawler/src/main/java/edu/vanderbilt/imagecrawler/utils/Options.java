@@ -14,6 +14,13 @@ public class Options {
     public static String DEFAULT_DOWNLOAD_DIR_NAME = "downloaded-images";
 
     /**
+     * Controls whether debugging output will be generated.
+     * <p>
+     * Default: false.
+     */
+    public static boolean diagnosticsEnabled = false;
+
+    /**
      * The max depth for the crawler.
      * <p>
      * Default: 2.
@@ -31,13 +38,6 @@ public class Options {
      * Download directory name.
      */
     public final String downloadDirName;
-
-    /**
-     * Controls whether debugging output will be generated.
-     * <p>
-     * Default: false.
-     */
-    public final boolean diagnosticsEnabled;
 
     private Options(Builder builder) {
         maxDepth = builder.mMaxDepth;

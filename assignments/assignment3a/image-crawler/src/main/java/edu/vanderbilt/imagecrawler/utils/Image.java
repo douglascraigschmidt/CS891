@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import edu.vanderbilt.imagecrawler.platform.Cache;
 import edu.vanderbilt.imagecrawler.platform.PlatformImage;
+import edu.vanderbilt.imagecrawler.transforms.Transform;
 
 /**
  * Stores platform-independent meta-data about an Image and also
@@ -46,9 +48,13 @@ public class Image {
 	public Image(URL sourceUrl, PlatformImage image) {
 		// Initialize other data members.
 		mSourceUrl = sourceUrl;
-		mFilterName = "";
+		mFilterName = null;
 		mSucceeded = true;
 		mImage = image;
+	}
+
+	public int size() {
+	    return mImage != null ? mImage.size() : 0;
 	}
 
 	/**
@@ -71,6 +77,13 @@ public class Image {
 	 */
 	public String getFilterName() {
 		return mFilterName;
+	}
+
+	/**
+	 * Sets the name of the transform applied to this result.
+	 */
+	public void setTransformName(Transform transform) {
+		mFilterName = transform.getName();
 	}
 
 	/**
@@ -100,9 +113,21 @@ public class Image {
 	}
 
 	/**
+	 * Applies a transformation to this image.
+     *
+     * @param type The type of transformation to perform.
+	 * @return A new transformed image.
+	 */
+	public Image applyTransform(Transform.Type type, Cache.Item item) {
+		PlatformImage platformImage =
+				mImage.applyTransform(type, item);
+		return new Image(platformImage);
+	}
+
+	/**
      * Writes the image bytes to the output stream.
      *
-	 * @param outputStream
+	 * @param outputStream Output stream to write to.
 	 * @throws IOException
 	 */
 	public void writeImage(OutputStream outputStream) throws IOException {

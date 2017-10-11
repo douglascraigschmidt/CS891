@@ -3,11 +3,9 @@ package edu.vanderbilt.imagecrawler.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Path;
 
 /**
  * A Utility class that provides IO helper methods.
@@ -16,7 +14,7 @@ public class IOUtils {
     /**
      * A reasonable default copy buffer length.
      */
-    public static final int COPY_BUFFER_LENGTH = 4096;
+    private static final int COPY_BUFFER_LENGTH = 4096;
 
     /**
      * Helper method that copies data from the source stream to the
@@ -68,16 +66,5 @@ public class IOUtils {
      */
     public static byte[] toBytes(File file) throws IOException {
         return toBytes(new FileInputStream(file));
-    }
-
-    /**
-     * Copies data from the passed file (path) into a new byte array.
-     *
-     * @param path A Java 8 Path object.
-     * @return A byte array containing all the bytes in the passed file (path).
-     * @throws IOException
-     */
-    public static byte[] toBytes(Path path) throws IOException {
-        return toBytes(new FileInputStream(path.toFile()));
     }
 }

@@ -2,8 +2,9 @@ package edu.vanderbilt.imagecrawler.admin;
 
 import org.junit.Test;
 
+import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawler;
+
 import static edu.vanderbilt.imagecrawler.admin.AssignmentBuilder.buildAssignment;
-import static edu.vanderbilt.imagecrawler.helpers.AdminHelpers.info;
 import static edu.vanderbilt.imagecrawler.helpers.Controllers.buildAssignment3aController;
 
 public class BuildAssignment3a {
@@ -15,8 +16,9 @@ public class BuildAssignment3a {
     @Test
     public void buildAssignment3a() throws Exception {
         // Use the same controller that the students will use (web version).
-        info("Building Assignment 3a controller ...");
-        buildAssignment(buildAssignment3aController(false));
+        buildAssignment(
+                buildAssignment3aController(false),
+                ImageCrawler.Type.SEQUENTIAL_LOOPS);
     }
 }
 

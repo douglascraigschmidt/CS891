@@ -3,10 +3,6 @@ package edu.vanderbilt.imagecrawler.utils;
 import java.net.URL;
 
 /**
- * Created by monte on 2017-09-10.
- */
-
-/**
  * An interface defining the operations that must be supported by
  * any web crawler implementation. A crawler is expected to initially
  * return a page object when {@code getPage} is called.
@@ -33,8 +29,8 @@ public interface Crawler {
 	 * physical object may be a web page or a file system folder
 	 * depending on the type of crawler.
 	 *
-	 * @param uri
-	 * @return
+	 * @param uri Uri of any page.
+	 * @return The Page object matching the specified uri.
 	 */
 	Page getPage(String uri);
 

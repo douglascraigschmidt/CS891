@@ -40,7 +40,7 @@ public class WebPageCrawler implements Crawler {
             // requiring the web page to be read from an input
             // stream.
 
-            if (Controller.isDiagnosticsEnabled()) {
+            if (Controller.loggingEnabled()) {
                 System.out.println("***************************************");
                 System.out.println("GET CONTAINER URI       = " + uri);
             }
@@ -63,7 +63,7 @@ public class WebPageCrawler implements Crawler {
                 uri += "/index.html";
             }
 
-            if (Controller.isDiagnosticsEnabled()) {
+            if (Controller.loggingEnabled()) {
                 System.out.println("GET CONTAINER BASE URI  = " + baseUri);
                 System.out.println("***************************************");
             }
@@ -103,7 +103,7 @@ public class WebPageCrawler implements Crawler {
         private Document document;
 
         protected DocumentPage(Document document, String uri) {
-            if (Controller.isDiagnosticsEnabled()) {
+            if (Controller.loggingEnabled()) {
                 System.out.println(">*********************************************");
                 System.out.println("WebPageCrawler: constructor()");
                 System.out.println("Constructed document: " + (uri == null ? "NULL" : uri));
@@ -145,7 +145,7 @@ public class WebPageCrawler implements Crawler {
         }
 
         private void __printSearchResultsStarting(Type type, String uri, Document doc) {
-            if (!Controller.isDiagnosticsEnabled()) {
+            if (!Controller.loggingEnabled()) {
                 return;
             }
 
@@ -157,7 +157,7 @@ public class WebPageCrawler implements Crawler {
         }
 
         private void __printSearchResults(Array<String> results, Document doc) {
-            if (!Controller.isDiagnosticsEnabled()) {
+            if (!Controller.loggingEnabled()) {
                 return;
             }
 

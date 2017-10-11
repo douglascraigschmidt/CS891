@@ -12,14 +12,18 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawlerBase;
+import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawler;
+import edu.vanderbilt.imagecrawler.platform.Cache;
 import edu.vanderbilt.imagecrawler.platform.Controller;
+import edu.vanderbilt.imagecrawler.platform.JavaImageCache;
 import edu.vanderbilt.imagecrawler.platform.Platform;
+import edu.vanderbilt.imagecrawler.transforms.Transform;
 import edu.vanderbilt.imagecrawler.utils.AdminUtils;
-import edu.vanderbilt.imagecrawler.utils.ImageCache;
 import edu.vanderbilt.imagecrawler.utils.Options;
+import kotlin.Unit;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.Assert.assertEquals;
@@ -29,6 +33,7 @@ import static org.junit.Assert.fail;
  * Helper methods only used for assignment testing and administration.
  */
 public class AdminHelpers {
+
     /**
      * Helper method that centralizes all crawl building test methods so
      * that they predictably use the same parametrized crawler/downloader.
@@ -39,13 +44,24 @@ public class AdminHelpers {
      *                   on the downloaded directory.
      */
     public static void downloadIntoDirectory(
-            ImageCrawlerBase.Type crawlType,
+            ImageCrawler.Type crawlType,
             Controller controller,
             boolean index) {
 
         info("----------------------------------------------------");
         info("Downloading from:   " + controller.options.rootUrl);
         info("Downloading into:   " + controller.options.downloadDirName);
+        System.out.print("      Transforms:   ");
+
+        for (int i = 0; i < controller.transforms.size(); i++) {
+            String name = controller.transforms.get(i).toString();
+            if (i == 0) {
+                info(name);
+            } else {
+                info("                    " + name);
+            }
+        }
+
         info("----------------------------------------------------");
 
         File cacheDir = controller.getCacheDir();
@@ -53,18 +69,20 @@ public class AdminHelpers {
         // Leverage the handy static delete contents cache
         // method to clear the cache before starting the crawl.
         info("Clearing directory: " + cacheDir);
-        ImageCache.deleteContents(cacheDir);
+        JavaImageCache.INSTANCE.clear();
 
         info("Running with crawl strategy " + crawlType.name());
 
         // Create and run the crawler.
-        ImageCrawlerBase.Factory.newCrawler(crawlType, controller).run();
+        ImageCrawler.Factory.newCrawler(crawlType, controller).run();
 
         info("----------------------------------------------------");
         if (index) {
             info("Indexing directory: " + cacheDir);
-            AdminUtils.indexDirectory(cacheDir.getAbsolutePath(),
-                                      "raw");
+            controller.transforms.forEach(it ->
+                    AdminUtils.indexDirectory(
+                            cacheDir.getAbsolutePath(),
+                            it.getName()));
         }
         info("----------------------------------------------------");
     }
@@ -74,13 +92,16 @@ public class AdminHelpers {
      * and passes this into the overloaded downloadIntoDirectory.
      *
      * @Param rootUrl   The root url to start crawling from.
+     * @param transforms List of transforms to add or null for the default
+     *                   transform (NULL_TRANSFORM).
      * @param crawlType  The crawler type to use.
      * @param destDir    Destination directory.
      * @param index      boolean flag indicating if indexing should be performed
      *                   on the downloaded directory.
      */
     public static void downloadIntoDirectory(String rootUrl,
-                                             ImageCrawlerBase.Type crawlType,
+                                             ImageCrawler.Type crawlType,
+                                             List<Transform.Type> transforms,
                                              File destDir,
                                              boolean index)
             throws Exception {
@@ -88,6 +109,7 @@ public class AdminHelpers {
         // Create a new controller that will output to ground-truth dir.
         Controller controller =
                 Controller.newBuilder()
+                        .transforms(transforms)
                         .rootUrl(rootUrl)
                         .downloadPath(destDir.getAbsolutePath())
                         .build();
@@ -98,6 +120,14 @@ public class AdminHelpers {
     /**
      * Recursively compare the contents of the directory of downloaded
      * files with the contents of the "ground truth" directory.
+     *
+     * Note that the local parameter is required because images that
+     * originate from the local web-pages directory will have different
+     * cache file names from those originating from the web. Specifically,
+     * an image file from the web will have an addition "project_root"
+     * string in the file name. To work around this difference, this
+     * method strips off the "project_root" string from the path before
+     * comparing files.
      */
     public static void recursivelyCompareDirectories(File expected,
                                                      File generated)
@@ -190,12 +220,30 @@ public class AdminHelpers {
     }
 
     /**
+     * Copies all downloaded images (null transform) to the specified directory.
+     */
+    public static void copyCacheFiles(Cache cache, File destDir) throws Exception {
+        cache.traverseCache(cache.getCacheDir(),
+                file -> {
+                    try {
+                        Cache.Item item = cache.newItemFromFile(file);
+                        if (Objects.equals(item.getTag(), Cache.Companion.getNOTAG())) {
+                            File fileCopy = new File(destDir, item.getKey());
+                            fileCopy.getParentFile().mkdirs();
+                            Files.copy(file.toPath(), fileCopy.toPath(), REPLACE_EXISTING);
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Unit.INSTANCE;
+                });
+    }
+
+    /**
      * Recursively copies a folder to a new location.
      */
     public static void copyDir(File srcDir, File destDir) throws Exception {
-
         destDir.mkdirs();
-
         try (Stream<Path> stream = Files.walk(srcDir.toPath())) {
             stream.forEach(path -> {
                 Path toPath = destDir.toPath()

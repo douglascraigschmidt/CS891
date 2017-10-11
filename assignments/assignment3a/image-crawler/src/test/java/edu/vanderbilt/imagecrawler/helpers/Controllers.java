@@ -1,8 +1,5 @@
 package edu.vanderbilt.imagecrawler.helpers;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import edu.vanderbilt.imagecrawler.platform.Controller;
 import edu.vanderbilt.imagecrawler.platform.JavaPlatform;
 
@@ -10,12 +7,13 @@ import static edu.vanderbilt.imagecrawler.helpers.AdminHelpers.getDefaultJavaLoc
 import static edu.vanderbilt.imagecrawler.helpers.AdminHelpers.getDefaultWebRootUrl;
 
 /**
- * Created by monte on 2017-09-19.
+ * Centralizes all controllers used for assignment creation
+ * and testing.  For a new assignment version, add it's
+ * controller here.
  */
-
 public class Controllers {
     /**
-     * @return A local or web controller for assignment 3a.
+     * @return A local or web controller for assignment 3a (same as Assignment2c).
      */
     public static Controller buildAssignment3aController(boolean local) throws Exception {
         return Controller.newBuilder()

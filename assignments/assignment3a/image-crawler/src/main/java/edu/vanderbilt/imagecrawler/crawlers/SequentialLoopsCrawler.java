@@ -1,8 +1,11 @@
 package edu.vanderbilt.imagecrawler.crawlers;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawlerBase;
+import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawler;
+import edu.vanderbilt.imagecrawler.transforms.Transform;
 import edu.vanderbilt.imagecrawler.utils.Array;
 import edu.vanderbilt.imagecrawler.utils.Crawler;
 import edu.vanderbilt.imagecrawler.utils.ExceptionUtils;
@@ -25,7 +28,7 @@ import static edu.vanderbilt.imagecrawler.utils.Crawler.Type.PAGE;
  * an overview of how to write a web crawler using jsoup.
  */
 public class SequentialLoopsCrawler
-        extends ImageCrawlerBase {
+        extends ImageCrawler {
     /**
      * Perform the web crawl.
      *
@@ -40,20 +43,12 @@ public class SequentialLoopsCrawler
         // Throw an exception if the the stop crawl flag has been set.
         throwExceptionIfCancelled();
 
-        printDiagnostics(TAG + ":>> Depth: "
-                + depth
-                + " ["
-                + pageUri
-                + "]"
-                + " ("
-                + Thread.currentThread().getId()
-                + ")");
+        log(">> Depth: " + depth + " [" + pageUri + "]" + " (" + Thread.currentThread().getId() + ")");
 
         // Return 0 if we've reached the depth limit of the web
         // crawling.
         if (depth > mMaxDepth) {
-            printDiagnostics(TAG + ": Exceeded max depth of "
-                    + mMaxDepth);
+            log("Exceeded max depth of " + mMaxDepth);
             return 0;
         }
 
@@ -61,7 +56,7 @@ public class SequentialLoopsCrawler
         // and add the new uri to the hashset so we don't try to
         // revisit it again unnecessarily.
         else if (!mUniqueUris.putIfAbsent(pageUri)) {
-            printDiagnostics(TAG + ": Already processed " + pageUri);
+            log("Already processed " + pageUri);
             // Return 0 if we've already examined this uri.
             return 0;
         }
@@ -142,7 +137,7 @@ public class SequentialLoopsCrawler
             // image from a local cache if it's been downloaded
             // already or (2) downloading the image via its URL and
             // storing it in the local cache.
-            Image image = getImage(url);
+            Image image = getOrDownloadImage(url);
 
             if (image != null) 
                 // Increment count.
@@ -151,5 +146,13 @@ public class SequentialLoopsCrawler
 
         // Return the number of images downloaded/stored.
         return downloadedAndStoredImages;
+    }
+
+    /**
+     * @return The supported transforms for this crawler strategy.
+     */
+    public static List<Transform.Type> getSupportedTransforms() {
+        // Current assignment does not support transforms.
+        return new ArrayList<>();
     }
 }

@@ -20,7 +20,7 @@ public class Directories {
     public static final String GROUND_TRUTH_DIR_NAME = "ground-truth";
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getJavaGroundTruthDir() throws Exception {
         File dir = new File(getJavaFilesDir(), GROUND_TRUTH_DIR_NAME);
@@ -30,7 +30,7 @@ public class Directories {
     }
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getJavaLocalWebPagesDir() throws Exception {
         File dir = new File(getJavaFilesDir(), LOCAL_WEB_PAGES_DIR_NAME);
@@ -40,7 +40,7 @@ public class Directories {
     }
 
     /**
-     * @Return The directory where Java version ground-truth
+     * @return The directory where Java version ground-truth
      * and local web-pages are stored.
      */
     public static File getJavaDownloadsDir() throws Exception {
@@ -51,14 +51,14 @@ public class Directories {
     }
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getJavaFilesDir() throws Exception {
         return getProjectRootDir();
     }
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getAndroidGroundTruthDir() throws Exception {
         File dir = new File(getAndroidFilesDir(), GROUND_TRUTH_DIR_NAME);
@@ -68,7 +68,7 @@ public class Directories {
     }
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getAndroidLocalWebPagesDir() throws Exception {
         File dir = new File(getAndroidFilesDir(), LOCAL_WEB_PAGES_DIR_NAME);
@@ -78,14 +78,14 @@ public class Directories {
     }
 
     /**
-     * @Return this library project's resource directory.
+     * @return this library project's resource directory.
      */
     public static File getAndroidFilesDir() throws Exception {
         return getAssetsDir();
     }
 
     /**
-     * @Return the project's assets directory.
+     * @return the project's assets directory.
      */
     public static File getAssetsDir() throws Exception {
         File dir = new File(getProjectRootDir(), ASSETS_PATH);
@@ -95,7 +95,7 @@ public class Directories {
     }
 
     /**
-     * @Return The directory where Java version ground-truth
+     * @return The directory where Java version ground-truth
      * and local web-pages are stored.
      */
     public static File getProjectRootDir() throws Exception {

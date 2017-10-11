@@ -1,1 +1,1 @@
-include ':app', ':image-crawler'
+include ':app', ':lib', ':image-crawler'

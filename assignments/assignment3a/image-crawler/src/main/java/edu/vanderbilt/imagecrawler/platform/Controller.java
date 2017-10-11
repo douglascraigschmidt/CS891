@@ -4,16 +4,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 
+import edu.vanderbilt.imagecrawler.transforms.Transform;
 import edu.vanderbilt.imagecrawler.utils.Options;
 
 /**
- * This class contains the crawler options, as well as
+ * This class contains the crawler options and transforms, as well as
  * any device dependent hook methods that are required to transparently
  * run the crawler on different platforms/devices.
  * <p>
@@ -29,22 +28,17 @@ import edu.vanderbilt.imagecrawler.utils.Options;
  */
 public class Controller {
     /**
-     * Static flag shared by all controller instances that
-     * determines if diagnostic output should be displayed
-     * to standard output.
-     */
-    public static boolean diagnosticsEnabled = true;
-
-    /**
      * Platform specific hook methods.
      */
     public final Platform platform;
-
     /**
      * Platform independent options from UI or command line.
      */
     public final Options options;
-
+    /**
+     * List of transforms to be used on downloaded images.
+     */
+    public List<Transform> transforms;
     /**
      * A consumer that receives state updates and each downloaded
      * image.
@@ -54,6 +48,7 @@ public class Controller {
     private Controller(@NotNull Builder builder) {
         platform = builder.platform;
         options = builder.options;
+        transforms = builder.transforms;
         consumer = builder.consumer;
     }
 
@@ -65,40 +60,33 @@ public class Controller {
         Builder builder = new Builder();
         builder.platform = copy.platform;
         builder.options = copy.options;
+        builder.transforms = copy.transforms;
         return builder;
     }
 
     /**
      * Returns whether diagnostic output is enabled.
      */
-    public static boolean isDiagnosticsEnabled() {
-        return diagnosticsEnabled;
+    public static boolean loggingEnabled() {
+        return Options.diagnosticsEnabled;
     }
 
     /**
      * Enables/disables diagnostic output mode.
      */
     public static void setDiagnosticsEnabled(boolean enabled) {
-        diagnosticsEnabled = enabled;
-    }
-
-    /**
-     * Returns the cache directory File object with the specified name.
-     *
-     * @return The cache directory with the given name.
-     */
-    public File getCacheDir() {
-        return platform.getCacheDir(options.downloadDirName);
+        Options.diagnosticsEnabled = enabled;
     }
 
     /**
      * Constructs a new platform dependant image object.
      *
-     * @param imageData The image bytes.
+     * @param inputStream An input stream containing image data.
+     *
      * @return A new platform dependant image object.
      */
-    public PlatformImage newImage(byte[] imageData) {
-        return platform.newImage(imageData);
+    public PlatformImage newImage(InputStream inputStream, Cache.Item item) {
+        return platform.newImage(inputStream, item);
     }
 
     /**
@@ -111,6 +99,33 @@ public class Controller {
     }
 
     /**
+     * Cache implementation provided by platform.
+     *
+     * @return A platform dependant cache implementation.
+     */
+    public Cache getCache() {
+        return platform.getCache();
+    }
+
+    /**
+     * @return The platform dependant root cache directory.
+     */
+    public File getCacheDir() {
+        return getCache().getCacheDir();
+    }
+
+    /**
+     * Helper for platform dependant logging.
+     * @param msg Message or format string.
+     * @param args Optional format arguments.
+     */
+    public void log(String msg, Object... args) {
+        if (loggingEnabled()) {
+            platform.log(msg, args);
+        }
+    }
+
+    /**
      * {@code Controller} builder static inner class.
      */
     public static final class Builder {
@@ -120,10 +135,6 @@ public class Controller {
          */
         public Consumer<CrawlResult> consumer = this::debugConsumer;
         /**
-         * Java is the default platform.
-         */
-        private Platform platform = new JavaPlatform();
-        /**
          * See Options.Builder for the default options.
          */
         private Options.Builder optionsBuilder = Options.newBuilder();
@@ -131,6 +142,17 @@ public class Controller {
          * Final options object constructed by build method.
          */
         private Options options;
+        /**
+         * Default transform is the NULL_TRANSFORM.
+         */
+        private List<Transform> transforms =
+                Collections.singletonList(Transform.Factory
+                        .newTransform(Transform.Type.NULL_TRANSFORM));
+
+        /**
+         * No default platform.
+         */
+        private Platform platform;
 
         private Builder() {
         }
@@ -151,8 +173,22 @@ public class Controller {
         @NotNull
         public Builder platform(@NotNull Platform val) {
             if (platform != null) {
-                platform = val;
+                throw new IllegalStateException("A platform has already been set.");
             }
+            platform = val;
+            return this;
+        }
+
+        /**
+         * Sets the {@code transforms} and returns a reference to this
+         * Builder so that the methods can be chained together.
+         *
+         * @param val the {@code transforms} to set
+         * @return a reference to this Builder
+         */
+        @NotNull
+        public Builder transforms(List<Transform.Type> val) {
+            transforms = Transform.Factory.newTransforms(val);
             return this;
         }
 
@@ -161,7 +197,7 @@ public class Controller {
          * Builder so that the methods can be chained together.
          *
          * @param val the {@code transforms} to set (null to clear
-         *            default debug consumer).
+         *            default log consumer).
          * @return a reference to this Builder
          */
         @NotNull
@@ -232,8 +268,14 @@ public class Controller {
          */
         @NotNull
         public Controller build() {
+            // Validate input.
+            if (platform == null) {
+                throw new IllegalStateException("A platform must be specified.");
+            }
+
             // Build options.
             options = optionsBuilder.build();
+
             return new Controller(this);
         }
     }

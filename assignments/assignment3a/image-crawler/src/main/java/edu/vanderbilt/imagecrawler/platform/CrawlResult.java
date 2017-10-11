@@ -46,7 +46,6 @@ public class CrawlResult {
      * @param consumer The consumer that will receive the CrawlResult.
      * @param url      The url identifying the crawl item.
      * @param state    The current crawl state.
-     * @return
      */
     public static void reportStatus(Consumer<CrawlResult> consumer,
                                     URL url,
@@ -73,7 +72,7 @@ public class CrawlResult {
         consumer.accept(
                 newBuilder()
                         .url(url.toString())
-                        .state(CrawlResult.State.ERROR)
+                        .state(State.ERROR)
                         .exception(e)
                         .errorMessage(message)
                         .build());
@@ -151,8 +150,8 @@ public class CrawlResult {
          * @return a reference to this Builder
          */
         public @NotNull Builder url(@NotNull String val) {
-            if (val == null || val.isEmpty()) {
-                throw new IllegalArgumentException("url cannot be null or empty.");
+            if (val.isEmpty()) {
+                throw new IllegalArgumentException("url cannot be an empty string.");
             } else if (url != null) {
                 throw new IllegalArgumentException("url has already be set.");
             }
@@ -219,8 +218,9 @@ public class CrawlResult {
          * CrawlerResult.Builder}
          */
         public @NotNull Builder errorMessage(@NotNull String val) {
-            if (val == null) {
-                throw new IllegalArgumentException("errorMessage cannot be set to null.");
+            if (val.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "errorMessage cannot be set to an empty string.");
             } else if (errorMessage != null) {
                 throw new IllegalArgumentException("errorMessage has already be set.");
             }
@@ -254,7 +254,8 @@ public class CrawlResult {
          * @return a {@code CrawlerResult} built with parameters of this {@code
          * CrawlerResult.Builder}
          */
-        public @NotNull CrawlResult build() {
+        public @NotNull
+        CrawlResult build() {
             /* monte: add back for android app
             if (url == null) {
                 throw new RuntimeException("A url must be specified.");

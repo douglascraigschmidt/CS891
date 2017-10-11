@@ -10,27 +10,24 @@ import edu.vanderbilt.imagecrawler.utils.UriUtils;
  * Java Platform helper methods.
  */
 public class JavaPlatform implements Platform {
+    private Cache cache = JavaImageCache.INSTANCE;
+
     /**
      * Creates a new Java platform bitmap.
      *
-     * @param imageData Image bytes.
+     * @param inputStream Image bytes.
      * @return A Java implementation of the PlatformImage interface.
      */
     @Override
-    public PlatformImage newImage(byte[] imageData) {
-        return new JavaImage(imageData);
+    public PlatformImage newImage(InputStream inputStream, Cache.Item item) {
+        return new JavaImage(inputStream, item);
     }
 
     /**
-     * Returns the cache directory File object with the specified name.
-     *
-     * @param dirName The name that is to be used for the root
-     *                cache directory.
-     * @return The cache directory with the given name.
+     * Returns the platform dependant [cache].
      */
-    @Override
-    public File getCacheDir(String dirName) {
-        return new File(dirName);
+    public Cache getCache() {
+        return cache;
     }
 
     /**
@@ -65,6 +62,15 @@ public class JavaPlatform implements Platform {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void log(String msg, Object... args) {
+        if (args != null && args.length > 0) {
+            System.out.println("DIAGNOSTICS:" + String.format(msg, args));
+        } else {
+            System.out.println("DIAGNOSTICS:" + msg);
         }
     }
 }
