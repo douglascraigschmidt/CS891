@@ -1,0 +1,111 @@
+<html>
+
+<title>Image Crawler Fork-Join Pool App (Assignment 4a)</title>
+
+<body text = "#000000"
+      link="#000fff"
+      vlink="#ff0f0f"
+      bgcolor="#ffffff">
+
+  <hr>
+  <h3>Image Crawler Fork-Join Pool App (Assignment 4a)</h3>
+
+  <p>The purpose of this assignment is to deepen your experience using
+    Java 8 functional programming features and their integration with
+    the Java fork-join pool.  In particular, in this assignment you'll
+    develop an app that uses the Java 8 fork-join framework to obtain,
+    store, and transform images.</p>
+
+  <p> As before, the code you'll write for this assignment will have
+    GUI and will run as an app. Please use this GUI to help debug your
+    solution. </p>
+
+  <h4>Getting Started</h4>
+
+  <hr width=50% align=left>
+  <h4>Overview of the Assignment 4a</h4>
+
+  <p> In this part of the assignment you'll complete the
+  implementation of an image crawler class in the
+  <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/ForkJoinCrawler.java</CODE>
+  file that obtains, stores, and transforms images.  This class uses
+  Java fork-join pool framework to perform an "image crawl" starting
+  from a root Uri.  Depending on the parameters used to run the tests,
+  images from HTML page reachable from the root Uri are either
+  downloaded from a remote web server or read from the local file
+  system and the results are stored in files. </p>
+
+  <p>The bulk of the code for the app is provided in the skeletons.
+    In fact, a complete solution using Java 7 features provided in the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/SequentialLoopsCrawler.java</CODE>
+    file.  Your will therefore focus on converting this Java 7-based
+    class to the <CODE>ForkJoinCrawler</CODE> class that uses the Java
+    fork-join pool. </p>
+
+    <p> Everyone taking the course (i.e., both ugrads and grads) must
+    also include your completed implementations of all the methods in
+    the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArrayCollector.java</CODE>
+    and
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/Array.java</CODE>
+    files. Make sure that these classes work properly or you'll lose points. </p> 
+
+  </ul>
+
+  <p> Your solution can either use conventional for Java 7 for-loop
+    loops or Java 8 lambda expressions and method references, as you see fit. </p>
+
+  <hr width=50% align=left> <h4>Skeleton Code</h4>
+
+  <p> Skeleton code for this assignment is available <a
+    href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment4a/">here</a>
+    in my GitHub account.  Now that you've setup your <a
+    href="https://about.gitlab.com/">GitLab</a> account you can pull
+    this skeleton code in your repository, read it carefully, and
+    complete the "TODO" markers.  </p>
+
+  <hr width=50% align=left> <h4>Unit Tests</h4>
+
+  <p> JUnit unit tests in the
+  <code>image-crawler/src/test/java/edu/vanderbilt/imagecrawler</code>
+  folder are provided to increase our confidence that your
+  implementation is working as expected.  You can run all the unit
+  tests by right-clicking on 'AllTests' in this folder. </p>
+
+  <p> If you need help learning how to use the Android Studio GUI to
+  run the JUnit test locally on your computer please see <A
+  HREF="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html#run">here</a>
+  and/or ask questions.  As usual, testing only demonstrates the
+  presence of bugs, not their absence, so don't rely solely on the
+  JUnit tests to detect problems in your code. </p>
+
+  <hr width=50% align=left> <h4>Additional Resources</h4>
+
+  <p> The following resources may be helpful in completing this
+    assignment: </p>
+
+  <ul> 
+
+  <li>Videos that give a detailed overview of the Java fork-join pool
+    framework is available in Week 11 of my <A
+    HREF="http://www.dre.vanderbilt.edu/~schmidt/cs891/">CS 891 class
+    website</A>.  <p>
+
+  <li>Good overviews of the Java fork-join pool appear <A
+  HREF="https://www.infoq.com/interviews/doug-lea-fork-join">here</A>
+  and <A
+  HREF="http://www.oracle.com/technetwork/articles/java/fork-join-422606.html">here</A>.
+</li>
+</ul>
+
+  <hr width=50% align=left> <h4>Concluding Remarks</h4> <p>
+
+    <p> The fork-join pool framework in Assignment 4a is more tedious
+    than the previous assignments that used Java 8 parallel streams
+    since you have to do more of the work manually.  Therefore, please
+    start the assignment soon and ask questions in class, office
+    hours, and on the discussion forums.  As usual, the app, image
+    crawler skeletons, and JUnit tests are extensive, though you don't
+    need to understand them all to complete your solution. </p>
+
+</body> </html>
