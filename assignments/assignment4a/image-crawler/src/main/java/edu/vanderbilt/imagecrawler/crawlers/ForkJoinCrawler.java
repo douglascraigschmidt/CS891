@@ -169,7 +169,7 @@ public class ForkJoinCrawler
         /**
          * Download, transform, and store an image.
          *
-         * @return A count of the number of images processed
+         * @return A processed image
          */
         @Override
         protected Image compute() {
