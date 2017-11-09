@@ -26,7 +26,6 @@ public class ArrayCollector<T>
     @Override
     public Supplier<Array<T>> supplier() {
         // TODO - you fill in here
-        return Array::new;
     }
 
     /**
@@ -38,7 +37,6 @@ public class ArrayCollector<T>
     @Override
     public BiConsumer<Array<T>, T> accumulator() {
         // TODO - you fill in here
-        return Array::add;
     }
 
     /**
@@ -52,11 +50,6 @@ public class ArrayCollector<T>
     @Override
     public BinaryOperator<Array<T>> combiner() {
         // TODO - you fill in here
-        return (Array<T> one,
-                Array<T> another) -> {
-            one.addAll(another);
-            return one;
-        };
     }
 
     /**
@@ -70,7 +63,6 @@ public class ArrayCollector<T>
     @Override
     public Function<Array<T>, Array<T>> finisher() {
         // TODO - you fill in here
-        return Function.identity();
     }
 
     /**
@@ -85,7 +77,6 @@ public class ArrayCollector<T>
     @Override
     public Set characteristics() {
         // TODO - you fill in here
-        return Collections.singleton(Characteristics.IDENTITY_FINISH);
     }
 
     /**
@@ -95,7 +86,6 @@ public class ArrayCollector<T>
      */
     public static <E> Collector<E, ?, Array<E>> toArray() {
         // TODO - you fill in here
-        return new ArrayCollector<>();
     }
 }
 

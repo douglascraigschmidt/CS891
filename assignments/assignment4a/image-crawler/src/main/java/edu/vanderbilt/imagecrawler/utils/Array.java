@@ -61,11 +61,6 @@ public class Array<E>
      */
     public Array(int initialCapacity) {
         // TODO -- you fill in here.
-
-        if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: "+
-                                               initialCapacity);
-        mElementData = new Object[initialCapacity];
     }
 
     /**
@@ -78,13 +73,6 @@ public class Array<E>
      */
     public Array(Collection<? extends E> c) {
         // TODO -- you fill in here.
-
-        mElementData = c.toArray();
-        mSize = mElementData.length;
-        // c.toArray might (incorrectly) not return Object[] (see 6260652)
-        if (mElementData.getClass() != Object[].class)
-            mElementData = 
-                Arrays.copyOf(mElementData, mSize, Object[].class);
     }
 
     /**
@@ -94,7 +82,6 @@ public class Array<E>
      */
     public boolean isEmpty() {
         // TODO -- you fill in here.
-        return mSize == 0;
     }
     
     /**
@@ -106,7 +93,6 @@ public class Array<E>
      */
     public int size() {
         // TODO -- you fill in here.
-        return mSize;
     }
     
     /**
@@ -120,18 +106,6 @@ public class Array<E>
      */
     public int indexOf(Object o) {
         // TODO -- you fill in here.
-
-        if (o == null) {
-            for (int i = 0; i < mSize; i++) 
-                if (mElementData[i] == null)
-                    return i;
-        } else {
-            for (int i = 0; i < mSize; i++) 
-                if (o.equals(mElementData[i]))
-                    return i;
-        }
-
-        return -1;
     }
 
     /**
@@ -149,10 +123,6 @@ public class Array<E>
      */
     public boolean addAll(Collection<? extends E> c) {
         // TODO -- you fill in here.
-        for (Object a : c.toArray())
-            //noinspection unchecked
-            add((E) a);
-        return true;
     }
 
     /**
@@ -170,12 +140,6 @@ public class Array<E>
      */
     public boolean addAll(Array<E> a) {
         // TODO -- you fill in here.
-        for (int i = 0; i < a.mSize; i++) {
-            //noinspection unchecked
-            add((E) a.mElementData[i]);
-        }
-
-        return true;
     }
 
     /**
@@ -189,23 +153,6 @@ public class Array<E>
      */
     public E remove(int index) {
         // TODO -- you fill in here.
-        rangeCheck(index);
-
-        //noinspection unchecked
-        E oldValue = (E) mElementData[index];
-
-        int numMoved = mSize - index - 1;
-        if (numMoved > 0)
-            System.arraycopy(mElementData,
-                             index + 1, 
-                             mElementData, 
-                             index,
-                             numMoved);
-
-        // Clear to let GC do its work.
-        mElementData[--mSize] = null;
-
-        return oldValue;
     }
 
     /**
@@ -215,10 +162,6 @@ public class Array<E>
      */
     private void rangeCheck(int index) {
         // TODO -- you fill in here.
-        if (index >= mSize || index < 0)
-            throw new IndexOutOfBoundsException("the index " 
-                                                + index 
-                                                + " is out of bounds");
     }
 
     /**
@@ -230,10 +173,6 @@ public class Array<E>
      */
     public E get(int index) {
         // TODO -- you fill in here.
-         rangeCheck(index);
- 
-        //noinspection unchecked
-        return (E) mElementData[index];
     }
 
     /**
@@ -247,12 +186,6 @@ public class Array<E>
      */
     public E set(int index, E element) {
         // TODO -- you fill in here.
-         rangeCheck(index);
- 
-        @SuppressWarnings("unchecked")
-        E oldValue = (E) mElementData[index];
-        mElementData[index] = element;
-        return oldValue;
     }
 
     /**
@@ -263,48 +196,14 @@ public class Array<E>
      */
     public boolean add(E element) {
         // TODO -- you fill in here.
-
-        // Check that there's sufficient capacity in the array,
-        // expanding if it needed.
-        ensureCapacityInternal(mSize + 1);  
-
-        // Add the element at the rear of the array.
-        mElementData[mEnd] = element;
-
-        // Update the index that keeps track of the end of the array.
-        mEnd++;
-
-        // Increment the size of the array.
-        mSize++;
-        return true;
     }
     
     /**
-     * Ensure the array is large enough to hold {@code minCapacity}
+     * Ensure the array is large enough to hold @a minCapacity
      * elements.  The array will be expanded if necessary.
      */
     private void ensureCapacityInternal(int minCapacity) {
         // TODO -- you fill in here.
-
-        if (mElementData == sEMPTY_ELEMENTDATA) 
-            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-
-        if (minCapacity - mElementData.length > 0) {
-            int oldCapacity = mElementData.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - minCapacity < 0)
-                newCapacity = minCapacity;
-
-            Object[] newElementData = new Object[newCapacity];
-
-            System.arraycopy(mElementData,
-                             0,
-                             newElementData, 0,
-                             mSize);
-
-            mEnd = mSize;
-            mElementData = newElementData;
-        }
     }
 
     /**
@@ -372,7 +271,6 @@ public class Array<E>
      */
     public Iterator<E> iterator() {
         // TODO - you fill in here.
-        return new ArrayIterator();
     }
 
     /**
@@ -385,13 +283,11 @@ public class Array<E>
          * Current position in the Array (defaults to 0).
          */
         // TODO - you fill in here.
-        private int mPos;
 
         /**
          * Index of last element returned; -1 if no such element.
          */
         // TODO - you fill in here.
-        private int mLastRet = -1; 
 
         /** 
          * @return True if the iteration has more elements that
@@ -400,7 +296,6 @@ public class Array<E>
         @Override
         public boolean hasNext() {
             // TODO - you fill in here.
-            return mPos < mSize;
         }
 
         /**
@@ -411,7 +306,6 @@ public class Array<E>
         public E next() {
             // TODO - you fill in here.
             //noinspection unchecked
-            return (E) get(mLastRet = mPos++);
         }
 
         /**
@@ -425,12 +319,6 @@ public class Array<E>
         @Override
         public void remove() {
             // TODO - you fill in here
-            if (mLastRet == -1)
-                throw new IllegalStateException();
-
-            Array.this.remove(mLastRet);
-            mPos = mLastRet;
-            mLastRet = -1;
         }
     }
 
@@ -443,14 +331,10 @@ public class Array<E>
      * the operator to that element.  Errors or runtime exceptions
      * thrown by the operator are relayed to the caller.
      *
-     * @param operator the operator to applyTransform to each element
+     * @param operator the operator to apply to each element
      */
     public void replaceAll(UnaryOperator<E> operator) {
         // TODO - you fill in here
-        for (int i = 0; i < mSize; i++)
-            //noinspection unchecked
-            mElementData[i] =
-                operator.apply((E) mElementData[i]);
     }
 
     /**
@@ -465,7 +349,6 @@ public class Array<E>
      */
     public void forEach(Consumer<? super E> action) {
         // TODO - you fill in here
-        stream().forEach(action::accept);
     }
 
     /**
@@ -533,14 +416,6 @@ public class Array<E>
          */
         public boolean tryAdvance(Consumer<? super E> action) {
             // TODO - you fill in here
-            if (action == null)
-                throw new NullPointerException();
-            if (mIndex < mEnd) {
-                //noinspection unchecked
-                action.accept((E) mArray.mElementData[mIndex++]);
-                return true;
-            } else
-                return false;
         }
 
         /**
@@ -550,16 +425,6 @@ public class Array<E>
          */
         public ArraySpliterator<E> trySplit() {
             // TODO - you fill in here
-            int hi = mEnd;
-            int lo = mIndex;
-            int mid = (lo + hi) >>> 1;
-
-            if (lo >= mid)
-                // Divide range in half unless too small.
-                return null;
-            else
-                return new ArraySpliterator<>
-                    (mArray, lo, mIndex = mid);
         }
     }
 }
