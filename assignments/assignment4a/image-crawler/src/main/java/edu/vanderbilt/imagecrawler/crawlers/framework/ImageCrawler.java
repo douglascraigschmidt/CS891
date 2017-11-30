@@ -14,8 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler1;
-import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler2;
+import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler;
 import edu.vanderbilt.imagecrawler.crawlers.SequentialLoopsCrawler;
 import edu.vanderbilt.imagecrawler.platform.Cache;
 import edu.vanderbilt.imagecrawler.platform.Controller;
