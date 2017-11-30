@@ -30,9 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="6dp"
         android:textColor="@color/secondaryLightColor"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="12dp"
         android:layout_toEndOf="@+id/imagesValue"
         android:text="Threads:"/>
 
@@ -50,9 +50,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="6dp"
         android:textColor="@color/secondaryLightColor"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="12dp"
         android:layout_toEndOf="@+id/threadsValue"
         android:text="Time:"/>
 
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/threadsLabel"
         android:textColor="@color/secondaryLightColor"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginTop="4dp"
         android:text="Method:"/>
 

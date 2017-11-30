@@ -16,7 +16,7 @@ import static edu.vanderbilt.imagecrawler.helpers.Directories.getJavaGroundTruth
  */
 public class Assignment4aWebCrawlerTest {
     private static ImageCrawler.Type crawlerType =
-        ImageCrawler.Type.FORK_JOIN;
+        ImageCrawler.Type.FORK_JOIN1;
 
     /**
      * Test web crawl which requires an internet connection.

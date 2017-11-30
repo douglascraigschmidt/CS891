@@ -26,8 +26,9 @@ public interface Platform {
 	String PROJECT_URI_PREFIX = "file://project_root";
 	/**
 	 * Custom assets URL prefix for crawling pages in Android assets.
+	 * NOTE: Android requires 3 /// characters.
 	 */
-	String ASSETS_URI_PREFIX = "file:://android_assets";
+	String ASSETS_URI_PREFIX = "file:///android_assets";
 
 	/**
 	 * Creates a new platform dependent image from the passed {@code imageData}

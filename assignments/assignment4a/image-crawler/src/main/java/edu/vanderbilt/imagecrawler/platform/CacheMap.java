@@ -18,12 +18,12 @@ public interface CacheMap<K, V> {
      * map.  If the map previously contained a mapping for the key,
      * the old value is replaced.
      *
-     * @param key key with which the specified value is to be associated
+     * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or
-     *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
-     *         (A <tt>null</tt> return can also indicate that the map
-     *         previously associated <tt>null</tt> with <tt>key</tt>.)
+     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
+     * (A <tt>null</tt> return can also indicate that the map
+     * previously associated <tt>null</tt> with <tt>key</tt>.)
      */
     V put(K key, V value);
 
@@ -34,9 +34,9 @@ public interface CacheMap<K, V> {
      * to {@code value} and true is returned. If an entry with the specified
      * {@code key} already exists, the entry's value is returned.
      *
-     * @param key    The key for the new entry.
-     * @param mapper A lambda that maps the provided key to an
-     *               entry value to be added to the map.
+     * @param key      The key for the new entry.
+     * @param mapper   A lambda that maps the provided key to an
+     *                 entry value to be added to the map.
      * @return The added value if it was added, or an existing value if a
      * entry with the specified key already existed.
      */

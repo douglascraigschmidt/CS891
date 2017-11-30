@@ -1,50 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="edu.vanderbilt.crawler.ui.activities.MainActivity">
-    <group
-        android:id="@+id/locationGroup"
-        android:checkableBehavior="all"
-        android:orderInCategory="100">
-        <item
-            android:id="@+id/actionLocalCrawl"
-            android:enabled="true"
-            android:orderInCategory="101"
-            android:title="Crawl Local Files"/>
-    </group>
+    tools:context=".ui.screens.main.MainActivity">
     <item
-        android:id="@+id/actionCrawlDepth"
+        android:id="@+id/actionSettings"
         android:enabled="true"
-        android:orderInCategory="200"
-        android:title="Crawl Depth">
-    </item>
+        android:orderInCategory="10"
+        android:icon="@drawable/ladybug"
+        app:showAsAction="always"
+        android:title="Settings"/>
+    <!--
     <item
-        android:id="@+id/crawlers"
+        android:id="@+id/actionSettings"
         android:enabled="true"
-        android:orderInCategory="300"
-        android:title="Crawler Strategy">
-        <menu>
-            <group
-                android:id="@+id/crawlerGroup"
-                android:checkableBehavior="single"
-                android:menuCategory="container"
-                android:orderInCategory="301">
-            </group>
-        </menu>
-    </item>
-    <item
-        android:id="@+id/transforms"
-        android:enabled="true"
-        android:orderInCategory="400"
-        android:title="Transforms">
-        <menu>
-            <group
-                android:id="@+id/transformsGroup"
-                android:checkableBehavior="all"
-                android:menuCategory="container"
-                android:orderInCategory="401">
-            </group>
-        </menu>
+        android:orderInCategory="10"
+        android:title="Settings">
     </item>
     <item
         android:id="@+id/actionAdjustSpeed"
@@ -53,7 +23,7 @@
         android:title="@string/show_speed_controller">
     </item>
     <item
-        android:id="@+id/actonImagePickerDemo"
+        android:id="@+id/actionImagePickerDemo"
         android:enabled="true"
         android:orderInCategory="600"
         android:title="@string/image_picker_demo">
@@ -64,4 +34,5 @@
         app:showAsAction="never"
         android:visible="false"
         android:title="@string/action_select_all"/>
+    -->
 </menu>

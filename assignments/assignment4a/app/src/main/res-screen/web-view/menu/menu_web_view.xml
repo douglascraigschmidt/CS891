@@ -1,6 +1,6 @@
 <menu
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="edu.vanderbilt.crawler.ui.activities.MainActivity">
+    tools:context=".ui.screens.main.MainActivity">
     <!--<item-->
         <!--android:id="@+id/action_search"-->
         <!--android:icon="?android:attr/actionModeWebSearchDrawable"-->

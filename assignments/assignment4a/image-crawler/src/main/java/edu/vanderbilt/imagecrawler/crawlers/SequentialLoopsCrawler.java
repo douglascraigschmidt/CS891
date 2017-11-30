@@ -26,7 +26,7 @@ import static edu.vanderbilt.imagecrawler.utils.Crawler.Type.PAGE;
  * an overview of how to write a web crawler using jsoup.
  */
 public class SequentialLoopsCrawler
-       extends ImageCrawler {
+        extends ImageCrawler {
     /**
      * Perform the web crawl.
      *
@@ -74,7 +74,7 @@ public class SequentialLoopsCrawler
                 // this page and get a count of the number of images
                 // in each hyperlink.
                 int imagesOnPageLinks =
-                    crawlHyperLinksOnPage(page, depth + 1);
+                        crawlHyperLinksOnPage(page, depth + 1);
 
                 // Return the combined result.
                 return imagesOnPage + imagesOnPageLinks;
@@ -84,9 +84,9 @@ public class SequentialLoopsCrawler
 
                 e.printStackTrace();
                 System.err.println("Exception for '"
-                                   + pageUri
-                                   + "': "
-                                   + e.getMessage());
+                        + pageUri
+                        + "': "
+                        + e.getMessage());
                 return 0;
             }
         }
@@ -132,14 +132,17 @@ public class SequentialLoopsCrawler
             // storing it in the local cache.
             Image rawImage = getOrDownloadImage(url);
 
-            if (rawImage != null)
+            if (rawImage != null) {
                 // Apply each transform to this image and cache the
                 // resulting images and update the transformed image
                 // count with the number of successful transform
                 // operations.
-                for (Image transformedImage : transformImage(rawImage))
-                    if (transformedImage != null)
+                for (Image transformedImage : transformImage(rawImage)) {
+                    if (transformedImage != null) {
                         transformedImages++;
+                    }
+                }
+            }
         }
 
         // Return the number of images processed.
@@ -168,13 +171,13 @@ public class SequentialLoopsCrawler
             // actually created (i.e., was not already in the cache).
             if (createNewCacheItem(image, transform)) {
                 log("Applying transform %s (image not in cache)",
-                    transform.getName());
+                        transform.getName());
                 // Apply the transform to the image add the result to
                 // the transformArray.
                 transformArray.add(applyTransform(transform, image));
             } else
                 log("SKIPPING transform %s (image already in cache)",
-                    transform.getName());
+                        transform.getName());
         }
 
         // Return the results array.

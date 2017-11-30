@@ -23,6 +23,7 @@ class MainViewModel : ViewModel(), Cache.Observer, KtLogger {
     enum class CrawlState {
         IDLE,
         RUNNING,
+        CANCELLING,
         CANCELLED,
         COMPLETED,
         FAILED
@@ -127,20 +128,15 @@ class MainViewModel : ViewModel(), Cache.Observer, KtLogger {
                 // that crawl has finished.
                 asyncProgress.cancel(true)
                 crawler = null
+                val finalState = if (crawlCancelled) {
+                    CrawlState.CANCELLED
+                } else {
+                    CrawlState.COMPLETED
+                }
                 crawlCancelled = false
 
-                // Update all hashMap entries to have a CLOSED state to signal
-                // that UI that they should consider these values all finished
-                synchronized(hashMap) {
-                    hashMap.forEach { (key, value) ->
-                        hashMap.put(key, value.copy(state = Resource.State.CLOSE))
-                    }
-                    val mutableList = hashMap.values.toMutableList()
-                    mutableList.sortBy { it.timestamp }
-                    cacheContentsFeed.postValue(mutableList)
-                }
+                postFinalCrawlState(finalState)
             }
-            crawlProgressFeed.postValue(CrawlProgress(CrawlState.COMPLETED, threads.size))
         }
     }
 
@@ -158,15 +154,17 @@ class MainViewModel : ViewModel(), Cache.Observer, KtLogger {
                     // this background thread.
                     if (usePost) {
                         crawlProgressFeed.postValue(
-                                MainViewModel.CrawlProgress(MainViewModel.CrawlState.RUNNING,
-                                                            threads.size,
-                                                            System.currentTimeMillis() - startTime))
+                                MainViewModel.CrawlProgress(
+                                        MainViewModel.CrawlState.RUNNING,
+                                        threads.size,
+                                        System.currentTimeMillis() - startTime))
                     } else {
                         uiThread {
                             crawlProgressFeed.value =
-                                    MainViewModel.CrawlProgress(MainViewModel.CrawlState.RUNNING,
-                                                                threads.size,
-                                                                System.currentTimeMillis() - startTime)
+                                    MainViewModel.CrawlProgress(
+                                            MainViewModel.CrawlState.RUNNING,
+                                            threads.size,
+                                            System.currentTimeMillis() - startTime)
                         }
                     }
                     // Keep this sleep relatively short so that the state
@@ -212,15 +210,50 @@ class MainViewModel : ViewModel(), Cache.Observer, KtLogger {
     fun cancelCrawl() {
         if (isCrawlRunning && !crawlCancelled) {
             crawlCancelled = true
+            crawlProgressFeed.postValue(CrawlProgress(CrawlState.CANCELLING, threads.size, 0L))
             stopCrawl()
-            crawlProgressFeed.postValue(CrawlProgress(CrawlState.CANCELLED, threads.size, 0L))
         }
+    }
+
+    /**
+     * Helper method that updates cached resource list to
+     * reflect completion state and forwards this information
+     * to the cache contents feed.
+     */
+    private fun postFinalCrawlState(finalState: CrawlState) {
+        // Update all hashMap entries to have a CLOSED state to signal
+        // that UI that they should consider these values all finished
+        synchronized(hashMap) {
+            hashMap.forEach { (key, value) ->
+                when (value.state) {
+                    Resource.State.LOAD,
+                    Resource.State.CLOSE -> {
+                        // Do nothing since resource completed.
+                    }
+                    else -> {
+                        if (finalState == CrawlState.CANCELLED) {
+                            hashMap.put(key, value.copy(state = Resource.State.CANCEL))
+                        }
+                    }
+                }
+            }
+            val mutableList = hashMap.values.toMutableList()
+            mutableList.sortBy { it.timestamp }
+            cacheContentsFeed.postValue(mutableList)
+        }
+
+        crawlProgressFeed.postValue(CrawlProgress(finalState, threads.size))
     }
 
     /**
      * Updates the resource list to reflect this event change and
      * posts the updated list to application via the Android Architecture
      * LiveData mechanism.
+     *
+     * To reduce unnecessary traffic, the progress value converted to an
+     * integer percent value and the live data is only updated if the
+     * operation has changed or if the operation has not changed but the
+     * progress has changed.
      */
     override fun event(operation: Cache.Operation, item: Cache.Item, progress: Float) {
         if (crawlCancelled) {
@@ -239,11 +272,28 @@ class MainViewModel : ViewModel(), Cache.Observer, KtLogger {
             // Map the operation and item to an application resource.
             val resource = Resource.fromFileObserver(item,
                                                      operation,
-                                                     progress,
+                                                     (progress * 100f).toInt(),
                                                      threadId)
+            // Only add resource if the map doesn't
+            // already contain a resource for this item.
+            val oldResource = hashMap.putIfAbsent(item, resource)
+
+            // Check return value from putIfAbsent call to see
+            // if it failed because the item already had a
+            // mapped value.
+            if (oldResource != null) {
+                // If the resource hasn't changed, or if the attempt to
+                // update the item mapping fails because a concurrenlty
+                // running thread has already updated the value, then
+                // just return.
+                if (oldResource == resource
+                    || !hashMap.replace(item, oldResource, resource)) {
+                    return
+                }
+            }
 
             // Update local copy of resource list.
-            val oldResource = hashMap.putIfAbsent(item, resource)
+            hashMap.putIfAbsent(item, resource)
             oldResource?.let {
                 hashMap.replace(item, it, resource)
             }

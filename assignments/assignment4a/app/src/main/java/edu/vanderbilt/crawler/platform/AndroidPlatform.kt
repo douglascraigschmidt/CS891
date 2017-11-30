@@ -13,9 +13,12 @@ import java.net.URL
  * Java Platform helper methods.
  */
 object AndroidPlatform : Platform, KtLogger {
-    /** Assets URL prefix string for comparisons. */
+    /**
+     * Assets URL prefix string for comparisons.
+     * NOTE: Android requires 3 /// characters.
+     */
     @JvmField
-    val ASSETS_URI_PREFIX = "file:://android_assets"
+    val ASSETS_URI_PREFIX = "file:///android_assets"
 
     /**
      * Returns the platform dependant [cache].

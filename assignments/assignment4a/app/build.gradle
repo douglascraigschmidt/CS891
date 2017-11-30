@@ -14,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -59,7 +60,7 @@ dependencies {
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
     implementation "android.arch.lifecycle:extensions:$arch_components"
-    implementation "android.arch.lifecycle:common:$arch_lifecycle_common"
+    implementation "android.arch.lifecycle:common-java8:$arch_components"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation "org.jetbrains.anko:anko-sdk15:$anko_version"
@@ -73,6 +74,9 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson"
     implementation "commons-io:commons-io:$commons_io"
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+    implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary"
     kapt "com.github.bumptech.glide:compiler:$glide"

@@ -48,7 +48,7 @@ inline fun <V: View, reified T : CoordinatorLayout.Behavior<V>> View.behaviour()
  * The animation shows a resizing effect for the FAB receiver object
  * that adds resize animation to the normal FAB translation animation.
  */
-val SHOW_HIDE_ANIM_DURATION = 200L
+val SHOW_HIDE_ANIM_DURATION = 300L
 val LINEAR_OUT_SLOW_IN_INTERPOLATOR = LinearOutSlowInInterpolator()
 
 fun FloatingActionButton.animateFab(show: Boolean, anchorId: Int = View.NO_ID) {

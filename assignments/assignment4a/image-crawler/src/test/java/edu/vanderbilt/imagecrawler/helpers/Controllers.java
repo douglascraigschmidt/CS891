@@ -13,7 +13,7 @@ import static edu.vanderbilt.imagecrawler.helpers.AdminHelpers.getDefaultWebRoot
  */
 public class Controllers {
     /**
-     * @return A local or web controller for assignment 3a (same as Assignment2c).
+     * @return A local or web controller for assignment 4a.
      */
     public static Controller buildAssignment4aController(boolean local) throws Exception {
         return Controller.newBuilder()

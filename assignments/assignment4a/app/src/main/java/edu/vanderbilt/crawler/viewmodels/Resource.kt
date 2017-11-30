@@ -17,7 +17,7 @@ data class Resource(
         val size: Int = 0,
         val thread: Int = 0,
         val filePath: String? = null,
-        val progress: Float = -1f,
+        val progress: Int = -1,
         val message: String? = null,
         val exception: Exception? = null) : Parcelable {
 
@@ -33,12 +33,13 @@ data class Resource(
         READ,
         WRITE,
         PROCESS,
-        CLOSE
+        CLOSE,
+        CANCEL
     }
     companion object {
         fun fromFileObserver(item: Cache.Item,
                              operation: Cache.Operation,
-                             progress: Float = -1f,
+                             progress: Int = -1,
                              thread: Int = 0): Resource
             = fromFileObserver(item.key,
                                operation,
@@ -55,7 +56,7 @@ data class Resource(
                                      size: Int,
                                      tag: String,
                                      timestamp: Long,
-                                     progress: Float,
+                                     progress: Int,
                                      thread: Int): Resource {
             return Resource(
                     url = url,
@@ -71,7 +72,7 @@ data class Resource(
                         else -> throw Exception("Illegal operation: $operation")
                     },
                     type = if (tag == Cache.NOTAG) Type.SOURCE else Type.TRANSFORM,
-                    size = size,
+                    size = Math.round(size.toFloat() / 1000) * 1000,
                     thread = thread,
                     timestamp = timestamp,
                     filePath = file.absolutePath,
@@ -79,10 +80,5 @@ data class Resource(
                     message = null,
                     exception = null)
         }
-
-        /**
-         * For creating a Resource from a url.
-         */
-        fun fromUrl(url: String): Resource = Resource(url, "", State.LOAD, Type.SOURCE, 0)
     }
 }

@@ -2,7 +2,6 @@ package edu.vanderbilt.imagecrawler.crawlers.framework;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -15,7 +14,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler;
+import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler1;
+import edu.vanderbilt.imagecrawler.crawlers.ForkJoinCrawler2;
 import edu.vanderbilt.imagecrawler.crawlers.SequentialLoopsCrawler;
 import edu.vanderbilt.imagecrawler.platform.Cache;
 import edu.vanderbilt.imagecrawler.platform.Controller;
@@ -37,69 +37,57 @@ import edu.vanderbilt.imagecrawler.utils.WebPageCrawler;
 public abstract class ImageCrawler
         implements Runnable {
     /**
+     * Flag used to stop/cancel a crawl.
+     */
+    private static volatile boolean mCancelled;
+    /**
      * Debugging tag.
      */
     protected final String TAG = this.getClass().getSimpleName();
-
     /**
      * The List of transforms to applyTransform to the images.
      */
     protected List<Transform> mTransforms;
-
     /**
      * A cache of unique URIs that have already been processed.
      */
     protected ConcurrentHashSet<String> mUniqueUris;
-
     /**
      * A web page crawler that parses web pages.
      */
     protected WebPageCrawler mWebPageCrawler;
-
     /**
      * The maximum crawl depth (from options).
      */
     protected int mMaxDepth;
-
-    /**
-     * The root URL or pathname to start the search (from options).
-     */
-    private String mRootUri;
-
     /**
      * The cache were images are stored after they have been
      * downloaded and undergone all transformations.
      */
     protected Cache mImageCache;
-
+    /**
+     * The root URL or pathname to start the search (from options).
+     */
+    private String mRootUri;
     /**
      * A Function lambda provided by the controller to create
      * a new platform dependent image object.
      */
     private BiFunction<InputStream, Cache.Item, PlatformImage> mNewImageFunction;
-
     /**
      * A function lambda that maps a uri to a platform dependant
      * input stream.
      */
     private Function<String, InputStream> mMapUriToInputStream;
-
     /**
      * Keeps track of how long a given test has run and is also
      * used to check if the crawler is currently running.
      */
     private long mStartTime;
-
     /**
      * Keeps track of all the execution times.
      */
     private List<Long> mExecutionTimes = new ArrayList<>();
-
-    /**
-     * Flag used to stop/cancel a crawl.
-     */
-    private static volatile boolean mCancelled;
-
     /**
      * Controller instance saved for calling log method.
      */
@@ -110,6 +98,24 @@ public abstract class ImageCrawler
      * support construction using newInstance().
      */
     protected ImageCrawler() {
+    }
+
+    /**
+     * @return {@code true} if crawl should be cancelled, {@code false} if not.
+     */
+    private static boolean isCancelled() {
+        return mCancelled;
+    }
+
+    /**
+     * Throws a CancellationException if the application has
+     * decided to cancelled the crawl.
+     */
+    public static void throwExceptionIfCancelled() {
+        if (isCancelled()) {
+            Thread.currentThread().interrupt();
+            //throw new CancellationException("The crawl has been cancelled.");
+        }
     }
 
     /**
@@ -265,11 +271,17 @@ public abstract class ImageCrawler
     /**
      * Factory method that retrieves the image associated with the @a
      * url and creates an Image to encapsulate it.
+     *
+     * @param item The cache item which will receive
+     * @return
      */
-    private Image downloadImage(URL url) {
+    private Image downloadImage(Cache.Item item) {
         // Before downloading the next image, check for cancellation
         // and throw and exception if cancelled.
         throwExceptionIfCancelled();
+
+        // Get the input url that was used to create this cache item.
+        String url = item.getSourceUri();
 
         log("Downloading image ", url);
 
@@ -277,18 +289,11 @@ public abstract class ImageCrawler
         // the image data. The input stream is platform dependant, so
         // we call the controller to provide the platform dependant
         // mapping of the url to an input stream.
-        try (InputStream inputStream =
-                     mMapUriToInputStream.apply(url.toString())) {
-
-            // Get the reserved cache item.
-            Cache.Item item = mImageCache.getItem(url.toString(), null);
-            if (item == null) {
-                throw new IOException("Item " + url + " not found in cache.");
-            }
+        try (InputStream inputStream = mMapUriToInputStream.apply(url)) {
 
             // Call platform dependant lambda image creating function to
             // create a new platform image from the input stream.
-            Image image = new Image(url,
+            Image image = new Image(new URL(url),
                     mNewImageFunction.apply(inputStream, item));
 
             // Save the image into the cache.
@@ -319,10 +324,10 @@ public abstract class ImageCrawler
      * This call ensures the common fork/join thread pool is expanded
      * to handle the blocking image download.
      */
-    protected Image blockingDownload(URL url) {
-        log("Performing blockingDownload: %s", url);
+    protected Image blockingDownload(Cache.Item item) {
+        log("Performing blockingDownload: %s", item.getSourceUri());
 
-        return BlockingTask.callInManagedBlock(() -> downloadImage(url));
+        return BlockingTask.callInManagedBlock(() -> downloadImage(item));
     }
 
     /**
@@ -341,11 +346,11 @@ public abstract class ImageCrawler
      * @return A a transformed image.
      */
     protected Image applyTransform(Transform transform,
-                                             Image image) {
+                                   Image image) {
         log("Applying transform to image: %s", image.getSourceUrl());
 
         // This method will only be called if a new empty cache entry
-        // was created by a check to createNewCacheItem. Get that entry and
+        // was created by a call to createNewCacheItem. Get that entry and
         // pass it to the CachingTransformerDecorator.
         Cache.Item item = mImageCache.getItem(
                 image.getSourceUrl().toString(), transform.getName());
@@ -379,8 +384,8 @@ public abstract class ImageCrawler
         // is returned indicating that the add operation was not
         // performed.
         boolean wasAdded =
-            mImageCache.addItem(image.getSourceUrl().toString(),
-                                    groupId);
+                mImageCache.addItem(
+                        image.getSourceUrl().toString(), groupId, null);
 
         log("Transform [" + image.getSourceUrl() + "|" + groupId + "]" +
                 (wasAdded ? "was added to the cache."
@@ -389,33 +394,6 @@ public abstract class ImageCrawler
         // Return whether or an image item was added to the cache.
         return wasAdded;
     }
-
-    /**
-     * Attempts to add a new cache item for this {@code url} and
-     * {@code cacheGroupId} pair. If the cache doesn't already
-     * contain a matching item, addItem will atomically create
-     * a cache entry along with a new file based a key constructed
-     * from the {@code url} and {@code cacheGroupId} and will return
-     * true (was added). Otherwise, addItem will return false.
-     *
-     * @return true if the {@code url} already exists in file system, else false.
-     */
-    protected boolean createNewCacheItem(URL url,
-                                       String cacheGroupId) {
-
-        log("Checking if URL is cached: %s", url.toString());
-
-        // Try to add a new cache item.
-        boolean wasAdded =
-                mImageCache.addItem(url.toString(),
-                                        cacheGroupId);
-
-        log("URL %s was " + (wasAdded ? "not added to the cache"
-                        : "already in the cache"), url.toString());
-
-        return wasAdded;
-    }
-
     /**
      * This method first checks the cache for an image that matches the
      * {@code url} and if found returns that; otherwise, it calls the
@@ -427,32 +405,31 @@ public abstract class ImageCrawler
     public @Nullable Image getOrDownloadImage(URL url) {
         log("Getting image: %s", url.toString());
 
-        // Attempt to create a new cache item for this image. If a cache item
-        // was created (i.e. wasn't already in the cache), then download the
-        // image the download and return the image.
-        if (createNewCacheItem(url, null)) {
-            return blockingDownload(url);
-        } else {
-            // The image was already cached, so get the cached item.
-            Cache.Item item = mImageCache.getItem(url.toString(), null);
+        // Attempt to create and download a new cache item for this image
+        // url. The addItem method will either return an existing item
+        // if one already exists, OR it will allocate a new cache item
+        // and then call the passed lambda Consumer (blockingDownload)
+        // passing in the item as a parameter. Blocking download will
+        // download the image and store it in the new cache file.
+        Cache.Item item =
+                mImageCache.addOrGetItem(
+                        url.toString(),
+                        null, // No group id required
+                        this::blockingDownload);
 
-            // Does the following:
-            // 1. Get the cached item's input stream.
-            // 2. Convert the input stream to a byte array.
-            // 3. Creates a platform dependant image from the byte array.
-            // 4. Decorates the the platform dependant image in an Image object.
-            // 5. The try block automatically will close the input stream.
-            // 6. Returns the Image decorator object or null if an exception occurred.
-            try (InputStream inputStream = item.getInputStream(Cache.Operation.READ)) {
-                log("Image %s was already cached, loading image bytes ...", url.toString());
-                return new Image(url, mNewImageFunction.apply(inputStream, item));
-            } catch (Exception e) {
-                log("Download image failed: " + url);
-                return null;
-            }
+        // Now that we have a downloaded cached item, do the following:
+        // 1. Get the cached item's input stream.
+        // 2. Decorate the the platform dependant image in an Image object.
+        // 3. The try block automatically will close the input stream.
+        // 4. Return the Image decorator object or null if an exception occurred.
+        try (InputStream inputStream = item.getInputStream(Cache.Operation.READ)) {
+            log("Image %s was already cached, loading image bytes ...", url.toString());
+            return new Image(url, mNewImageFunction.apply(inputStream, item));
+        } catch (Exception e) {
+            log("Download image failed: " + url);
+            return null;
         }
     }
-
 
     /**
      * Asynchronously download an image from the {@code url} parameter
@@ -472,23 +449,23 @@ public abstract class ImageCrawler
      * @return a future to a transformed image.
      */
     protected CompletableFuture<Image> applyTransformAsync(Transform transform,
-                                                         Image image) {
+                                                           Image image) {
 
         // Asynchronously transform an image.
         return CompletableFuture.supplyAsync(() -> {
-		    // This method will only be called if a new empty
-		    // cache entry was created by a check to
-		    // createNewCacheItem(). Get that entry and pass
-		    // it to the CachingTransformerDecorator.
-		    Cache.Item item =
+            // This method will only be called if a new empty
+            // cache entry was created by a check to
+            // createNewCacheItem(). Get that entry and pass
+            // it to the CachingTransformerDecorator.
+            Cache.Item item =
                     getCache().getItem(
                             image.getSourceUrl().toString(),
                             transform.getName());
 
 
-		    // Apply a transform on the image.
-		    return makeTransformDecoratorWithImage(transform, image).run(item);
-		});
+            // Apply a transform on the image.
+            return makeTransformDecoratorWithImage(transform, image).run(item);
+        });
     }
 
     /**
@@ -529,24 +506,6 @@ public abstract class ImageCrawler
     }
 
     /**
-     * @return {@code true} if crawl should be cancelled, {@code false} if not.
-     */
-    private static boolean isCancelled() {
-        return mCancelled;
-    }
-
-    /**
-     * Throws a CancellationException if the application has
-     * decided to cancelled the crawl.
-     */
-    public static void throwExceptionIfCancelled() {
-        if (isCancelled()) {
-            Thread.currentThread().interrupt();
-            //throw new CancellationException("The crawl has been cancelled.");
-        }
-    }
-
-    /**
      * @return The supported transforms for this crawler strategy.
      */
     public List<Transform.Type> getSupportedTransforms() {
@@ -561,7 +520,7 @@ public abstract class ImageCrawler
      */
     public enum Type {
         SEQUENTIAL_LOOPS(SequentialLoopsCrawler.class),
-        FORK_JOIN(ForkJoinCrawler.class);
+        FORK_JOIN1(ForkJoinCrawler.class);
 
         public final Class<? extends ImageCrawler> clazz;
 

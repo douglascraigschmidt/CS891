@@ -1,22 +1,8 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
-buildscript {
-    ext.kotlin_version = '1.1.51'
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

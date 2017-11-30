@@ -59,8 +59,9 @@ class SynchronizedCacheMap
      * entry with the specified key already existed.
      */
     @Override
-    public Cache.Item computeIfAbsent(String key,
-                                      Function<? super String, ? extends Cache.Item> mapper) {
+    public Cache.Item computeIfAbsent(
+            String key,
+            Function<? super String, ? extends Cache.Item> mapper) {
         synchronized (map) {
             if (map.containsKey(key)) {
                 return map.get(key);

@@ -45,8 +45,7 @@ class CacheTest {
 
         for (i in 1 until 10) {
             val uri = "$baseUri$i"
-            TestCache.addItem(uri, null)
-            val item = TestCache.getItem(uri, null)
+            val item = TestCache.addOrGetItem(uri, null, null)
             assertNotNull(item)
             val name = TestCache.getRelativeCachePath("$baseUri$i", null)
             assertTrue(item!!.file.name == name)
@@ -69,8 +68,7 @@ class CacheTest {
 
         for (i in 1 until 10) {
             val uri = "https://www.foo.bar/dir1/image$i"
-            TestCache.addItem(uri, null)
-            val item = TestCache.getItem(uri, null)
+            val item = TestCache.addOrGetItem(uri, null, null)
             assertNotNull(item)
             val name = TestCache.getRelativeCachePath(uri, null)
             assertTrue(item!!.file.name == name)
@@ -223,8 +221,7 @@ class CacheTest {
         val key = "https://www.foo.bar/image"
         TestCache.startWatching(observer, true)
 
-        TestCache.addItem(key, null)
-        val item = TestCache.getItem(key, null)
+        val item = TestCache.addOrGetItem(key, null, null)
         assertNotNull(item)
         item?.getOutputStream(Cache.Operation.WRITE, 0).use { stream ->
             (1..10).forEach {
@@ -257,8 +254,7 @@ class CacheTest {
         val key = "https://www.foo.bar/image"
         TestCache.startWatching(observer, true)
 
-        TestCache.addItem(key, null)
-        val item = TestCache.getItem(key, null)
+        val item = TestCache.addOrGetItem(key, null, null)
         assertNotNull(item)
         item?.getOutputStream(Cache.Operation.WRITE, 0).use { stream ->
             (1..10).forEach {

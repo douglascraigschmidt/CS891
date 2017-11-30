@@ -3,6 +3,7 @@ package edu.vanderbilt.crawler.adapters
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.view.LayoutInflater
 import android.view.View
@@ -28,15 +29,12 @@ class ImageViewAdapter(context: Context,
                        val gridLayout: Boolean = false,
                        onSelectionListener: OnSelectionListener? = null)
     : MultiSelectAdapter<Resource, ImageViewAdapter.Holder>(
-        context, list, onSelectionListener), KtLogger {
+        context, list, onSelectionListener),
+        KtLogger {
 
     companion object {
-        val keyImage = "key_image"
-        val keyProgressColor = "key_progress_color"
-        val keyProgressValue = "key_progress_value"
-        val keySize = "key_size"
-        val keyThread = "key_thread"
-        val keyFilePath = "key_file_path"
+        val KEY_PROGRESS_VALUE = "key_progress_value"
+        val KEY_SIZE = "key_size"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -52,29 +50,28 @@ class ImageViewAdapter(context: Context,
         super.onBindViewHolder(holder, position)
     }
 
-    fun onBindViewHolderNotUsed(holder: Holder?,
+    override fun onBindViewHolder(holder: Holder?,
                                   position: Int,
                                   payloads: MutableList<Any>?) {
-        if (payloads!!.isEmpty()) {
-            return
-        }
-
-        with(payloads[0] as Bundle) {
-            holder?.let { holder ->
+        if (!payloads!!.isEmpty()) {
+            // Local DiffUtils implementation puts a bundle at index 0.
+            with(payloads[0] as Bundle) {
                 val resource = items[position]
                 keySet().forEach { key ->
                     when (key) {
-                        //keyImage -> holder.setImage(resource)
-                        //keyProgressValue -> holder.setProgressValue(resource.progress)
-                        //keyProgressColor -> holder.setProgressColor(resource)
-                        //keySize -> holder.imageSize.text = holder.getSizeText(resource)
-                        //keyThread -> holder.threadView.text = holder.getThreadText(resource)
-                        keyFilePath -> {
+                        KEY_PROGRESS_VALUE -> holder!!.setProgress(resource)
+                        KEY_SIZE -> holder!!.imageSize.text = holder.getImageSize(resource)
+                        else -> {
+                            throw IllegalStateException("Unsupported DiffUtils key value: $key")
                         }
                     }
                 }
             }
+            // Assumption: at least 1 key will match so
+            // don't call default handler.
+            return
         }
+
         super.onBindViewHolder(holder, position, payloads)
     }
 
@@ -112,7 +109,6 @@ class ImageViewAdapter(context: Context,
             CREATE, LOAD ->
                 error("Illegal state change " +
                       "${oldState.name} -> ${newState.name}")
-
             PROCESS,
             READ,
             WRITE,
@@ -121,7 +117,6 @@ class ImageViewAdapter(context: Context,
                     error("Illegal state change " +
                           "${oldState.name} -> ${newState.name}")
                 }
-
             CLOSE -> {
             }
         }
@@ -133,10 +128,21 @@ class ImageViewAdapter(context: Context,
      * Sets all items to CLOSE state so that transient
      * gif animations are stopped.
      */
-    fun crawlStopped() {
+    fun crawlStopped(cancelled: Boolean = false) {
         items.forEachIndexed { pos, item ->
-            if (item.state != Resource.State.CLOSE) {
-                super.replaceItem(pos, item.copy(state = Resource.State.CLOSE))
+            when (item.state) {
+                Resource.State.DOWNLOAD,
+                Resource.State.CREATE,
+                Resource.State.READ,
+                Resource.State.WRITE,
+                Resource.State.PROCESS,
+                Resource.State.CANCEL -> {
+                    val state = if (cancelled) CANCEL else CLOSE
+                    super.replaceItem(pos, item.copy(state = state))
+                }
+                Resource.State.LOAD,
+                Resource.State.CLOSE -> {
+                }
             }
         }
     }
@@ -146,7 +152,7 @@ class ImageViewAdapter(context: Context,
         private val textView: TextView? = if (gridLayout) null else view.find(R.id.textView)
         private val threadView = view.find<TextView>(R.id.thread)
         private val imageView = view.find<ImageView>(R.id.imageView)
-        private val imageSize = view.find<TextView>(R.id.imageSize)
+        internal val imageSize = view.find<TextView>(R.id.imageSize)
         private val progressBar = view.find<ProgressBar>(R.id.progressBar)
         private val indeterminateProgressBar = view.find<ProgressBar>(R.id.indeterminateProgressBar)
         private val state = view.find<TextView>(R.id.state)
@@ -156,60 +162,71 @@ class ImageViewAdapter(context: Context,
             textView?.text = url
             imageSize.text = getImageSize(resource)
             threadView.text = getThreadId(resource)
+            imageSize.setTextColor(
+                    if (resource.state == CANCEL)
+                        Color.RED
+                    else {
+                        ContextCompat.getColor(
+                                view.ctx, android.R.color.primary_text_light)
+                    })
             state.text = resource.state.name
             setImage(resource)
             setProgress(resource)
-
         }
 
-        private fun setProgress(resource: Resource) {
+        fun setProgress(resource: Resource) {
             progressBar.max = 100
             when (resource.state) {
                 DOWNLOAD -> setProgress(resource.progress, Color.RED)
                 WRITE -> setProgress(resource.progress, Color.BLUE)
                 READ -> setProgress(resource.progress, Color.GREEN)
                 PROCESS -> setProgress(resource.progress, Color.CYAN)
-                LOAD,
-                CREATE,
-                CLOSE -> hideProgressBar()
+                LOAD, CREATE, CLOSE, CANCEL -> hideProgressBar()
             }
         }
 
-        private fun getImageSize(resource: Resource): String {
-            return if (resource.size == 0) {
+        internal fun getImageSize(resource: Resource): String {
+            return if (resource.size != 0) {
+                roundSizeToNearestK(view.context, resource.size)
+            } else {
                 when (resource.state) {
                     READ -> "reading"
                     DOWNLOAD -> "downloading"
                     PROCESS -> "transforming"
-                    CLOSE,
-                    LOAD -> {
+                    LOAD, CLOSE, CANCEL -> {
                         resource.filePath?.let {
-                            val length = File(it).length()
-                            view.ctx.getString(R.string.image_size_format, length / 1e3)
-                        } ?: view.ctx.getString(R.string.image_size_format, 0f)
+                            roundSizeToNearestK(view.context, File(it).length().toInt())
+                        } ?: roundSizeToNearestK(view.context, 0)
                     }
-                    else -> view.ctx.getString(R.string.image_size_format, 0f)
-
+                    else -> roundSizeToNearestK(view.context, 0)
                 }
+            }
+        }
+
+        internal fun roundSizeToNearestK(context: Context, size: Int): String {
+            return if (size == 0) {
+                context.getString(R.string.image_size_format, 0f)
             } else {
-                view.ctx.getString(
-                        R.string.image_size_format, resource.size / 1e3)
+                context.getString(
+                        R.string.image_size_format,
+                        Math.ceil(size.toFloat() / 1e3))
             }
         }
 
         private fun getThreadId(resource: Resource): String {
-            return if (resource.state != Resource.State.LOAD) {
-                "thread: ${resource.thread}"
-            } else {
-                ""
+            return when (resource.state) {
+                Resource.State.LOAD,
+                Resource.State.CLOSE,
+                Resource.State.CANCEL -> ""
+                else -> "thread: ${resource.thread}"
             }
         }
 
-        private fun setProgress(progress: Float, color: Int) {
+        private fun setProgress(progress: Int, color: Int) {
             with(progressBar) {
                 progressDrawable.setColorFilter(
                         color, android.graphics.PorterDuff.Mode.SRC_IN)
-                this.progress = (progress * max).toInt().minmax(0, 100)
+                this.progress = (progress * max / 100f).toInt().minmax(0, 100)
                 visibility = View.VISIBLE
             }
         }
@@ -224,6 +241,7 @@ class ImageViewAdapter(context: Context,
                     WRITE -> asyncLoadGif(R.drawable.spinning_cdrom)
                     PROCESS -> asyncLoadGif(R.drawable.filter)
                     LOAD,
+                    CANCEL,
                     CLOSE -> {
                         if (!resource.filePath.isNullOrEmpty()) {
                             val file = File(resource.filePath)
@@ -266,13 +284,18 @@ class ImageViewAdapter(context: Context,
         : DiffUtil.Callback() {
 
         companion object {
-            fun areContentsTheSame(oldItem: Resource, newItem: Resource): Boolean
-                    = oldItem.state == newItem.state
-                      && oldItem.size == newItem.size
-                      && oldItem.progress == newItem.progress
+            fun areContentsTheSame(oldItem: Resource, newItem: Resource): Boolean {
+                // We only care if the properties that map to
+                // visual components are the same/different.
+                return oldItem.state == newItem.state
+                       && oldItem.size == newItem.size
+                       && oldItem.progress == newItem.progress
+            }
 
-            fun areItemsTheSame(oldItem: Resource, newItem: Resource)
-                    = oldItem == newItem
+            fun areItemsTheSame(oldItem: Resource, newItem: Resource) =
+                // Only care if items are the same not their contents.
+                oldItem.url == newItem.url &&
+                oldItem.filePath == newItem.filePath
         }
 
         override fun getOldListSize(): Int = oldList.size
@@ -283,36 +306,33 @@ class ImageViewAdapter(context: Context,
                                      newItemPosition: Int): Boolean {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
-            return oldItem == newItem
+            // Only care at this point if the item is the same,
+            // not if the contents are the same.
+            return oldItem.url == newItem.url &&
+                   oldItem.filePath == newItem.filePath
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean
                 = areContentsTheSame(oldList[oldItemPosition], newList[newItemPosition])
 
-        fun getChangePayloadNotUsed(oldItemPosition: Int, newItemPosition: Int): Any? {
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
 
-            val bundle = Bundle()
+            if (oldItem.state == newItem.state) {
+                val bundle = Bundle()
+                if (oldItem.progress != newItem.progress) {
+                    bundle.putParcelable(KEY_PROGRESS_VALUE, newItem)
+                }
+                if (oldItem.size != newItem.size) {
+                    bundle.putParcelable(KEY_SIZE, newItem)
+                }
 
-            if (oldItem.state != newItem.state) {
-                bundle.putParcelable(keyImage, newItem)
-                bundle.putBoolean(keyProgressColor, true)
-            }
-            if (oldItem.progress != newItem.progress) {
-                bundle.putFloat(keyProgressValue, newItem.progress)
-            }
-            if (oldItem.size != newItem.size) {
-                bundle.putInt(keySize, newItem.size)
-            }
-            if (oldItem.thread != newItem.thread) {
-                bundle.putInt(keyThread, newItem.thread)
-            }
-            if (oldItem.filePath != newItem.filePath) {
-                bundle.putString(keyFilePath, newItem.filePath)
+                // Only return bundle if something was added.
+                return if (!bundle.isEmpty) bundle else null
             }
 
-            return bundle
+            return null
         }
     }
 }

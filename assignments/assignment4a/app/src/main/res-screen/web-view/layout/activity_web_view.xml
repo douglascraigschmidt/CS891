@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.vanderbilt.crawler.ui.activities.WebViewActivity">
+    tools:context="edu.vanderbilt.crawler.ui.screens.webview.WebViewActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="edu.vanderbilt.crawler.ui.fragments.WebViewUrlFragment"
+            android:name="edu.vanderbilt.crawler.ui.screens.webview.WebViewUrlFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout="@layout/webview_url_list" />
@@ -74,8 +74,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/background_light"
-        app:layout_anchor="@id/bottomSheet"
         app:layout_anchorGravity="top|end"
         app:srcCompat="@drawable/ic_cloud_download_white_48dp" />
+    <!--app:layout_anchor="@id/bottomSheet"-->
 
 </android.support.design.widget.CoordinatorLayout>

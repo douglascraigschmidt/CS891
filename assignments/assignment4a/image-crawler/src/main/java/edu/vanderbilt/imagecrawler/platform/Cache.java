@@ -19,7 +19,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import edu.vanderbilt.imagecrawler.crawlers.framework.ImageCrawler;
@@ -65,10 +67,15 @@ public class Cache {
      */
     private static boolean created;
     /**
-     * Map for handling concurrent access.
+     * Map for handling concurrent access (fast version).
      */
-    private final CacheMap<String, Cache.Item> cacheMap
-            = new SynchronizedCacheMap();
+    private final ConcurrentHashMap<String, Item> cacheMap
+            = new ConcurrentHashMap<>();
+    /**
+     * Map for handling concurrent access (slow version).
+     */
+//    private final CacheMap<String, Cache.Item> cacheMap
+//            = new SynchronizedCacheMap();
     /**
      * Optional list of state change observers.
      */
@@ -80,7 +87,7 @@ public class Cache {
     //private final StampedLock mObserversLock =
     // new StampedLock();
     private final ReentrantReadWriteLock mObserversLock
-        = new ReentrantReadWriteLock();
+            = new ReentrantReadWriteLock();
     /**
      * Used to adjust the speed of the crawl using a sleep call.
      */
@@ -300,15 +307,82 @@ public class Cache {
     }
 
     /**
+     * Attempts to add a new item to the cache. If the item is added {@code true}
+     * is returned, if the item already exists, {@code false} is returned.
+     *
+     * @param uri A uri where the image originates from {@link String}.
+     * @param tag A grouping tag {@link String} or null for the default group.
+     * @param tag A Consumer lambda used to process the newly created item.
+     * @return {@code true} if a new item was added, {@code false} if an item
+     * with a matching uri and tag already exists.
+     */
+    public boolean addItem(@NotNull String uri,
+                           @Nullable String tag,
+                           Consumer<Item> consumer) {
+        return internalAddOrGet(uri, tag, consumer).wasAdded;
+    }
+
+    /**
      * Adds a new item or returns the existing item. The existing
      * item is returned.
      *
      * @param uri A uri where the image originates from {@link String}.
      * @param tag A grouping tag {@link String} or null for the default group.
-     * @return True if a matching item did not exist in the cache and was
-     * created, and false if the item already existed and was not created.
+     * @param tag A Consumer lambda used to process the newly created item.
+     * @return A new Item if a matching item did not exist in the cache and was
+     * created, and an existing item if the item already existed and was not
+     * created.
      */
-    public boolean addItem(@NotNull String uri, @Nullable String tag) {
+    public Item addOrGetItem(@NotNull String uri,
+                             @Nullable String tag,
+                             Consumer<Item> consumer) {
+        return internalAddOrGet(uri, tag, consumer).item;
+    }
+
+    /**
+     * Wrapper class used to store a function and consumer lambdas
+     * that are both invoked from a call to the ConcurrentHashMap
+     * computeIfAbsent method.
+     *
+     * @@Doug: Cool right?
+     */
+    private class ComputeIfAbsent {
+        Consumer<Item> consumer;
+        Function<String, Item> function;
+
+        ComputeIfAbsent(Function<String, Item> function,
+                        Consumer<Item> consume) {
+            this.function = function;
+            this.consumer = consume;
+        }
+
+        /**
+         * Calls passed function lambda to create an item, and
+         * if successful, passes the item to the consumer lambda
+         * and then returns the item.
+         *
+         * @param string The cache key.
+         * @return The new cache item or null if an error occurred.
+         */
+        Item compute(String string) {
+            Item item = function.apply(string);
+            if (item != null && consumer != null) {
+                try {
+                    consumer.accept(item);
+                } catch (Exception e) {
+                    System.out.println(
+                            "Cache: computeIfAbsent "
+                                    + "consumer failed: " + e);
+                    throw e;
+                }
+            }
+            return item;
+        }
+    }
+
+    private AddOrGetResult internalAddOrGet(@NotNull String uri,
+                                            @Nullable String tag,
+                                            Consumer<Item> consumer) {
         // Restriction: item uri can't begin with the default tag.
         if (uri.startsWith(NOTAG)) {
             fatal("Invalid argument: Item uri cannot begin with " + NOTAG);
@@ -322,15 +396,26 @@ public class Cache {
         // Build the unique encoded key from the uri and tag pair.
         String key = getEncodedKey(uri, tag);
 
+        // Construct a wrapper class that contains the compute lambda
+        // required for the computeIfAbsent call as well as the passed
+        // consumer lambda which is will be called from the compute
+        // lambda.
+        ComputeIfAbsent computeIfAbsent =
+                new ComputeIfAbsent(this::newItem, consumer);
+
         // Add the item to the hash map if it doesn't already exist.
         // The ConcurrentHashMap implementation will only call the
-        // newItem function to create a new item if there is no
+        // compute method to create a new item if there is no
         // item in the cache matching the given key.
-        Item item = cacheMap.computeIfAbsent(key, this::newItem);
+        Item item = cacheMap.computeIfAbsent(key, computeIfAbsent::compute);
 
         if (item == null) {
             fatal("computeIfAbsent returned null");
         }
+
+        // Construct result value before clearing the wasJustCreated
+        // thread local storage boolean.
+        AddOrGetResult result = new AddOrGetResult(item, wasJustCreated.get());
 
         // Check the thread local storage boolean to see if this is the
         // thread actually created this item (set in newItem()). If so,
@@ -342,12 +427,10 @@ public class Cache {
             // Unset the boolean to prevent this thread for sending
             // more than one create notification to observers.
             wasJustCreated.set(false);
-
-            return true;
-        } else {
-            // Item was already in the cache and was not added.
-            return false;
         }
+
+        // Return the aggregated result.
+        return result;
     }
 
     /**
@@ -528,6 +611,7 @@ public class Cache {
 
     /**
      * Sets the crawl speed.
+     *
      * @param speed Value from 0 to 100%
      */
     public void setCrawlSpeed(int speed) {
@@ -617,7 +701,7 @@ public class Cache {
         //      "http://<path>",
         //      "https://<path>",
         //      "file://java_resources/<path>,
-        //      "file://android_assets/<path>
+        //      "file:///android_assets/<path> - Android requires 3 /// chars.
         //      "file://locat_project/<path>
         // To facilitate testing which compares the downloaded cache
         // with a ground-truth directory, strip off the locator prefix
@@ -752,6 +836,20 @@ public class Cache {
     }
 
     /**
+     * Used as a return value for internal addOrGet
+     * method so support 2 return values (yuck).
+     */
+    class AddOrGetResult {
+        boolean wasAdded;
+        Item item;
+
+        AddOrGetResult(Item item, boolean wasAdded) {
+            this.item = item;
+            this.wasAdded = wasAdded;
+        }
+    }
+
+    /**
      * Immutable entry used in observers list. The contained
      * Observer is stored as a weak reference.
      */
@@ -809,7 +907,11 @@ public class Cache {
          */
         public String getSourceUri() {
             try {
-                return "https://" + URLDecoder.decode(key.split("-", 2)[1], "UTF-8");
+                String decoded = URLDecoder.decode(key.split("-", 2)[1], "UTF-8");
+                String url = decoded.startsWith("file:/")
+                        ? decoded
+                        : "https://" + decoded;
+                return url;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -995,6 +1097,7 @@ public class Cache {
             } else {
                 log("EOF total = " + size + " read = " + bytesRead);
             }
+
             return read;
         }
 
