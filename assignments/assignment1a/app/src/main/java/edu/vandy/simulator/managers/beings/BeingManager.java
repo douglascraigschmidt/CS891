@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import edu.vandy.simulator.Simulator;
-import edu.vandy.simulator.managers.beings.completableFutures.CompletableFuturesMgr;
-import edu.vandy.simulator.managers.beings.executorService.ExecutorServiceMgr;
-import edu.vandy.simulator.managers.beings.parallelStreams.ParallelStreamsMgr;
 import edu.vandy.simulator.managers.beings.runnableThreads.RunnableThreadsMgr;
 import edu.vandy.simulator.managers.palantiri.Palantir;
 import edu.vandy.simulator.model.interfaces.Model;
