@@ -93,7 +93,7 @@ public class RunnableThreadsMgr
         // BeingManager.error() helper method with the exception in
         // the catch clause, which trigger the simulator to generate a
         // shutdownNow() request.
-        // TODO -- you fill in here, replacing null with proper code.
+        // TODO -- you fill in here.
 
         // Start running the thread.
         // TODO -- you fill in here.
