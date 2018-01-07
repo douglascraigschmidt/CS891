@@ -427,10 +427,6 @@ public abstract class BeingManager<T extends Being>
          */
         public enum Type {
             RUNNABLE_THREADS(RunnableThreadsMgr.class),
-            FUTURES(ExecutorServiceMgr.class),
-            PARALLEL_STREAMS(ParallelStreamsMgr.class),
-            COMPLETABLE_FUTURES(CompletableFuturesMgr.class),
-            DOUG_ADD_NEW_IMPLEMENTATIONS_HERE(NoManager.class),
             NO_MANAGER(NoManager.class); // Do not remove or replace.
 
             public final Class<? extends BeingManager> clazz;
