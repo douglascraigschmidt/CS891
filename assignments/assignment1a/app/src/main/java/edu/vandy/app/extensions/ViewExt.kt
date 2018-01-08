@@ -2,7 +2,6 @@ package edu.vandy.app.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.view.ViewCompat
 import android.util.DisplayMetrics
@@ -10,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import android.widget.*
-import edu.vandy.app.App
+import android.widget.HorizontalScrollView
+import android.widget.ImageView
+import android.widget.ScrollView
+import android.widget.TextView
 import org.jetbrains.anko.contentView
 
 

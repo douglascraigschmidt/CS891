@@ -9,13 +9,14 @@ import edu.vandy.simulator.Controller;
 import edu.vandy.simulator.model.implementation.snapshots.ModelSnapshot;
 import edu.vandy.simulator.model.interfaces.ComponentSnapshot;
 import edu.vandy.simulator.model.interfaces.Model;
+import edu.vandy.simulator.model.interfaces.ModelComponent;
 import edu.vandy.simulator.model.interfaces.ModelObserver;
 import edu.vandy.simulator.model.interfaces.ModelProvider;
 
 /**
  * A top level model base class that manages a list of model
  * observers and also provides the default implementation of
- * the {@link #triggerSnapshot} method which is invoked when
+ * the {@link Model#triggerSnapshot} method which is invoked when
  * any model component calls {@link #setState}. When invoked,
  * this method calls each component's {@link #buildSnapshot}
  * method to obtain an immutable snapshot of that components
@@ -91,7 +92,7 @@ public abstract class BaseModel<Type, State>
 
         // Immediately notify observer about all cache contents.
         if (notify) {
-            triggerSnapshot(getId());
+            triggerSnapshot(this);
         }
     }
 
@@ -122,19 +123,45 @@ public abstract class BaseModel<Type, State>
     }
 
     /**
-     * Creates a snapshot of the current model state that includes
-     * the states of all beings (BeingState) and palantiri
-     * (PalantiriState) along with the current overall state of the
-     * simulator (ModelState). This snapshot is then pushed to the
-     * presentation layer's Observer callback.
+     * Updates the currently cached model snapshot with the
+     * snapshot of the passed component and then broadcasts
+     * this updated model snapshot to all registered model
+     * observers.
+     *
+     * @param component Component that is triggering this snapshot.
      */
     @Override
-    public void triggerSnapshot(long triggeredById) {
+    public void triggerSnapshot(ModelComponent component) {
+        // Attempt to update the cached model snapshot with
+        // a fresh snapshot from the triggering component.
+        ModelSnapshot snapshot = updateModelSnapshot(component);
+
+        // If a new snapshot was generated then forward it
+        // to the presentation layer. When the triggering
+        // component is a Palantir, the Palantir component
+        // dirty count is incremented but no new snapshot
+        // is generated. Instead, the next time a being
+        // component triggers a snapshot, the update method
+        // will check for any changed Palantiri and generate
+        // new snapshots for each one that has changed and
+        // include these snapshots along with the new Being
+        // snapshot in the model snapshot that is then
+        // pushed to the presentation layer.
+        if (snapshot != null) {
+            broadcastSnapshot(updateModelSnapshot(component));
+        }
+    }
+
+    /**
+     * Broadcasts a snapshot of the current model state that
+     * to all registered snapshot observers.
+     *
+     * @param snapshot Snapshot to broadcast.
+     */
+    protected void broadcastSnapshot(ModelSnapshot snapshot) {
         // If an observer is registered, then construct an immutable
         // snapshot of the model state and push it to presentation layer.
         if (!mObservers.isEmpty()) {
-            ModelSnapshot snapshot = buildModelSnapshot(triggeredById);
-
             // Acquire read access to the observers list.
             mObserversLock.readLock().lock();
 
@@ -157,5 +184,7 @@ public abstract class BaseModel<Type, State>
         }
     }
 
-    abstract public ModelSnapshot buildModelSnapshot(long triggeredById);
+    abstract public ModelSnapshot buildModelSnapshot(ModelComponent component);
+
+    abstract public ModelSnapshot updateModelSnapshot(ModelComponent component);
 }

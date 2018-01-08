@@ -37,14 +37,16 @@ public class SimpleBeingRunnable
      */
     @Override
     protected void acquirePalantirAndGaze() {
-        // Get a palantir from the BeingManager - this call will block
-        // if there are no available palantiri (if a concurrency error
-        // occurs in the assignment implementation, null is returned
-        // and this being should immediately call Being.error(), which
-        // throws an IllegalStateException).  Then gaze at the
-        // palantir for this being (which blocks for a random period
-        // of time).  Finally, release the palantir for this being via
-        // the BeingManager.
+        // Get a palantir from the PalantiriManager by calling the
+        // appropriate Being super class helper method - this call
+        // will block if there are no available palantiri (if a
+        // concurrency error occurs in the assignment implementation,
+        // null is returned and this being should immediately call
+        // Being.error(), which throws an IllegalStateException).
+        // Then gaze at the palantir for this being (which blocks for
+        // a random period of time).  Finally, release the palantir
+        // for this being via a call to the appropriate Being super
+        // class helper method.
         // TODO -- you fill in here.
     }
 }

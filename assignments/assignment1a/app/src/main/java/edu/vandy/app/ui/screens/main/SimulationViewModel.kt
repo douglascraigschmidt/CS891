@@ -3,15 +3,19 @@ package edu.vandy.app.ui.screens.main
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
+import android.support.annotation.MainThread
 import android.util.Range
+import edu.vandy.R.id.settingsFragment
 import edu.vandy.app.extensions.scale
 import edu.vandy.app.ui.screens.settings.Settings
+import edu.vandy.app.ui.screens.settings.SettingsDialogFragment
 import edu.vandy.app.utils.KtLogger
 import edu.vandy.app.utils.info
+import edu.vandy.app.utils.warn
 import edu.vandy.simulator.Controller
 import edu.vandy.simulator.Simulator
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantiriManager
+import edu.vandy.simulator.managers.palantiri.PalantirManager
 import edu.vandy.simulator.model.implementation.snapshots.ModelSnapshot
 import edu.vandy.simulator.model.interfaces.ModelObserver
 import org.jetbrains.anko.doAsync
@@ -23,14 +27,18 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
     private var simulator: Simulator? = null
 
     /**
-     * Prevents repeated start calls.
+     * Prevents repeated start and stop calls.
+     * Currently supports starting/stopping
+     * from the main thread only.
      */
     private @Volatile
-    var startingSimulation: Boolean = false
+    var startingSimulation = false
+    private @Volatile
+    var stoppingSimulation = false
 
     /** Simulation start time. */
-    private var startTime: Long = 0
-    private var stopTime: Long = 0
+    private var startTime = 0L
+    private var stopTime = 0L
 
     /** Keeps track of the number of simulation runs */
     var simulationCount = 0
@@ -93,7 +101,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      * Used to keep track of current model parameters.
      */
     data class ModelParameters(val beingManagerType: BeingManager.Factory.Type,
-                               val palantiriManagerType: PalantiriManager.Factory.Type,
+                               val palantirManagerType: PalantirManager.Factory.Type,
                                val beings: Int,
                                val palantiri: Int,
                                val iterations: Int)
@@ -102,7 +110,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      * Initially set to empty values.
      */
     var modelParameters = ModelParameters(BeingManager.Factory.Type.NO_MANAGER,
-                                          PalantiriManager.Factory.Type.NO_MANAGER,
+                                          PalantirManager.Factory.Type.NO_MANAGER,
                                           0,
                                           0,
                                           0)
@@ -117,9 +125,14 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
     /**
      * Asynchronously starts a simulation run using the specified
      * model parameters.
+     *
+     * This function is safe to call while a simulation is
+     * already running because it uses a volatile flag to
+     * prevent spawning multiple async start simulation tasks.
      */
+    @MainThread
     fun startSimulationAsync(beingManagerType: BeingManager.Factory.Type,
-                             palantiriManagerType: PalantiriManager.Factory.Type,
+                             palantirManagerType: PalantirManager.Factory.Type,
                              beings: Int,
                              palantiri: Int,
                              iterations: Int) {
@@ -151,7 +164,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
                 // For efficiency reasons, don't update the model if
                 // it hasn't changed from the last time it was built.
                 updateSimulationModel(beingManagerType,
-                                      palantiriManagerType,
+                                      palantirManagerType,
                                       beings,
                                       palantiri,
                                       iterations)
@@ -170,9 +183,9 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
                     // Run the simulation.
                     simulator?.start()
 
-                    log("SimulationViewModel: Simulation completed normally.")
+                    warn("SimulationViewModel: Simulation completed normally.")
                 } catch (e: Exception) {
-                    log("SimulationViewModel: Simulation completed with exception: $e")
+                    warn("SimulationViewModel: Simulation completed with exception: $e")
                 } finally {
                     // Set the simulation stop time.
                     stopTime = System.currentTimeMillis()
@@ -190,18 +203,28 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
     /**
      * Asynchronous call so that if the simulation is slow
      * in stopping, it won't hang the UI layer.
+     *
+     * This function is safe to call before a previous call
+     * has completed because it uses a volatile flag to
+     * prevent spawning multiple async stop tasks.
      */
+    @MainThread
     fun stopSimulationAsync() {
-        doAsync {
-            simulator?.stop()
+        if (!stoppingSimulation) {
+            doAsync {
+                stoppingSimulation = true
+                simulator?.stop()
+                stoppingSimulation = false
+            }
         }
     }
 
     /**
      * Updates the current simulation model parameters.
      */
+    @MainThread
     fun updateSimulationModel(beingManagerType: BeingManager.Factory.Type,
-                              palantiriManagerType: PalantiriManager.Factory.Type,
+                              palantirManagerType: PalantirManager.Factory.Type,
                               beingCount: Int,
                               palantirCount: Int,
                               gazingIterationCount: Int) {
@@ -213,7 +236,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
             simulator?.apply {
                 val parameters =
                         ModelParameters(beingManagerType,
-                                        palantiriManagerType,
+                                        palantirManagerType,
                                         beingCount,
                                         palantirCount,
                                         gazingIterationCount)
@@ -221,7 +244,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
                 if (parameters != modelParameters) {
                     modelParameters = parameters
                     buildModel(beingManagerType,
-                               palantiriManagerType,
+                               palantirManagerType,
                                beingCount,
                                palantirCount,
                                gazingIterationCount)

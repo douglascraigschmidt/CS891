@@ -54,14 +54,7 @@ public abstract class PalantirComponent extends
 
     @Override
     public void setState(State state, @Nullable Throwable e, @Nullable String message) {
-        // Call super class to handle setting the state information.
-        super.setState(state, e, message);
-
-        // Push a model snapshot to the presentation layer
-        // before pausing the thread. This allows the UI
-        // simulation to start and synchronize an animation
-        // to match the exact pause duration.
-        getModel().triggerSnapshot(getId());
+        throw new IllegalStateException("Palantiri should not call setState");
     }
 
     /**
@@ -122,8 +115,9 @@ public abstract class PalantirComponent extends
      * Palantir states.
      */
     public enum State {
-        AVAILABLE,
-        BUSY,
-        ERROR
+        AVAILABLE,  // not being used by any being
+        BUSY,       // being used by a single being
+        REMOVED,    // this component has been removed from the model
+        ERROR       // model has detected a fatal error with this component
     }
 }

@@ -437,11 +437,11 @@ class SimulationView @JvmOverloads constructor(context: Context,
                              beings.count(), Settings.beingCount))
         }
 
-        palantiri.forEach {
+        palantiri.values.forEach {
             if (it.beingId != -1L) {
                 // This palantir should not be owned by any other beings.
                 // i.e., this being should only own a single palantir.
-                val count = beings.filter { b -> b.palantirId == it.id }.count()
+                val count = beings.filterValues { b -> b.palantirId == it.id }.count()
                 if (count > 1) {
                     addError(it.beingId,
                              it.id,
@@ -452,7 +452,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
             }
         }
 
-        beings.forEach {
+        beings.values.forEach {
             // Being should only be moving to a valid new state.
             if (!validateBeingState(it)) {
                 addError(it.id,
@@ -475,7 +475,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
                                  ErrorType.BeingNoPalantirId.format(it.id.toInt(), it.state))
                     } else {
                         // The palantir should have an owner.
-                        val palantir = palantiri.find { palantir -> palantir.id == it.palantirId }
+                        val palantir = palantiri[it.palantirId]
                         if (palantir == null) {
                             addError(it.id,
                                      it.palantirId,
@@ -511,7 +511,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
 
                             // No other palantir should have this being as an owner,
                             // i.e., this being should only own a single palantir.
-                            val count = palantiri.filter { p -> p.beingId == it.id }.count()
+                            val count = palantiri.filterValues { p -> p.beingId == it.id }.count()
                             if (count > 1) {
                                 addError(it.id,
                                          it.palantirId,
@@ -579,15 +579,17 @@ class SimulationView @JvmOverloads constructor(context: Context,
      */
     private fun validateModelState(m1: ModelSnapshot,
                                    m2: ModelSnapshot): Boolean {
-        if (m2.simulator.state == SimulatorComponent.State.CANCELLING) {
+        if (m2.simulator.state == SimulatorComponent.State.CANCELLING ||
+            m2.simulator.state == SimulatorComponent.State.CANCELLED) {
             return true
         }
+
         if (m1.beings.size != m2.beings.size) {
             return true
         }
 
-        m1.beings.forEach { b1 ->
-            val b2 = m2.beings.find { it.id == b1.id }
+        m1.beings.values.forEach { b1 ->
+            val b2 = m2.beings[b1.id]
             require(b2 != null) {
                 "Being from a previous snapshot b1 was " +
                 "not found in new snapshot: $b1"
@@ -631,6 +633,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
                     State.RELEASING -> requires(s1 == State.GAZING)
                     State.DONE -> requires(s1 == State.IDLE || s1 == State.WAITING || s1 == State.ERROR)
                     State.CANCELLED,
+                    State.REMOVED,
                     State.ERROR -> {
                     }
                     null -> {
@@ -667,27 +670,50 @@ class SimulationView @JvmOverloads constructor(context: Context,
             return
         }
 
-        modelSnapshot.beings.forEach { snapshot ->
-            (beings[snapshot.id] as? BeingSprite)?.let {
-                it.snapshot = snapshot
-            } ?: beings.put(snapshot.id, BeingSprite(this, snapshot))
-        }
-        modelSnapshot.palantiri.forEach { snapshot ->
-            (palantiri[snapshot.id] as? PalantirSprite)?.let {
-                it.snapshot = snapshot
-            } ?: palantiri.put(snapshot.id, PalantirSprite(this, snapshot))
+        // Clear all palantir snapshot being id values
+        // since this view manages this field.
+        modelSnapshot.palantiri.values.forEach {
+           it.beingId = -1L
         }
 
-        // For now, just remove any sprites that are not longer
-        // in use. This occurs when the number of sprites is changed
-        // from the settings panel.
-        beings.filterKeys { id ->
-            modelSnapshot.beings.find { it.id == id } == null
-        }.forEach { beings.remove(it.key) }
+        // Now link all palantiri back to their gazing beings.
+        modelSnapshot.beings.values.forEach {
+            if (it.palantirId != -1L) {
+                modelSnapshot.palantiri[it.palantirId]?.beingId = it.id
+            }
+        }
 
-        palantiri.filterKeys { id ->
-            modelSnapshot.palantiri.find { it.id == id } == null
-        }.forEach { palantiri.remove(it.key) }
+        modelSnapshot.beings
+                .map { it.value }
+                .forEach { snapshot ->
+                    (beings[snapshot.id] as? BeingSprite)?.let {
+                        if (snapshot.isRemoved) {
+                            beings.remove(snapshot.id)
+                        } else {
+                            it.snapshot = snapshot
+                        }
+                    } ?: beings.put(snapshot.id, BeingSprite(this, snapshot))
+                }
+
+        modelSnapshot.palantiri
+                .map { it.value }
+                .forEach { snapshot ->
+                    (palantiri[snapshot.id] as? PalantirSprite)?.let {
+                        if (snapshot.isRemoved) {
+                            palantiri.remove(snapshot.id)
+                        } else {
+                            it.snapshot = snapshot
+                        }
+                    } ?: palantiri.put(snapshot.id, PalantirSprite(this, snapshot))
+                }
+
+        // Make sure that no sprites exist that are no longer
+        // represented in the current model snapshot.
+        beings.filterKeys { !modelSnapshot.beings.containsKey(it) }
+                .forEach { beings.remove(it.key) }
+
+        palantiri.filterKeys { !modelSnapshot.palantiri.containsKey(it) }
+                .forEach { palantiri.remove(it.key) }
     }
 
     /**
@@ -1617,9 +1643,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
             val minWidth =
                     calcMaxSpriteSize(
                             beings, minSize.toFloat()).width.toInt()
-            val maxWidth =
-                    calcMaxSpriteSize(
-                            beings, maxSize.toFloat()).width.toInt()
             val curWidth =
                     calcMaxSpriteSize(
                             beings, curSize.toFloat()).width.toInt()
@@ -1664,9 +1687,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
             val minWidth =
                     calcMaxSpriteSize(
                             palantiri, minSize.toFloat()).width.toInt()
-            val maxWidth =
-                    calcMaxSpriteSize(
-                            palantiri, maxSize.toFloat()).width.toInt()
             val curWidth =
                     calcMaxSpriteSize(
                             palantiri, curSize.toFloat()).width.toInt()
@@ -2443,9 +2463,22 @@ class SimulationView @JvmOverloads constructor(context: Context,
         override val progressColor
             get() = Color.RED
 
-        /** Count of gazing occurrences. */
+        /**
+         * Count of gazing occurrences. The model increments
+         * the count as soon as the palantir has been acquired
+         * by the being. However, to make the simulation look
+         * more intuitive, return one less than the count for
+         * the acquiring and gazing states, and then the real
+         * count for the releasing state. This makes the count
+         * look like it's updated when the progress bar reaches
+         * 100%.
+         */
         override val count
-            get() = snapshot.count
+            get() = when (state) {
+                BeingComponent.State.ACQUIRING,
+                BeingComponent.State.GAZING -> snapshot.count - 1
+                else -> snapshot.count
+            }
 
         /** An error string when simulation is in an illegal state */
         override var error = ""

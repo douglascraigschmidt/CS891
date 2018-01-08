@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Size
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import edu.vandy.app.App

@@ -3,13 +3,12 @@ package edu.vandy.app.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION
-import kotlin.math.ceil
+import android.os.Build.VERSION_CODES
 import android.util.Size
-import edu.vandy.app.extensions.portrait
-import android.content.res.TypedArray
 import edu.vandy.app.extensions.landscape
+import edu.vandy.app.extensions.portrait
+import kotlin.math.ceil
 
 
 /**

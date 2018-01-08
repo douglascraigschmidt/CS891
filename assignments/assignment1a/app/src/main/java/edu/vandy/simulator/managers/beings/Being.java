@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CancellationException;
 
-import edu.vandy.simulator.Controller;
 import edu.vandy.simulator.managers.palantiri.Palantir;
 import edu.vandy.simulator.model.implementation.components.BeingComponent;
 
@@ -91,6 +90,8 @@ public abstract class Being
         setRunning(true);
 
         // Keep track of how many iterations we complete.
+        // This count is automatically incremented in any
+        // call to the releasePalantir() helper method.
         mCompleted = 0;
 
         try {
@@ -99,11 +100,6 @@ public abstract class Being
             while (!isCancelled() && mCompleted != gazingIterations) {
                 // Start gazing into the Palantir.
                 acquirePalantirAndGaze();
-
-                // Only increment completed value if not cancelled.
-                if (!isCancelled()) {
-                    mCompleted++;
-                }
             }
         } catch (CancellationException e) {
             // Swallow cancellation exception but record the event.
@@ -123,6 +119,29 @@ public abstract class Being
      * Perform a single gazing operation.
      */
     protected abstract void acquirePalantirAndGaze();
+
+    /**
+     * Helper method that should be called by base classes
+     * to acquire a Palantir. It simply forwards the request
+     * to the BeingManager.
+     */
+    protected Palantir acquirePalantir() {
+        return mManager.acquirePalantir(this);
+    }
+
+    /**
+     * Helper method that should be called by base classes
+     * to release a Palantir. The completed iterations count
+     * is updated and the request is forwarded to the
+     * BeingManager.
+     */
+    protected void releasePalantir(Palantir palantir) {
+        // Only increment completed value if not cancelled.
+        if (!isCancelled()) {
+            mCompleted++;
+        }
+        mManager.releasePalantir(this, palantir);
+    }
 
     /**
      * Called when an unrecoverable error occurs. The error is passed

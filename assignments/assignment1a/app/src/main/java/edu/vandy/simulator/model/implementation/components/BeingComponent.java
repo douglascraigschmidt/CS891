@@ -19,6 +19,7 @@ import static edu.vandy.simulator.model.implementation.components.BeingComponent
 import static edu.vandy.simulator.model.implementation.components.BeingComponent.State.GAZING;
 import static edu.vandy.simulator.model.implementation.components.BeingComponent.State.IDLE;
 import static edu.vandy.simulator.model.implementation.components.BeingComponent.State.RELEASING;
+import static edu.vandy.simulator.model.implementation.components.BeingComponent.State.REMOVED;
 import static edu.vandy.simulator.model.implementation.components.SimulatorModel.Type.BEING;
 
 /**
@@ -256,6 +257,14 @@ public abstract class BeingComponent extends
     public void setState(State state,
                          @Nullable Throwable e,
                          @Nullable String message) {
+        // Ensure that if the removed state has been set, that
+        // no attempt is ever made to change this state.
+        if (isRemoved() && state != REMOVED) {
+            throw new IllegalStateException(
+                    "Component has been REMOVED and " +
+                            "cannot be set to any new state");
+        }
+
         // To hide the implementation details from Being implementations,
         // the BUSY state is broken up into 4 states, each with different
         // durations: ACQUIRING, GAZING, RELEASING, and then IDLE. This
@@ -268,6 +277,16 @@ public abstract class BeingComponent extends
                 setState(RELEASING);
                 return;
             }
+            case REMOVED: {
+                // Set removed flag and call base class to immediately
+                // trigger a snapshot. Once in a component has moved
+                // to the REMOVED state, it can never be moved to
+                // any other state.
+                setRemoved(true);
+                super.setState(state, e, message);
+                return;
+            }
+
             default: // Normal state processing.
         }
 
@@ -366,7 +385,8 @@ public abstract class BeingComponent extends
         RELEASING,  // in the process of releasing a Palantir
         CANCELLED,  // in the process of being cancelled
         DONE,       // final state (cancelled or finished all gazing iterations)
-        ERROR;      // a fatal concurrency error has been detected
+        REMOVED,    // this component has been removed from the model
+        ERROR;      // model has detected a fatal error with this component
 
         /**
          * @return The millisecond duration of the each state.

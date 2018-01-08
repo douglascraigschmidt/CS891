@@ -103,11 +103,6 @@ class MainActivity : AppCompatActivity(),
         }
 
         PreferenceProvider.addListener(this)
-
-        // Enable/disable model parameter settings if
-        // we've reconnected to a running simulation.
-        (settingsFragment as SettingsDialogFragment)
-                .simulationRunning(viewModel.simulationRunning)
     }
 
     /**
@@ -124,7 +119,7 @@ class MainActivity : AppCompatActivity(),
             } else {
                 viewModel.setPerformanceMode = Settings.performanceMode
                 viewModel.startSimulationAsync(Settings.beingManagerType,
-                                               Settings.palantiriManagerType,
+                                               Settings.PALANTIR_MANAGER_TYPE,
                                                Settings.beingCount,
                                                Settings.palantirCount,
                                                Settings.gazingIterations)
@@ -214,7 +209,7 @@ class MainActivity : AppCompatActivity(),
         // settings panel. The user will have to try again
         if (!viewModel.simulationRunning) {
             viewModel.updateSimulationModel(Settings.beingManagerType,
-                                            Settings.palantiriManagerType,
+                                            Settings.PALANTIR_MANAGER_TYPE,
                                             Settings.beingCount,
                                             Settings.palantirCount,
                                             Settings.gazingIterations)
@@ -295,7 +290,7 @@ class MainActivity : AppCompatActivity(),
 //            + " snapshot id = " + snapshot.simulator.snapshotId
 //            + " new state = " + snapshot.simulator.state)
         simulationState = snapshot.simulator.state
-        completedIterations = snapshot.beings.map { it.completed }.sum()
+        completedIterations = snapshot.beings.values.map { it.completed }.sum()
         simulationView.updateModel(snapshot)
         updateViewStates()
 
@@ -318,6 +313,8 @@ class MainActivity : AppCompatActivity(),
             SimulatorComponent.State.RUNNING -> {
                 progressBar.visible = true
                 actionFab.setImageResource(R.drawable.ic_close_white_48dp)
+                (settingsFragment as SettingsDialogFragment)
+                        .simulationRunning(true)
             }
             SimulatorComponent.State.CANCELLING -> {
                 progressBar.visible = true
@@ -326,12 +323,16 @@ class MainActivity : AppCompatActivity(),
             SimulatorComponent.State.IDLE -> {
                 progressBar.visible = false
                 actionFab.setImageResource(android.R.drawable.ic_media_play)
+                (settingsFragment as SettingsDialogFragment)
+                        .simulationRunning(false)
             }
             SimulatorComponent.State.CANCELLED,
             SimulatorComponent.State.ERROR,
             SimulatorComponent.State.COMPLETED -> {
                 progressBar.visible = false
                 actionFab.setImageResource(android.R.drawable.ic_media_play)
+                (settingsFragment as SettingsDialogFragment)
+                        .simulationRunning(false)
             }
             SimulatorComponent.State.UNDEFINED -> {
                 error("Received an UNDEFINED Model state")

@@ -9,7 +9,7 @@ import edu.vandy.app.preferences.PreferenceProvider
 import edu.vandy.app.ui.adapters.dpToPx
 import edu.vandy.app.ui.screens.main.SimulationView
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantiriManager
+import edu.vandy.simulator.managers.palantiri.PalantirManager
 
 /**
  * All settings that are saved/restored from shared
@@ -83,7 +83,7 @@ internal object Settings {
     private val DEFAULT_AUTO_SCALE = true
     private val DEFAULT_VIEW_TRANSPARENCY = 15
     private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.RUNNABLE_THREADS
-    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.ARRAY_BLOCKING_QUEUE
+    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantirManager.Factory.Type.ARRAY_BLOCKING_QUEUE
     private val DEFAULT_SAVE_ON_EXIT = true
     private val DEFAULT_PERFORMANCE_MODE = false
     private val DEFAULT_STRICT_MODE = false
@@ -207,10 +207,10 @@ internal object Settings {
             by Preference(DEFAULT_BEING_MANAGER_TYPE,
                           SIMULATION_BEING_MANAGER_TYPE_PREF,
                           EnumAdapter(BeingManager.Factory.Type::class.java))
-    var palantiriManagerType: PalantiriManager.Factory.Type
+    var PALANTIR_MANAGER_TYPE: PalantirManager.Factory.Type
             by Preference(DEFAULT_PALANTIRI_MANAGER_TYPE,
                           SIMULATION_PALANTIRI_MANAGER_TYPE_PREF,
-                          EnumAdapter(PalantiriManager.Factory.Type::class.java))
+                          EnumAdapter(PalantirManager.Factory.Type::class.java))
     var beingSize: Int
             by Preference(DEFAULT_BEING_SIZE,
                           SIMULATION_BEING_SIZE_PREF)
@@ -276,7 +276,7 @@ internal object Settings {
             beingCount = DEFAULT_BEING_COUNT
             palantirCount = DEFAULT_PALANTIRI_COUNT
             gazingIterations = DEFAULT_GAZING_ITERATIONS
-            palantiriManagerType = DEFAULT_PALANTIRI_MANAGER_TYPE
+            PALANTIR_MANAGER_TYPE = DEFAULT_PALANTIRI_MANAGER_TYPE
             beingManagerType = DEFAULT_BEING_MANAGER_TYPE
         }
 

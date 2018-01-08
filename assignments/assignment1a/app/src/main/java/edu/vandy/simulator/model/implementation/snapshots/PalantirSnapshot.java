@@ -17,8 +17,10 @@ public class PalantirSnapshot extends
     /**
      * The id of the currently gazing being or -1 if no
      * being is currently gazing into this palantir.
+     * TODO: KLUDGE! Not declared final so that presentation
+     * layer can set this value.
      */
-    private final long mBeingId;
+    private long mBeingId;
 
     /**
      * The number of times beings have gazed at this palantir.
@@ -34,6 +36,22 @@ public class PalantirSnapshot extends
         mCount = 0;
     }
 
+    /**
+     * Constructor to support cloning.
+     *
+     * @param snapshot The instance to clone.
+     */
+    public PalantirSnapshot(@NotNull PalantirSnapshot snapshot) {
+        super(snapshot);
+        mBeingId = snapshot.getBeingId();
+        mCount = snapshot.getCount();
+    }
+
+    /**
+     * Constructs a snapshot from the provided component.
+     *
+     * @param palantir The component to snapshot.
+     */
     public PalantirSnapshot(@NotNull Palantir palantir) {
         // Call base class constructor to initialize ModelComponent fields.
         super(palantir);
@@ -41,6 +59,15 @@ public class PalantirSnapshot extends
         // Set model dependant attributes.
         mBeingId = palantir.getBeingId();
         mCount = palantir.getCount();
+    }
+
+    /**
+     * TODO: KLUDGE!! Should not have setter in an immutable snapshot!
+     * Sets the id of the currently gazing being or -1 if
+     * no being is currently gazing into this palantir.
+     */
+    public void setBeingId(Long beingId) {
+        mBeingId = beingId;
     }
 
     /**
@@ -56,5 +83,19 @@ public class PalantirSnapshot extends
      */
     public int getCount() {
         return mCount;
+    }
+
+    /**
+     * Called to determine if the associated component has
+     * been removed from the model. If true, then the component
+     * state should be considered to be not meaningful and should
+     * not be used.
+     *
+     * @return Flag indicating if the associated component has
+     * been removed from the model.
+     */
+    @Override
+    public Boolean isRemoved() {
+        return getState() == PalantirComponent.State.REMOVED;
     }
 }

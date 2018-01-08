@@ -42,7 +42,8 @@ public class RunnableThreadsMgr
     }
 
     /**
-     * This method is called to start the being gazing simulation.
+     * This entry point method is called by the Simulator framework to
+     * start the being gazing simulation.
      */
     @Override
     public void runSimulation() {
@@ -69,10 +70,10 @@ public class RunnableThreadsMgr
         //
         // GRADUATE STUDENTS:
         // Set an "UncaughtExceptionHandler" for each being thread
-        // that calls the BeingManager.error() method to indicate
-        // an unexpected exception "ex" occurred for thread "thr".
-        // Undergraduates do not need to set this exception
-        // handler (though they are free to do to if they choose).
+        // that calls the BeingManager.error() method to indicate an
+        // unexpected exception "ex" occurred for thread "thr".
+        // Undergraduates do not need to set this exception handler
+        // (though they are free to do to if they choose).
         //
         // TODO -- you fill in here.
 
@@ -81,8 +82,8 @@ public class RunnableThreadsMgr
     }
 
     /**
-     * Start a thread to wait for all the being threads to finish
-     * and return that thread to the caller.
+     * Start a thread to wait for all the being threads to finish and
+     * return that thread to the caller.
      *
      * @return Thread that is waiting for all the beings to complete.
      */
@@ -94,6 +95,7 @@ public class RunnableThreadsMgr
         // the catch clause, which trigger the simulator to generate a
         // shutdownNow() request.
         // TODO -- you fill in here.
+
 
         // Start running the thread.
         // TODO -- you fill in here.

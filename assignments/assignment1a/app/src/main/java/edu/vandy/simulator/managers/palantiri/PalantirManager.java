@@ -26,7 +26,7 @@ import edu.vandy.simulator.model.interfaces.ModelProvider;
  * This class also contains a factory for generating different
  * PalantiriManager implementation strategies.
  */
-public abstract class PalantiriManager
+public abstract class PalantirManager
        implements ModelProvider, 
                   CancellableComponent {
     /**
@@ -60,7 +60,7 @@ public abstract class PalantiriManager
     /**
      * Zero parameter constructor required for Factory creation.
      */
-    public PalantiriManager() {
+    public PalantirManager() {
     }
 
     /**
@@ -196,10 +196,9 @@ public abstract class PalantiriManager
      * Releases the designated @code palantir so it's available for
      * other Beings to use.  If @a palantir is null it is ignored.
      *
-     * @param beingId The being id (not currently used).
      * @param palantir The Palantir to release.
      */
-    final public void releasePalantir(long beingId, Palantir palantir) {
+    final public void releasePalantir(Palantir palantir) {
         release(palantir);
     }
 
@@ -323,11 +322,11 @@ public abstract class PalantiriManager
          * @param type Type of simulator.
          * @return A transform instance of the specified type.
          */
-        public static PalantiriManager newManager(Type type,
-                                                  int palantirCount,
-                                                  Simulator simulator) {
+        public static PalantirManager newManager(Type type,
+                                                 int palantirCount,
+                                                 Simulator simulator) {
             try {
-                PalantiriManager manager = type.clazz.newInstance();
+                PalantirManager manager = type.clazz.newInstance();
                 manager.buildModel(simulator, palantirCount);
                 return manager;
             } catch (Exception e) {
@@ -345,9 +344,9 @@ public abstract class PalantiriManager
             ARRAY_BLOCKING_QUEUE(ArrayBlockingQueueMgr.class),
             NO_MANAGER(NoManager.class);
 
-            public final Class<? extends PalantiriManager> clazz;
+            public final Class<? extends PalantirManager> clazz;
 
-            Type(Class<? extends PalantiriManager> clazz) {
+            Type(Class<? extends PalantirManager> clazz) {
                 this.clazz = clazz;
             }
 
@@ -356,7 +355,7 @@ public abstract class PalantiriManager
                 return clazz.getSimpleName();
             }
 
-            public Class<? extends PalantiriManager> getClazz() {
+            public Class<? extends PalantirManager> getClazz() {
                 return clazz;
             }
         }
@@ -365,7 +364,7 @@ public abstract class PalantiriManager
          * An empty simulator implementation that can be used to
          * disable individual Type enum entries.
          */
-        public static class NoManager extends PalantiriManager {
+        public static class NoManager extends PalantirManager {
             @Override
             protected void buildModel() {
             }

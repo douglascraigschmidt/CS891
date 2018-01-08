@@ -4,12 +4,11 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CancellationException;
 
 import edu.vandy.simulator.managers.palantiri.Palantir;
-import edu.vandy.simulator.managers.palantiri.PalantiriManager;
+import edu.vandy.simulator.managers.palantiri.PalantirManager;
 
 /**
  * Defines a mechanism that mediates concurrent access to a fixed
@@ -18,7 +17,7 @@ import edu.vandy.simulator.managers.palantiri.PalantiriManager;
  * it's not meant for use in production code.
  */
 public class ArrayBlockingQueueMgr
-       extends PalantiriManager {
+       extends PalantirManager {
     /**
      * Debugging tag used by the Android logger.
      */
@@ -34,7 +33,9 @@ public class ArrayBlockingQueueMgr
 
     /**
      * Resets the fields to their initial values and tells all beings
-     * to reset themselves.
+     * to reset themselves. This method is called at the end of
+     * every simulation run so that the manager will be ready for
+     * the next simulation run.
      * <p>
      * Override this class if the being manager implementation has
      * it's own fields or state to reset.
@@ -52,6 +53,8 @@ public class ArrayBlockingQueueMgr
 
     /**
      * Called by super class to build the Palantiri model.
+     * Note that this method is only called when the number
+     * of palantiri is changed from the last simulation run.
      */
     @Override
     public void buildModel() {
@@ -64,8 +67,7 @@ public class ArrayBlockingQueueMgr
             new ArrayBlockingQueue<>(palantiriCount, true);
 
         // Add each palantiri to the queue.
-        getPalantiri().forEach(palantir ->
-                               mAvailablePalantiri.add(palantir));
+        mAvailablePalantiri.addAll(getPalantiri());
     }
 
     /**
@@ -75,7 +77,7 @@ public class ArrayBlockingQueueMgr
     @NotNull
     public Palantir acquire() throws CancellationException {
         try {
-            // Acquire a token, blocking until one is available.
+            // Acquire a palantir, blocking until one is available.
             return mAvailablePalantiri.take();
         } catch (InterruptedException e) {
             e.printStackTrace();

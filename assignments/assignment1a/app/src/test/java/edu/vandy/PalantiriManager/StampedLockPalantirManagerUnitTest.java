@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import edu.vandy.simulator.Simulator;
 import edu.vandy.simulator.managers.palantiri.Palantir;
-import edu.vandy.simulator.managers.palantiri.PalantiriManager;
+import edu.vandy.simulator.managers.palantiri.PalantirManager;
 import edu.vandy.simulator.model.implementation.components.BeingComponent;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 /**
  * Unit test for the StampedLockPalantiriManager.
  */
-public class StampedLockPalantiriManagerUnitTest {
+public class StampedLockPalantirManagerUnitTest {
     /**
      * Keep track of whether an exception occurs.
      */
@@ -40,20 +40,20 @@ public class StampedLockPalantiriManagerUnitTest {
 
     @Test
     public void testPalantiriManager() {
-        PalantiriManager palantiriManager =
+        PalantirManager palantiriManager =
                 buildPalantiriManager(
-                        PalantiriManager.Factory.Type.STAMPED_LOCK,
+                        PalantirManager.Factory.Type.STAMPED_LOCK,
                         2);
         assertNotNull(palantiriManager.getPalantirCount() == 2);
     }
 
-    private PalantiriManager buildPalantiriManager(
-            PalantiriManager.Factory.Type type,
+    private PalantirManager buildPalantiriManager(
+            PalantirManager.Factory.Type type,
             int palantirCount) {
         // Construct an instance of the specified PalantiriManger type.
         Simulator simulator = new Simulator(null);
-        PalantiriManager palantiriManager =
-                PalantiriManager.Factory.newManager(
+        PalantirManager palantiriManager =
+                PalantirManager.Factory.newManager(
                         type,
                         palantirCount,
                         simulator);
@@ -67,9 +67,9 @@ public class StampedLockPalantiriManagerUnitTest {
         Thread t =
                 new Thread(() -> {
                     try {
-                        PalantiriManager palantiriManager =
+                        PalantirManager palantiriManager =
                                 buildPalantiriManager(
-                                        PalantiriManager.Factory.Type.STAMPED_LOCK,
+                                        PalantirManager.Factory.Type.STAMPED_LOCK,
                                         2);
                         assertEquals(palantiriManager.availablePermits(), 2);
                         palantiriManager.acquirePalantir(1);
@@ -92,20 +92,20 @@ public class StampedLockPalantiriManagerUnitTest {
         Thread t =
                 new Thread(() -> {
                     try {
-                        PalantiriManager palantiriManager =
+                        PalantirManager palantiriManager =
                                 buildPalantiriManager(
-                                        PalantiriManager.Factory.Type.STAMPED_LOCK,
+                                        PalantirManager.Factory.Type.STAMPED_LOCK,
                                         2);
                         assertEquals(palantiriManager.availablePermits(), 2);
                         Palantir palantir1 = palantiriManager.acquirePalantir(1);
                         assertEquals(palantiriManager.availablePermits(), 1);
                         Palantir palantir2 = palantiriManager.acquirePalantir(2);
                         assertEquals(palantiriManager.availablePermits(), 0);
-                        palantiriManager.releasePalantir(1, palantir1);
+                        palantiriManager.releasePalantir(palantir1);
                         assertEquals(palantiriManager.availablePermits(), 1);
-                        palantiriManager.releasePalantir(2, palantir2);
+                        palantiriManager.releasePalantir(palantir2);
                         assertEquals(palantiriManager.availablePermits(), 2);
-                        palantiriManager.releasePalantir(0, null);
+                        palantiriManager.releasePalantir(null);
                         assertEquals(palantiriManager.availablePermits(), 2);
                     } catch (AssertionError e) {
                         exc = true;
@@ -122,9 +122,9 @@ public class StampedLockPalantiriManagerUnitTest {
         Thread t =
                 new Thread(() -> {
                     try {
-                        PalantiriManager palantiriManager =
+                        PalantirManager palantiriManager =
                                 buildPalantiriManager(
-                                        PalantiriManager.Factory.Type.STAMPED_LOCK,
+                                        PalantirManager.Factory.Type.STAMPED_LOCK,
                                         2);
                         assertEquals(palantiriManager.availablePermits(), 2);
                         palantiriManager.acquirePalantir(1);
@@ -151,9 +151,9 @@ public class StampedLockPalantiriManagerUnitTest {
         // semaphore.
         final int ACCESS_COUNT = 10;
 
-        PalantiriManager palantiriManager =
+        PalantirManager palantiriManager =
                 buildPalantiriManager(
-                        PalantiriManager.Factory.Type.STAMPED_LOCK,
+                        PalantirManager.Factory.Type.STAMPED_LOCK,
                         PERMIT_COUNT);
 
         assertTrue(THREAD_COUNT > PERMIT_COUNT);
@@ -197,7 +197,7 @@ public class StampedLockPalantiriManagerUnitTest {
                             runningThreads.decrementAndGet();
 
                             // Release the permit
-                            palantiriManager.releasePalantir(j, palantir);
+                            palantiriManager.releasePalantir(palantir);
                         }
                     });
 

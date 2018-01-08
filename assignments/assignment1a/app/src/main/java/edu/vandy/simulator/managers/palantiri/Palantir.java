@@ -15,7 +15,7 @@ public class Palantir
      * PalantirManager for this Palantir. Used only for
      * error checking and requesting.
      */
-    private final PalantiriManager mManager;
+    private final PalantirManager mManager;
 
     /**
      * For auditing, keeps track of the number of
@@ -26,7 +26,7 @@ public class Palantir
     /**
      * Constructor initializes the fields.
      */
-    public Palantir(PalantiriManager manager) {
+    public Palantir(PalantirManager manager) {
         super(manager);
         mManager = manager;
     }
@@ -85,7 +85,7 @@ public class Palantir
      */
     @Override
     public int hashCode() {
-        return getId();
+        return (int)getId();
     }
 
     /**

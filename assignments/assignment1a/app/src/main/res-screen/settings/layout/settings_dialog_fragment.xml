@@ -220,6 +220,18 @@
         android:text="Scaling" />
 
     <TextView
+        android:id="@+id/settingsViewAutoScaleLabel"
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_width="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:text="Auto" />
+
+    <Switch
+        android:id="@+id/settingsAutoScale"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
         android:id="@+id/settingsBeingSizeLabel"
         style="@style/Widget.Settings.RowTitle"
         android:layout_width="wrap_content"
@@ -314,18 +326,6 @@
             android:visibility="gone"
             tools:text="0" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/settingsViewAutoScaleLabel"
-        style="@style/Widget.Settings.RowTitle"
-        android:layout_width="wrap_content"
-        android:layout_gravity="start|center_vertical"
-        android:text="Auto" />
-
-    <Switch
-        android:id="@+id/settingsAutoScale"
-        style="@style/Widget.Settings.RowWidget"
-        android:layout_gravity="start|center_vertical" />
 
     <TextView
         android:id="@+id/settingsSimulationSpeed"

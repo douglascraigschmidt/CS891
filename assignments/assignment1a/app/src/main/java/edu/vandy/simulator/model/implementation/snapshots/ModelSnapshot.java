@@ -1,16 +1,14 @@
 package edu.vandy.simulator.model.implementation.snapshots;
 
+import android.support.v4.util.ArrayMap;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-import edu.vandy.simulator.Simulator;
-import edu.vandy.simulator.model.base.BaseSnapshot;
-import edu.vandy.simulator.model.implementation.components.SimulatorModel;
-import edu.vandy.simulator.model.interfaces.ComponentSnapshot;
+import edu.vandy.simulator.model.interfaces.ModelComponent;
 
 /**
  * An immutable DTO object that captures the state of the
@@ -20,58 +18,83 @@ import edu.vandy.simulator.model.interfaces.ComponentSnapshot;
  * This class hides the generics of SimulatorSnapshot from
  * the ModelObserver implementation.
  */
-public class ModelSnapshot {
+public class ModelSnapshot implements Cloneable {
     /**
-     * A static id generator.
+     * A static id generator (must be declared before NO_SNAPSHOT).
      */
     private static final AtomicInteger sIdProvider = new AtomicInteger(0);
-
     /**
      * The unique id of this snapshot.
      */
     private final int mSnapshotId = sIdProvider.getAndIncrement();
-
     /**
      * Support for an empty snapshot to void nulls.
      */
-    public static final ModelSnapshot NO_SNAPSHOT =
-            new ModelSnapshot(new SimulatorSnapshot(),
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    -1L);
-
+    public static final ModelSnapshot NO_SNAPSHOT = new ModelSnapshot();
     /**
      * The component id that triggered the snapshot (for auditing).
      */
     private final long mTriggeredById;
-
+    private final Map<Long, BeingSnapshot> mBeings;
+    private final Map<Long, PalantirSnapshot> mPalantiri;
     /**
      * Model dependant attribute fields. They have been given
      * short names so that they are less verbose to use in
      * the Kotlin presentation layer.
      */
-    private final SimulatorSnapshot mSimulator;
-    private final List<BeingSnapshot> mBeings;
-    private final List<PalantirSnapshot> mPalantiri;
+    private SimulatorSnapshot mSimulator;
+
+    /**
+     * Constructs a new empty model snapshot and is used to
+     * eliminate errors caused by null objects.
+     */
+    public ModelSnapshot() {
+        mSimulator = null;
+        mBeings = new ArrayMap<>();
+        mPalantiri = new ArrayMap<>();
+        mTriggeredById = -1L;
+    }
 
     /**
      * Constructor that saves all the passed snapshots in a wrapper
      * class that is then transmitted to the presentation layer to
      * render.
      *
-     * @param simulatorSnapshot A list of being snapshots (or empty list).
-     * @param beingSnapshots    A list of being snapshots (or empty list).
-     * @param palantirSnapshots A list of palantir snapshots (or empty list).
+     * @param simulatorSnapshot A snapshot of the current simulator state.
+     * @param beingSnapshots    A map of being snapshots.
+     * @param palantirSnapshots A map of palantir snapshots.
+     * @param component         The model component that is triggering the snapshot.
      */
     public ModelSnapshot(@NotNull SimulatorSnapshot simulatorSnapshot,
-                         @NotNull List<BeingSnapshot> beingSnapshots,
-                         @NotNull List<PalantirSnapshot> palantirSnapshots,
-                         long triggeredById) {
+                         @NotNull Map<Long, BeingSnapshot> beingSnapshots,
+                         @NotNull Map<Long, PalantirSnapshot> palantirSnapshots,
+                         ModelComponent component) {
         // Model dependant attributes.
         mSimulator = simulatorSnapshot;
         mBeings = beingSnapshots;
         mPalantiri = palantirSnapshots;
-        mTriggeredById = triggeredById;
+        mTriggeredById = component.getId();
+    }
+
+    /**
+     * Constructor for clone support.
+     *
+     * @param snapshot Instance to clone.
+     */
+    public ModelSnapshot(ModelSnapshot snapshot) {
+        mSimulator = new SimulatorSnapshot(snapshot.mSimulator);
+
+        mBeings = snapshot.mBeings.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        v -> new BeingSnapshot(v.getValue())));
+
+        mPalantiri = snapshot.mPalantiri.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        v -> new PalantirSnapshot(v.getValue())));
+
+        mTriggeredById = snapshot.mTriggeredById;
     }
 
     /**
@@ -83,12 +106,16 @@ public class ModelSnapshot {
         return mSimulator;
     }
 
+    public void setSimulator(SimulatorSnapshot snapshot) {
+        mSimulator = snapshot;
+    }
+
     /**
      * Model specific attribute.
      *
      * @return A list of being component snapshots.
      */
-    public List<BeingSnapshot> getBeings() {
+    public Map<Long, BeingSnapshot> getBeings() {
         return mBeings;
     }
 
@@ -97,7 +124,7 @@ public class ModelSnapshot {
      *
      * @return A list of palantir component snapshots.
      */
-    public List<PalantirSnapshot> getPalantiri() {
+    public Map<Long, PalantirSnapshot> getPalantiri() {
         return mPalantiri;
     }
 
@@ -111,6 +138,8 @@ public class ModelSnapshot {
     @Override
     public String toString() {
         return "ModelSnapshot[" + getSnapshotId() + "]"
-                + " triggered by Being[" + mTriggeredById + "]";
+                + " triggered by Being[" + mTriggeredById + "]"
+                + " beings=" + mBeings.size()
+                + " palantiri=" + mPalantiri.size();
     }
 }

@@ -12,7 +12,7 @@ import edu.vandy.simulator.model.interfaces.ModelComponent;
  * Base class for all component immutable snapshots that factor
  * out all the fields and their accessors. The primary purpose
  * of this base class is to reduce Java boiler-plate code.
- *
+ * <p>
  * An snapshot id provider is used to allocate a new unique
  * snapshot id for each snapshot that is created by an call
  * to a SnapshotProvider's {@link ModelComponent#buildSnapshot}
@@ -40,7 +40,7 @@ import edu.vandy.simulator.model.interfaces.ModelComponent;
  * </ul>
  * </pre>
  */
-public class BaseSnapshot<Type, State>
+abstract public class BaseSnapshot<Type, State>
         implements ComponentSnapshot<Type, State> {
     /**
      * A static id generator.
@@ -91,13 +91,6 @@ public class BaseSnapshot<Type, State>
     private final String mMessage;
 
     /**
-     * Resets the unique snapshot history id generator to 0.
-     */
-    static void resetIdProvider() {
-        sIdProvider.set(0);
-    }
-
-    /**
      * To support a empty snapshot (avoids nulls).
      */
     public BaseSnapshot() {
@@ -111,13 +104,35 @@ public class BaseSnapshot<Type, State>
     }
 
     public BaseSnapshot(@NotNull ModelComponent<Type, State> component) {
-            mId = component.getId();
-            mType = component.getType();
-            mState = component.getState();
-            mPrevState = component.getPrevState();
-            mThrowable = component.getException();
-            mMessage = component.getMessage();
-            mTimestamp = System.currentTimeMillis();
+        mId = component.getId();
+        mType = component.getType();
+        mState = component.getState();
+        mPrevState = component.getPrevState();
+        mThrowable = component.getException();
+        mMessage = component.getMessage();
+        mTimestamp = System.currentTimeMillis();
+    }
+
+    /**
+     * Constructor for clone support.
+     *
+     * @param snapshot Instance to clone.
+     */
+    public BaseSnapshot(@NotNull BaseSnapshot<Type, State> snapshot) {
+        mId = snapshot.getId();
+        mType = snapshot.getType();
+        mState = snapshot.getState();
+        mPrevState = snapshot.getPrevState();
+        mThrowable = snapshot.getException();
+        mMessage = snapshot.getMessage();
+        mTimestamp = System.currentTimeMillis();
+    }
+
+    /**
+     * Resets the unique snapshot history id generator to 0.
+     */
+    static void resetIdProvider() {
+        sIdProvider.set(0);
     }
 
     /**
@@ -199,7 +214,7 @@ public class BaseSnapshot<Type, State>
 
     @Override
     public String toString() {
-        return "Snapshot[" + getSnapshotId()  + "]: " + getType() +
+        return "Snapshot[" + getSnapshotId() + "]: " + getType() +
                 "[" + getId() + " : " + getTimestamp() + "]" +
                 (getPrevState() != null ? (" " + getPrevState() + " -> ") : "") +
                 getState() +

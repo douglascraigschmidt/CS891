@@ -54,7 +54,9 @@ public interface ModelController {
      *
      * @param message A non null string explaining the
      *                cause of the non-recoverable error.
+     * @param args
      * @throws IllegalStateException Wraps the passed message.
      */
-    void error(@NotNull String message) throws IllegalStateException;
+    void error(@NotNull String message, Object... args)
+            throws IllegalStateException;
 }

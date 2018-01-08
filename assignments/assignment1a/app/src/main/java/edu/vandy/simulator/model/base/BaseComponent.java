@@ -1,9 +1,14 @@
 package edu.vandy.simulator.model.base;
 
+import android.support.annotation.CallSuper;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import edu.vandy.simulator.Controller;
+import edu.vandy.simulator.model.interfaces.ComponentSnapshot;
 import edu.vandy.simulator.model.interfaces.Model;
 import edu.vandy.simulator.model.interfaces.ModelComponent;
 import edu.vandy.simulator.model.interfaces.ModelProvider;
@@ -34,7 +39,7 @@ public abstract class BaseComponent<Type, State>
      * required to provide an id generator to support
      * the component ids attribute.
      */
-    private final int mId;
+    private final long mId;
 
     /**
      * The current state of this component.
@@ -53,15 +58,33 @@ public abstract class BaseComponent<Type, State>
      */
     @Nullable
     private volatile Throwable mThrowable = null;
+
     /**
      * Optional state message string.
      */
     @Nullable
     private volatile String mMessage = null;
+    /**
+     * Flag indicating if this component has been removed
+     * from the model.
+     */
+    private boolean mRemoved = false;
+
+    /**
+     * Support for caching last snapshot.
+     */
+    private ComponentSnapshot<Type, State> mSnapshot = null;
+
+    /**
+     * A flag indicating of the component state has changed since
+     * the last snapshot was generated. Initially, start off with
+     * this flag set so that its first snapshot will be automatically
+     * generated when the model is first constructed.
+     */
+    private AtomicBoolean mModified = new AtomicBoolean(true);
 
     /**
      * Base constructor initializes the component type.
-     * n*
      *
      * @param type     The enum type of component.
      * @param state    The initial state (to avoid nulls).
@@ -79,7 +102,7 @@ public abstract class BaseComponent<Type, State>
      * @return A unique component id.
      */
     @Override
-    public int getId() {
+    public long getId() {
         return mId;
     }
 
@@ -166,7 +189,34 @@ public abstract class BaseComponent<Type, State>
         mThrowable = e;
         mMessage = message;
         Controller.log("Snapshot triggered by " + this);
-        getModel().triggerSnapshot(this.getId());
+
+        // Set the dirty flag before triggering the snapshot.
+        setModified();
+
+        // Trigger a snapshot generation event.
+        getModel().triggerSnapshot(this);
+    }
+
+    /**
+     * Wrapper method to support efficient snapshot generation.
+     * If the modified flag is false, and a previous
+     * snapshot exists, then the last generated snapshot is
+     * returned (avoiding memory allocations). Otherwise, a new
+     * snapshot is generated, cached, and then returned. Note that
+     * a cached snapshot should be considered immutable and should
+     * never be modified in any way.
+     *
+     * @return The component's new snapshot or an updated cached
+     * snapshot.
+     */
+    @CallSuper
+    final public ComponentSnapshot<Type, State> getSnapshot() {
+        if (isModified() || mSnapshot == null) {
+            mSnapshot = buildSnapshot();
+            clearModified();
+        }
+
+        return mSnapshot;
     }
 
     /**
@@ -189,6 +239,51 @@ public abstract class BaseComponent<Type, State>
     }
 
     /**
+     * @return {@code true} if component has been removed
+     *                from the model {@code false} if not.
+     */
+    public boolean isRemoved() {
+        return mRemoved;
+    }
+
+    /**
+     * Called to set the removed flag when this component
+     * has been removed from the model.
+     *
+     * @param removed {@code true} if component has been removed
+     *                from the model {@code false} if not.
+     */
+
+    public void setRemoved(boolean removed) {
+        this.mRemoved = removed;
+    }
+
+    /**
+     * Used to increment the dirty count each time setState is
+     * called or to clear after a snapshot is generated.
+     *
+     * @return The new dirty count.
+     */
+    public void setModified() {
+        mModified.set(true);
+    }
+
+    /**
+     * Used to clear the dirty count.
+     */
+    public void clearModified() {
+        mModified.set(false);
+    }
+
+    /**
+     * @return {@code true} if the palantir has been changed since
+     * the last snapshot, {@code false} if not.
+     */
+    public boolean isModified() {
+        return mModified.get();
+    }
+
+    /**
      * @return Description of class fields excluding null fields.
      */
     @Override
@@ -198,6 +293,8 @@ public abstract class BaseComponent<Type, State>
                 ", id=" + getId() +
                 (getPrevState() != null ? ", prevState=" + getPrevState() : "") +
                 ", state=" + getState() +
+                ", modified=" + isModified() +
+                ", removed=" + isRemoved() +
                 (getException() != null ? ", e=" + getException() : "") +
                 (getMessage() != null ? ", msg='" + getMessage() + "'" : "") +
                 '}';

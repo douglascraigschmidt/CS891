@@ -26,7 +26,7 @@ import edu.vandy.app.ui.screens.settings.adapters.SpriteAdapter
 import edu.vandy.app.ui.widgets.RxMultiSlider
 import edu.vandy.app.utils.KtLogger
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantiriManager
+import edu.vandy.simulator.managers.palantiri.PalantirManager
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.settings_dialog_fragment.*
 
@@ -247,19 +247,19 @@ class SettingsDialogFragment :
         // Setup adapter and current selection.
         val adapter = ManagerTypeEnumSpinnerAdapter(
                 ContextThemeWrapper(activity, R.style.SettingsThemeDark),
-                PalantiriManager.Factory.Type::class.java)
+                PalantirManager.Factory.Type::class.java)
         settingsPalantiriManagerType.adapter = adapter
         settingsPalantiriManagerType.setSelection(
-                adapter.getPositionForValue(Settings.palantiriManagerType))
+                adapter.getPositionForValue(Settings.PALANTIR_MANAGER_TYPE))
 
         // Use Rx to filter item selections and save changed value to shared preference.
         compositeDisposable.add(
                 RxAdapterView.itemSelections(settingsPalantiriManagerType)
                         .skipInitialValue()
-                        .map<PalantiriManager.Factory.Type> { adapter.getItem(it) }
-                        .filter { it != Settings.palantiriManagerType }
+                        .map<PalantirManager.Factory.Type> { adapter.getItem(it) }
+                        .filter { it != Settings.PALANTIR_MANAGER_TYPE }
                         .subscribe {
-                            updatePreference { Settings.palantiriManagerType = it }
+                            updatePreference { Settings.PALANTIR_MANAGER_TYPE = it }
                         })
     }
 

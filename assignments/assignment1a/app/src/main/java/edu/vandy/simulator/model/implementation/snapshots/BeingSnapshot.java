@@ -29,6 +29,19 @@ public class BeingSnapshot extends
     }
 
     /**
+     * Constructor for clone support.
+     *
+     * @param snapshot Instance to clone.
+     */
+    public BeingSnapshot(BeingSnapshot snapshot) {
+        super(snapshot);
+        mPalantirId = snapshot.mPalantirId;
+        mDuration = snapshot.mDuration;
+        mCompleted = snapshot.mCompleted;
+        mIterations = snapshot.mIterations;
+    }
+
+    /**
      * Normal constructor.
      *
      * @param being Being whose state will be captured by this snapshot.
@@ -90,6 +103,20 @@ public class BeingSnapshot extends
      */
     public int getIterations() {
         return mIterations;
+    }
+
+    /**
+     * Called to determine if the associated component has
+     * been removed from the model. If true, then the component
+     * state should be considered to be not meaningful and should
+     * not be used.
+     *
+     * @return Flag indicating if the associated component has
+     * been removed from the model.
+     */
+    @Override
+    public Boolean isRemoved() {
+        return getState() == BeingComponent.State.REMOVED;
     }
 
     @Override

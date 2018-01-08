@@ -42,8 +42,8 @@ public interface Model {
      * to any registered model observers. The contents
      * of the snapshot is model dependant.
      *
-     * @param triggeredById The id of the component that triggered
-     *                      the snapshot.
+     * @param component The component that is triggering
+     *                 the snapshot.
      */
-    void triggerSnapshot(long triggeredById);
+    void triggerSnapshot(ModelComponent component);
 }

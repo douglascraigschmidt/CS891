@@ -26,7 +26,7 @@ public interface ModelComponent<Type, State>
     /**
      * @return The component's unique id.
      */
-    int getId();
+    long getId();
 
     /**
      * Builds an immutable component snapshot that describes

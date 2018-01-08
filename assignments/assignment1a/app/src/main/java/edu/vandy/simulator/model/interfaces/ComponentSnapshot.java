@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <State> An enumerated list of all possible states for
  *            the component implementing this interface.
  */
-public interface ComponentSnapshot<Type, State> {
+public interface ComponentSnapshot<Type, State> extends Cloneable {
     /**
      * @return A unique component id.
      */
@@ -58,4 +58,18 @@ public interface ComponentSnapshot<Type, State> {
      * of the snapshot was captured.
      */
     State getPrevState();
+
+    /**
+     * Called to determine if the associated component has
+     * been removed from the model. If true, then the component
+     * state should be considered to be not meaningful and should
+     * not be used.
+     *
+     * @return Flag indicating if the associated component has
+     * been removed from the model. To support this state,
+     * components should have a REMOVED state and this method
+     * implementation should return true if the current state
+     * is REMOVED and false if not.
+     */
+    Boolean isRemoved();
 }

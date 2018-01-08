@@ -2,10 +2,11 @@ package edu.vandy.simulator.model.implementation.components;
 
 import org.jetbrains.annotations.NotNull;
 
+import edu.vandy.simulator.Simulator;
 import edu.vandy.simulator.model.base.BaseModel;
 import edu.vandy.simulator.model.implementation.snapshots.SimulatorSnapshot;
-import edu.vandy.simulator.model.interfaces.ComponentSnapshot;
 import edu.vandy.simulator.model.interfaces.Model;
+import edu.vandy.simulator.model.interfaces.ModelComponent;
 import edu.vandy.simulator.model.interfaces.ModelProvider;
 
 /**
@@ -47,8 +48,8 @@ public abstract class SimulatorModel
      * to the presentation layer for rendering.
      */
     @Override
-    public ComponentSnapshot<Type, SimulatorComponent.State> buildSnapshot() {
-        return new SimulatorSnapshot(this);
+    public SimulatorSnapshot buildSnapshot() {
+        return new SimulatorSnapshot((Simulator)this);
     }
 
     /**
@@ -57,10 +58,11 @@ public abstract class SimulatorModel
      * (PalantiriState) along with the current overall state of the
      * simulator (ModelState). This snapshot is then pushed to the
      * presentation layer's Observer callback.
+     * @param component
      */
     @Override
-    public void triggerSnapshot(long triggeredById) {
-        super.triggerSnapshot(triggeredById);
+    public void triggerSnapshot(ModelComponent component) {
+        super.triggerSnapshot(component);
     }
 
     /**
