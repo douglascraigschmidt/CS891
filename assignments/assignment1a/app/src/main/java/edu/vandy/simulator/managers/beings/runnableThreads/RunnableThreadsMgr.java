@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * This BeingManager implementation manually creates a pool of Java
- * threads to run the being simultations.
+ * threads to run the being simulations.
  */
 public class RunnableThreadsMgr
        extends BeingManager<SimpleBeingRunnable> {
@@ -63,9 +63,9 @@ public class RunnableThreadsMgr
      */
     private void beginBeingThreads() {
         // All STUDENTS:
-        // Call the getBeings() method to iterate through the beings,
-        // create a new Thread object for each one, and add it to the
-        // list of mBeingThreads.
+        // Call the BeingManager.getBeings() method to iterate through
+        // the beings, create a new Thread object for each one, and
+        // add it to the list of mBeingThreads.
         //
         // GRADUATE STUDENTS:
         // Set an "UncaughtExceptionHandler" for each being thread
@@ -81,7 +81,7 @@ public class RunnableThreadsMgr
     }
 
     /**
-     * Start a thread to wait for all the Being threads to finish
+     * Start a thread to wait for all the being threads to finish
      * and return that thread to the caller.
      *
      * @return Thread that is waiting for all the beings to complete.

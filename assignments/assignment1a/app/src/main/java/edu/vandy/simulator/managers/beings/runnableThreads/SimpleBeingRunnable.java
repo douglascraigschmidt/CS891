@@ -5,7 +5,7 @@ import edu.vandy.simulator.managers.beings.BeingManager;
 import edu.vandy.simulator.managers.palantiri.Palantir;
 
 /**
- * This class implements the gazing logic of for a being that's
+ * This class implements the gazing logic for a being that's
  * implemented via a Java thread.
  */
 public class SimpleBeingRunnable 
@@ -27,12 +27,13 @@ public class SimpleBeingRunnable
      */
     @Override
     public void run() {
-        // Try to gaze at a palantir the designated number of times.
+        // This template method gazes at a palantir the designated
+        // number of times.
         runGazingSimulation(mManager.getGazingIterations());
     }
 
     /**
-     * Perform a single gazing operation.
+     * This hook method performs a single gazing operation.
      */
     @Override
     protected void acquirePalantirAndGaze() {
