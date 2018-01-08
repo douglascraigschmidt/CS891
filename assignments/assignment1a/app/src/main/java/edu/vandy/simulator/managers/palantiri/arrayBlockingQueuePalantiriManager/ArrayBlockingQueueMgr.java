@@ -45,6 +45,9 @@ public class ArrayBlockingQueueMgr
 
         // Clear out any elements in the queue.
         mAvailablePalantiri.clear();
+
+        // Add each palantiri back into the queue.
+        mAvailablePalantiri.addAll(getPalantiri());
     }
 
     /**
