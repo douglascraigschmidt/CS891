@@ -82,8 +82,8 @@ internal object Settings {
     private val DEFAULT_GAZING_DURATION = Range(2, 5)
     private val DEFAULT_AUTO_SCALE = true
     private val DEFAULT_VIEW_TRANSPARENCY = 15
-    private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.PARALLEL_STREAMS
-    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.STAMPED_LOCK
+    private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.RUNNABLE_THREADS
+    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.ARRAY_BLOCKING_QUEUE
     private val DEFAULT_SAVE_ON_EXIT = true
     private val DEFAULT_PERFORMANCE_MODE = false
     private val DEFAULT_STRICT_MODE = false
