@@ -17,9 +17,9 @@ import edu.vandy.simulator.managers.palantiri.PalantirManager;
 @Rubric(precision = 0)
 public class UnitTest1B {
     private BeingManager.Factory.Type beingManager =
-            BeingManager.Factory.Type.RUNNABLE_THREADS;
+        BeingManager.Factory.Type.RUNNABLE_THREADS;
     private PalantirManager.Factory.Type palantirManager =
-            PalantirManager.Factory.Type.ARRAY_BLOCKING_QUEUE;
+        PalantirManager.Factory.Type.SPIN_LOCK_SEMAPHORE;
 
     @Rubric(value = "normalTest",
             goal = "The goal of this evaluation is to ensure that your implementation " +
