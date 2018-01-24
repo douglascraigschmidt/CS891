@@ -16,7 +16,7 @@ ext {
             annotations     : '15.0',
 
             // Kotlin
-            kotlin          : '1.2.20',
+            kotlin          : '1.2.21',
             anko            : '0.10.1',
             coroutines      : '0.15',
 
