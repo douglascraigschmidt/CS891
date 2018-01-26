@@ -51,7 +51,7 @@ public abstract class PalantirManager
     /**
      * Flag indicating if this model component should shutdown.
      */
-    private boolean mCancelled = false;
+    private volatile boolean mCancelled = false;
 
     /**
      * Flag indicating if this model component is running or active.
