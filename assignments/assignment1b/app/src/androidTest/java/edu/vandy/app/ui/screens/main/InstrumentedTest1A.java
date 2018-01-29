@@ -74,7 +74,7 @@ public class InstrumentedTest1A {
             BeingManager.Factory.Type.RUNNABLE_THREADS;
 
     private PalantirManager.Factory.Type palantirManager =
-            PalantirManager.Factory.Type.ARRAY_BLOCKING_QUEUE;
+            PalantirManager.Factory.Type.SPIN_LOCK_SEMAPHORE;
 
     private final int PALANTIRI = 6;
     private final int BEINGS = 10;
