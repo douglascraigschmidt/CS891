@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    apply from: 'dependencies.gradle'
+
+    repositories {
+        mavenLocal() // Temporary grader installer stub - must be removed
+        jcenter()
+        google()
+    }
+
+    dependencies {
+		// Required by Vanderbilt autograder - do not remove
+		classpath 'edu.vanderbilt.grader:gradle-plugin:1.4.5'
+        classpath "com.android.tools.build:gradle:$versions.android"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+    }
+
+	// Temporary grader installer stub - must be removed
+	configurations.classpath {
+		resolutionStrategy {
+			cacheDynamicVersionsFor 0, 'seconds'
+			cacheChangingModulesFor 0, 'seconds'
+		}
+	}
+}
+
+plugins {
+    id "org.jetbrains.kotlin.kapt" version "1.2.21"
+}
+
+allprojects {
+    repositories {
+        mavenLocal() // Temporary grader installer stub - must be removed
+        mavenCentral()
+        jcenter()
+        google()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
