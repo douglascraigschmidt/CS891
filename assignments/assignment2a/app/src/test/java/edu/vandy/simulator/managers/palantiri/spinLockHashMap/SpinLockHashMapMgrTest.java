@@ -128,7 +128,7 @@ public class SpinLockHashMapMgrTest {
     public void testAcquireWithAllPalantiriAvailable() throws InterruptedException {
         doNothing().when(mSpinLockMock).lock(any());
         doNothing().when(mSpinLockMock).unlock();
-        doNothing().when(mSemaphoreMock).acquire();
+        doNothing().when(mSemaphoreMock).acquireUninterruptibly();
 
         Palantir palantir = mManager.acquire();
 
@@ -140,7 +140,7 @@ public class SpinLockHashMapMgrTest {
                         .count();
         assertEquals("Only 1 palantir should be locked", 1, locked);
 
-        verify(mSemaphoreMock).acquire();
+        verify(mSemaphoreMock).acquireUninterruptibly();
         verify(mSpinLockMock).lock(any());
         verify(mSpinLockMock).lock(any());
     }
@@ -157,7 +157,7 @@ public class SpinLockHashMapMgrTest {
 
         doNothing().when(mSpinLockMock).lock(any());
         doNothing().when(mSpinLockMock).unlock();
-        doNothing().when(mSemaphoreMock).acquire();
+        doNothing().when(mSemaphoreMock).acquireUninterruptibly();
 
         InOrder inOrder = inOrder(mSpinLockMock, mSemaphoreMock);
 
@@ -179,11 +179,11 @@ public class SpinLockHashMapMgrTest {
                 unlockedPalantir,
                 palantir);
 
-        verify(mSemaphoreMock).acquire();
+        verify(mSemaphoreMock).acquireUninterruptibly();
         verify(mSpinLockMock).lock(any());
         verify(mSpinLockMock).unlock();
 
-        inOrder.verify(mSemaphoreMock).acquire();
+        inOrder.verify(mSemaphoreMock).acquireUninterruptibly();
         inOrder.verify(mSpinLockMock).lock(any());
         inOrder.verify(mSpinLockMock).unlock();
     }
@@ -195,7 +195,7 @@ public class SpinLockHashMapMgrTest {
     public void testAcquireAllAvailablePalantiri() throws InterruptedException {
         doNothing().when(mSpinLockMock).lock(any());
         doNothing().when(mSpinLockMock).unlock();
-        doNothing().when(mSemaphoreMock).acquire();
+        doNothing().when(mSemaphoreMock).acquireUninterruptibly();
 
         InOrder inOrder = inOrder(mSpinLockMock, mSemaphoreMock);
 
@@ -214,11 +214,11 @@ public class SpinLockHashMapMgrTest {
                     lockedCount);
         }
 
-        verify(mSemaphoreMock, times(PALANTIRI_COUNT)).acquire();
+        verify(mSemaphoreMock, times(PALANTIRI_COUNT)).acquireUninterruptibly();
         verify(mSpinLockMock, times(PALANTIRI_COUNT)).lock(any());
         verify(mSpinLockMock, times(PALANTIRI_COUNT)).unlock();
 
-        inOrder.verify(mSemaphoreMock).acquire();
+        inOrder.verify(mSemaphoreMock).acquireUninterruptibly();
         inOrder.verify(mSpinLockMock).lock(any());
         inOrder.verify(mSpinLockMock).unlock();
     }
