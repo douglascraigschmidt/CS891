@@ -50,6 +50,7 @@ public class ExecutorServiceMgrTest {
     public void testBeginBeingThreadPool() {
         List<BeingCallable> mockBeings = createMockBeingList(BEING_COUNT);
         when(mManagerMock.getBeings()).thenReturn(mockBeings);
+        when(mManagerMock.getBeingCount()).thenReturn(mockBeings.size());        
 
         doCallRealMethod().when(mManagerMock).beginBeingThreadPool();
         doCallRealMethod().when(mManagerMock).getExecutor();
