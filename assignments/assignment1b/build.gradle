@@ -4,7 +4,6 @@ buildscript {
     apply from: 'dependencies.gradle'
 
     repositories {
-        mavenLocal() // Temporary grader installer stub - must be removed
         jcenter()
         google()
     }
@@ -12,17 +11,9 @@ buildscript {
     dependencies {
 		// Required by Vanderbilt autograder - do not remove
 		classpath 'edu.vanderbilt.grader:gradle-plugin:1.4.5'
-        classpath "com.android.tools.build:gradle:$versions.android"
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
-
-	// Temporary grader installer stub - must be removed
-	configurations.classpath {
-		resolutionStrategy {
-			cacheDynamicVersionsFor 0, 'seconds'
-			cacheChangingModulesFor 0, 'seconds'
-		}
-	}
 }
 
 plugins {
@@ -31,7 +22,7 @@ plugins {
 
 allprojects {
     repositories {
-        mavenLocal() // Temporary grader installer stub - must be removed
+        mavenCentral()
         jcenter()
         google()
     }
