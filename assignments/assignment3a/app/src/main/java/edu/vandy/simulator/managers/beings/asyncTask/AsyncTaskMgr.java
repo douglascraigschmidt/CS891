@@ -50,7 +50,8 @@ public class AsyncTaskMgr
             /**
              * Used to allocate a unique id to each new thread.
              */
-            private AtomicInteger mId = new AtomicInteger(0);
+            // TODO -- replace null with a properly initialized AtomicInteger.
+            private AtomicInteger mId = null;
 
             /**
              * Constructs a new Thread with a unique thread name.
@@ -140,13 +141,6 @@ public class AsyncTaskMgr
         // TODO -- you fill in here.  Graduate students must use Java
         // 8 features, whereas undergraduate students can optionally
         // use Java 8 features.
-
-        /*
-        for (AsyncBeing asyncTask : getBeings())
-            asyncTask.executeOnExecutor(mEntryBarrier,
-                                        mExitBarrier,
-                                        mThreadPoolExecutor);
-        */
     }
 
     /**
