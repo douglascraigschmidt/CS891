@@ -50,8 +50,7 @@ public class AsyncTaskMgr
             /**
              * Used to allocate a unique id to each new thread.
              */
-            // TODO -- replace null with a properly initialized AtomicInteger.
-            private AtomicInteger mId = null;
+            private AtomicInteger mId = new AtomicInteger(0);
 
             /**
              * Constructs a new Thread with a unique thread name.

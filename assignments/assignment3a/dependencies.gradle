@@ -3,8 +3,8 @@ ext {
             // Android build - use compileSdk 26 if you want
             // to step into Android sources; the latest version
             // (currently 27) never has sources.
-            android         : '3.2.0-alpha04',
-            //android         : '3.0.1',
+            //android         : '3.2.0-alpha04',
+            android         : '3.0.1',
             compileSdk      : 26,
             buildTools      : '27.0.2',
             minSdk          : 24,

@@ -18,7 +18,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,9 +67,9 @@ public class InstrumentedTests {
      * Model parameters.
      */
     private BeingManager.Factory.Type beingManager =
-            BeingManager.Factory.Type.EXECUTOR_SERVICE;
+            BeingManager.Factory.Type.ASYNC_TASK;
     private PalantiriManager.Factory.Type palantirManager =
-            PalantiriManager.Factory.Type.REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE;
+            PalantiriManager.Factory.Type.STAMPED_LOCK;
     private SimulatorComponent.State finalState =
             SimulatorComponent.State.UNDEFINED;
 

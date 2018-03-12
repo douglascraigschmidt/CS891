@@ -71,7 +71,7 @@ class AsyncBeing extends Being {
      */
     protected AsyncBeingTask createTask(CyclicBarrier entryBarrier,
                                         CountDownLatch exitBarrier) {
-        // TODO -- you fill in here by replacying null with the
+        // TODO -- you fill in here by replacing null with the
         // appropriate code.
         return null;
     }
