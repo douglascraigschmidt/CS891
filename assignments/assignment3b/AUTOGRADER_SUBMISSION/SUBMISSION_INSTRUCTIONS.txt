@@ -1,0 +1,26 @@
+
+*************************** SUBMISSION INSTRUCTIONS ***************************
+
+The 'runAutograder' task has successfully completed and has created a
+submission zip archive that can by submitted to the course web site for
+grading. To review the results of each rubric test and your total score,
+follow these steps:
+
+	1. Open the Project tool window (Alt-F1)
+	2. Switch to the 'Project' view by clicking on the 'Project' tab
+	   or by selecting the 'Project' menu item at the top of the Project
+	   tool window.
+	3. Navigate to the AUTOGRADER_SUBMISSION directory and double click
+	   to expand.
+	4. Double-click a feedback file to see the test run results.
+
+Once you are satisfied with your score, you can submit your assignment for
+official grading by following these steps:
+
+	1. Complete the google doc form for this assignment.
+	2. Commit/push your code to your gitlab repo.
+
+The TAs will then grade your program and record your official
+assignment score.
+
+*************************** SUBMISSION INSTRUCTIONS ***************************
