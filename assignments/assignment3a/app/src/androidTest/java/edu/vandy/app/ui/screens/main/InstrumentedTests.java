@@ -69,7 +69,7 @@ public class InstrumentedTests {
     private BeingManager.Factory.Type beingManager =
             BeingManager.Factory.Type.ASYNC_TASK;
     private PalantiriManager.Factory.Type palantirManager =
-            PalantiriManager.Factory.Type.STAMPED_LOCK;
+        PalantiriManager.Factory.Type.REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE;
     private SimulatorComponent.State finalState =
             SimulatorComponent.State.UNDEFINED;
 
