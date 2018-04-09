@@ -94,13 +94,7 @@ public class FairSemaphoreMO
     private boolean tryToGetPermitUnlocked() {
         // We don't need to wait if there the queue is empty and
         // permits are available.
-        if (mWaitQueue.isEmpty() && mAvailablePermits > 0) {
-            // No need to wait, so decrement and return.
-            //noinspection NonAtomicOperationOnVolatileField
-            --mAvailablePermits;
-            return true;
-        } else
-            return false;
+        // TODO -- you fill in here.
     }
 
     /**

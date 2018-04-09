@@ -95,8 +95,7 @@ public class ConcurrentMapFairSemaphoreMgr
         // it's available for use) and atomically replace the value of
         // this key with "false" to indicate the Palantir isn't
         // available and then return that palantir to the client.
-        // There should be *no* synchronized statements in this
-        // method.
+        // There should be *no* synchronizers in this method.
         // TODO -- you fill in here.
     }
 
@@ -109,8 +108,8 @@ public class ConcurrentMapFairSemaphoreMgr
     public void release(final Palantir palantir) {
         // Put the "true" value back into ConcurrentHashMap for the
         // palantir key and release the Semaphore if all works
-        // properly.  There should be *no* synchronized statements in
-        // this method.
+        // properly.  There should be *no* synchronizers in this
+        // method.
         // TODO -- you fill in here.
     }
 
