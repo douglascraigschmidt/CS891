@@ -82,8 +82,8 @@ object Settings {
     private val DEFAULT_GAZING_DURATION = Range(2, 5)
     private val DEFAULT_AUTO_SCALE = true
     private val DEFAULT_VIEW_TRANSPARENCY = 15
-    private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.EXECUTOR_SERVICE
-    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE
+    private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.ASYNC_TASK
+    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.CONCURRENT_MAP_FAIR_SEMAPHORE
     private val DEFAULT_SAVE_ON_EXIT = true
     private val DEFAULT_PERFORMANCE_MODE = false
     private val DEFAULT_STRICT_MODE = false
