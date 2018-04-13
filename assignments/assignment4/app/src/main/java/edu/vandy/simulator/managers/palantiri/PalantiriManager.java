@@ -342,10 +342,6 @@ public abstract class PalantiriManager
          * newInstance().
          */
         public enum Type {
-            ARRAY_BLOCKING_QUEUE(ArrayBlockingQueueMgr.class),
-            SPIN_LOCK_SEMAPHORE(SpinLockHashMapMgr.class),
-            REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE(ReentrantLockHashMapSimpleSemaphoreMgr.class),
-            STAMPED_LOCK(StampedLockSimpleSemaphoreMgr.class),
             CONCURRENT_MAP_FAIR_SEMAPHORE(ConcurrentMapFairSemaphoreMgr.class),
             NO_MANAGER(NoManager.class);
 
