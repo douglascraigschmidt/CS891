@@ -18,10 +18,9 @@ import edu.vandy.simulator.managers.palantiri.PalantiriManager;
 @Rubric
 public class UnitTest1A {
     private BeingManager.Factory.Type beingManager =
-        BeingManager.Factory.Type.EXECUTOR_SERVICE;
+        BeingManager.Factory.Type.ASYNC_TASK;
     private PalantiriManager.Factory.Type palantirManager =
-            PalantiriManager.Factory.Type.REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE;
-            //PalantiriManager.Factory.Type.SPIN_LOCK_SEMAPHORE;
+        PalantiriManager.Factory.Type.CONCURRENT_MAP_FAIR_SEMAPHORE;
 
     @Rubric(value = "normalTest",
             goal = "The goal of this evaluation is to ensure that your implementation " +

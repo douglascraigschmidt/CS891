@@ -6,8 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import edu.vandy.simulator.managers.beings.executorService.ExecutorServiceMgr;
-
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
