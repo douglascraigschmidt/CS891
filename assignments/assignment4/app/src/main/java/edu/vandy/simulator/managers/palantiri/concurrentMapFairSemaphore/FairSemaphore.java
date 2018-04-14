@@ -1,10 +1,5 @@
 package edu.vandy.simulator.managers.palantiri.concurrentMapFairSemaphore;
 
-import java.util.LinkedList;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Defines an interface for a fair semaphore.
 */

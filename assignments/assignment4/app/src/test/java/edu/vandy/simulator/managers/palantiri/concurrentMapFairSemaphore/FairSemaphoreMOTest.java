@@ -29,13 +29,21 @@ public class FairSemaphoreMOTest {
     
     @Test
     public void testFairSemaphore() {
-        FairSemaphore fairSemaphore = 
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
+        FairSemaphore fairSemaphore =
             new FairSemaphoreMO(2);
         assertNotNull(fairSemaphore);
     }
 
     @Test
     public void testAcquire() throws InterruptedException {
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
         FairSemaphore fairSemaphore =
             new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -47,6 +55,10 @@ public class FairSemaphoreMOTest {
 
     @Test
     public void testAcquireUninterruptibly() throws InterruptedException {
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
         FairSemaphore fairSemaphore =
             new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -58,6 +70,10 @@ public class FairSemaphoreMOTest {
 
     @Test
     public void testRelease() throws InterruptedException {
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
         FairSemaphore fairSemaphore =
             new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -73,6 +89,10 @@ public class FairSemaphoreMOTest {
 	
     @Test
     public void testAvailablePermits() throws InterruptedException{
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
         FairSemaphore fairSemaphore =
             new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -82,6 +102,10 @@ public class FairSemaphoreMOTest {
     
     @Test
     public void testNegativePermits() throws InterruptedException {
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
     	FairSemaphore fairSemaphore =
             new FairSemaphoreMO(-1);
     	assertEquals(fairSemaphore.availablePermits(), -1);
@@ -122,6 +146,10 @@ public class FairSemaphoreMOTest {
    
     @Test
     public void testConcurrentAccess() {
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
     	// The number of threads that will be trying to run at once.
     	final int THREAD_COUNT = 5;
 
@@ -213,7 +241,11 @@ public class FairSemaphoreMOTest {
     
     @Test
     public void testFairness() throws InterruptedException {
-        FairSemaphore fairSemaphore = 
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
+        FairSemaphore fairSemaphore =
             new FairSemaphoreMO(1);
 
         int MAX_THREADS = 4;
@@ -306,7 +338,11 @@ public class FairSemaphoreMOTest {
 
     @Test
     public void testFairnessWithInterrupts() throws InterruptedException {
-        FairSemaphore fairSemaphore = 
+        if (Helpers.ignoreTest(FairSemaphoreMO.class)) {
+            return;
+        }
+
+        FairSemaphore fairSemaphore =
             new FairSemaphoreMO(1);
 
         int MAX_THREADS = 4;

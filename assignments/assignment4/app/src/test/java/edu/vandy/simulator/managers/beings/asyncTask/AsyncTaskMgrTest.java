@@ -96,8 +96,8 @@ public class AsyncTaskMgrTest {
         ThreadPoolExecutor threadPoolExecutorMock = mock(ThreadPoolExecutor.class);
         when(threadPoolExecutorMock.shutdownNow()).thenReturn(null);
 
-        ReflectionHelper.injectFieldValueIntoFirstFieldOfType(
-                mManagerMock, ThreadPoolExecutor.class, threadPoolExecutorMock);
+        ReflectionHelper.injectValueIntoFirstMatchingField(
+                mManagerMock, threadPoolExecutorMock, ThreadPoolExecutor.class);
 
         doCallRealMethod().when(mManagerMock).shutdownNow();
         mManagerMock.shutdownNow();
@@ -131,7 +131,7 @@ public class AsyncTaskMgrTest {
         // over.
         try {
             ThreadPoolExecutor executor =
-                    ReflectionHelper.findFirstFieldValueOfType(
+                    ReflectionHelper.findFirstMatchingFieldValue(
                             mManagerMock, ThreadPoolExecutor.class);
             assertNotNull("Unable to access ThreadPoolExecutor " +
                     "field in " + mManagerMock.getClass().getSimpleName() + " class.",
@@ -144,7 +144,7 @@ public class AsyncTaskMgrTest {
 
         ReflectionHelper.assertAnonymousFieldNotNull(mManagerMock, CyclicBarrier.class);
         CyclicBarrier cyclicBarrier =
-                ReflectionHelper.findFirstFieldValueOfType(mManagerMock, CyclicBarrier.class);
+                ReflectionHelper.findFirstMatchingFieldValue(mManagerMock, CyclicBarrier.class);
         assert cyclicBarrier != null;
 
         int parties = cyclicBarrier.getParties();
@@ -154,7 +154,7 @@ public class AsyncTaskMgrTest {
 
         ReflectionHelper.assertAnonymousFieldNotNull(mManagerMock, CountDownLatch.class);
         CountDownLatch countDownLatch =
-                ReflectionHelper.findFirstFieldValueOfType(mManagerMock, CountDownLatch.class);
+                ReflectionHelper.findFirstMatchingFieldValue(mManagerMock, CountDownLatch.class);
         assert countDownLatch != null;
 
         long count = countDownLatch.getCount();
@@ -164,7 +164,7 @@ public class AsyncTaskMgrTest {
 
         ReflectionHelper.assertAnonymousFieldNotNull(mManagerMock, ThreadPoolExecutor.class);
         ThreadPoolExecutor threadPoolExecutor =
-                ReflectionHelper.findFirstFieldValueOfType(mManagerMock, ThreadPoolExecutor.class);
+                ReflectionHelper.findFirstMatchingFieldValue(mManagerMock, ThreadPoolExecutor.class);
         assert threadPoolExecutor != null;
 
         assertEquals(0, threadPoolExecutor.getCorePoolSize());

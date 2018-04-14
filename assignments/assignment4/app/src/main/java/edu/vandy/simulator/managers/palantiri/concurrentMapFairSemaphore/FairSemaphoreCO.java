@@ -10,14 +10,23 @@ import java.util.concurrent.locks.ReentrantLock;
  * (www.dre.vanderbilt.edu/~schmidt/PDF/specific-notification.pdf)
  * using ReentrantLock/ConditionObject.  Graduate students should
  * implement this class.
-*/
+ */
 public class FairSemaphoreCO
-      implements FairSemaphore {
+        implements FairSemaphore {
     /**
      * Debugging tag used by the Android logger.
      */
     private final static String TAG =
-        FairSemaphore.class.getSimpleName();
+            FairSemaphore.class.getSimpleName();
+    /**
+     * Define a monitor lock (using a ReentrantLock) to protect critical sections.
+     */
+    // TODO -- you fill in here
+    /**
+     * Define a LinkedList "WaitQueue" that keeps track of the waiters in a FIFO
+     * List to ensure "fair" semantics.
+     */
+    // TODO -- you fill in here.
 
     /**
      * Define a count of the number of available permits.
@@ -26,44 +35,10 @@ public class FairSemaphoreCO
     // its values aren't cached by multiple threads..
 
     /**
-     * Define a class that can be used in the "WaitQueue" to wait for
-     * a specific thread to be notified.
+     * For mocking only.
      */
-    private static class Waiter {
-        /**
-         * Keeps track of whether the Waiter was released or not to
-         * detected and handle "spurious wakeups".
-         */
-        boolean mReleased = false;
-
-        /**
-         * Constructor initializes the fields.
-         */
-        Waiter() {
-            // TODO -- you fill in here to initialize the lock and condition fields.
-        }
-
-        /**
-         * A lock used to synchronize access to the condition below.
-         */
-        // TODO -- you fill in here.
-        
-        /**
-         * A condition that's used to wait in FIFO order.
-         */
-        // TODO -- you fill in here.
+    protected FairSemaphoreCO() {
     }
-
-    /**
-     * Define a monitor lock (using a ReentrantLock) to protect critical sections.
-     */
-    // TODO -- you fill in here
-
-    /**
-     * Define a "WaitQueue" that keeps track of the waiters in a FIFO
-     * List to ensure "fair" semantics.
-     */
-    // TODO -- you fill in here.
 
     /**
      * Initialize the fields in the class.
@@ -88,27 +63,29 @@ public class FairSemaphoreCO
     @Override
     public void acquire() throws InterruptedException {
         // Bail out quickly if we've been interrupted.
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
 
-        // Try to get a permit without blocking.
-        else if (!tryToGetPermit())
+            // Try to get a permit without blocking.
+        } else if (!tryToGetPermit()) {
             // Block until a permit is available.
             waitForPermit();
-    }            
+        }
+    }
 
     /**
      * Handle the case where we can get a permit without blocking.
      *
      * @return Returns true if the permit was obtained, else false.
-     *         If the return value is true then monitor lock has been
-     *         unlocked, otherwise it's still locked.
+     * If the return value is true then monitor lock has been
+     * unlocked, otherwise it's still locked.
      */
-    private boolean tryToGetPermit() {
+    protected boolean tryToGetPermit() {
         // TODO -- first try the "fast path" where the method doesn't
         // need to block if there are no waiters in the queue or if
         // there are permits available.
-    }            
+        return false;
+    }
 
     /**
      * Factors out code that checks to see if a permit can be obtained
@@ -117,10 +94,20 @@ public class FairSemaphoreCO
      *
      * @return Returns true if the permit was obtained, else false.
      */
-    private boolean tryToGetPermitUnlocked() {
+    protected boolean tryToGetPermitUnlocked() {
         // We must wait if there are already conditions in the queue
         // or if there are no permits available.
         // TODO -- you fill in here.
+        return false;
+    }
+
+    /**
+     * Constructs a new Waiter (required for test mocking).
+     *
+     * @return A new Waiter instance
+     */
+    protected Waiter createWaiter() {
+        return new Waiter();
     }
 
     /**
@@ -128,7 +115,11 @@ public class FairSemaphoreCO
      * waiters in the queue or no permits are available.  If this
      * method is called the monitor lock is held.
      */
-    private void waitForPermit() throws InterruptedException {
+    protected void waitForPermit() throws InterruptedException {
+        // Call createWaiter helper method to allocate a new Waiter that
+        // acts as the "specific-notification lock".
+        final Waiter waiter = createWaiter();
+
         // TODO -- implement "fair" semaphore acquire semantics using
         // the Specific Notification pattern.
     }
@@ -150,6 +141,38 @@ public class FairSemaphoreCO
         // @@ TODO -- you fill in here replacing 0 with the right
         // value.
         return 0;
+    }
+
+    /**
+     * Define a class that can be used in the "WaitQueue" to wait for
+     * a specific thread to be notified.
+     */
+    static class Waiter {
+        /**
+         * A lock used to synchronize access to the condition below.
+         */
+        // TODO -- you fill in here.
+        final Lock mLock;
+        /**
+         * A condition that's used to wait in FIFO order.
+         */
+        // TODO -- you fill in here.
+        final Condition mCondition;
+        /**
+         * Keeps track of whether the Waiter was released or not to
+         * detected and handle "spurious wakeups".
+         */
+        boolean mReleased = false;
+
+        /**
+         * Private constructor (only available to static create() method)
+         * initializes the fields.
+         */
+        Waiter() {
+            // TODO -- you fill in here to initialize the lock and condition fields.
+            mLock = new ReentrantLock();
+            mCondition = mLock.newCondition();
+        }
     }
 }
 

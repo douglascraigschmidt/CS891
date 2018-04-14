@@ -1,0 +1,48 @@
+LogFile Created: Fri Apr 13 14:01:33 CDT 2018
+
+
+
+********************************************************************************
+                               INSTRUMENTED TESTS
+********************************************************************************
+
+GRADER: Running grader instrumented test runner version 1.4.52 on project app.
+GRADER: Validating required instrumented test grading components ...
+GRADER: Grader instrumented test components passed all validation tests.
+GRADER: Preparing to sign instrumented test APK with Android debug key
+GRADER: Checking for default Android Studio build-tools apksigner tool ...
+GRADER: Default Android Studio apksigner tool found.
+GRADER: Signing APK [using default apksigner tool] ...
+GRADER: Running jarsigner with values:
+GRADER:       jarsigner: C:\Users\Douglas Schmidt\AppData\Local\Android\Sdk\build-tools\27.0.3\apksigner.bat
+GRADER:             -ks: C:\Users\Douglas Schmidt/.android/debug.keystore
+GRADER:       --ks-pass: pass:android
+GRADER:      --key-pass: pass:android
+GRADER:  --ks-key-alias: androiddebugkey
+GRADER:             apk: D:\Users\Douglas Schmidt\Dropbox\POSA\CS891\Assignment4\autograder\test.apk
+GRADER: Verifying signed APK D:\Users\Douglas Schmidt\Dropbox\POSA\CS891\Assignment4\autograder\test.apk ...
+GRADER: Apk successfully signed.
+GRADER: Validating integrity of instrumented test APK ...
+GRADER: signature verifies: true
+GRADER: Instrumented test APK validated. ...
+GRADER: Scanning for connected devices ...
+02:01:39 E/adb: * daemon not running; starting now at tcp:5037
+02:01:39 E/adb: * daemon started successfully
+Waiting for adb .
+
+********************************** ATTENTION **********************************
+
+   The 'runAutograder' task requires you to have at least one connected Android
+   device. If you have no connected devices, then please start one now. If you
+   have more than one connected device, please disconnect all but one device.
+   Once you have exactly one device running, restart the 'runAutograder' gradle
+   task.
+
+********************************** ATTENTION **********************************
+GRADER: Test run completed exception: java.io.IOException: ADB was unable to detect any connected devices.
+GRADER: Feedback file D:\Users\Douglas Schmidt\Dropbox\POSA\CS891\Assignment4\AUTOGRADER_SUBMISSION\staging\instrumented-test-results\feedback.txt not available.
+GRADER: Unit tests have completed.
+
+
+
+

@@ -3,10 +3,10 @@ ext {
             // Android build - use compileSdk 26 if you want
             // to step into Android sources; the latest version
             // (currently 27) never has sources.
-            compileSdk      : 26,
+            compileSdk      : 27,
             buildTools      : '27.0.3',
             minSdk          : 24,
-            targetSdk       : 26,
+            targetSdk       : 27,
 
             // Autograder
             autograder      : '1.4.4',
@@ -20,7 +20,7 @@ ext {
             coroutines      : '0.15',
 
             // Android support
-            support         : '26.+',
+            support         : '27.+',
             constraintLayout: '1.0.2',
 
             // Android architecture

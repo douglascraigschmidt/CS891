@@ -7,44 +7,37 @@ import java.util.LinkedList;
  * (www.dre.vanderbilt.edu/~schmidt/PDF/specific-notification.pdf)
  * using the Java built-in monitor object.  Undergraduate students
  * should implement this class.
-*/
+ */
 public class FairSemaphoreMO
-       implements FairSemaphore {
+        implements FairSemaphore {
     /**
      * Debugging tag used by the Android logger.
      */
-    protected final static String TAG = 
-        FairSemaphoreMO.class.getSimpleName();
+    protected final static String TAG =
+            FairSemaphoreMO.class.getSimpleName();
 
     /**
      * Define a count of the number of available permits.
      */
-    // TODO - you fill in here.  Make sure that this field will ensure
+    // TODO -- you fill in here.  Make sure that this field will ensure
     // its values aren't cached by multiple threads..
-
     /**
-     * Define a class that can be used in the "WaitQueue" to wait for
-     * a specific thread to be notified.
-     */
-    private static class Waiter {
-        /**
-         * Keeps track of whether the Waiter was released or not to
-         * detected and handle "spurious wakeups".
-         */
-        boolean mReleased = false;
-    }
-
-    /**
-     * Define a "WaitQueue" that keeps track of the waiters in a FIFO
+     * Define a LinkedList "WaitQueue" that keeps track of the waiters in a FIFO
      * List to ensure "fair" semantics.
      */
-    // TODO - you fill in here.
+    // TODO -- you fill in here.
+
+    /**
+     * For mocking only.
+     */
+    protected FairSemaphoreMO() {
+    }
 
     /**
      * Initialize the fields in the class.
      */
     public FairSemaphoreMO(int availablePermits) {
-        // TODO - you fill in here.
+        // TODO -- you fill in here.
     }
 
     /**
@@ -64,13 +57,13 @@ public class FairSemaphoreMO
     @Override
     public void acquire() throws InterruptedException {
         // Bail out quickly if we've been interrupted.
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-
-        // Try to get a permit without blocking.
-        else if (!tryToGetPermit())
+            // Try to get a permit without blocking.
+        } else if (!tryToGetPermit()) {
             // Block until a permit is available.
             waitForPermit();
+        }
     }
 
     /**
@@ -78,11 +71,12 @@ public class FairSemaphoreMO
      *
      * @return Returns true if the permit was obtained, else false.
      */
-    private boolean tryToGetPermit() {
+    protected boolean tryToGetPermit() {
         // TODO -- first try the "fast path" where the method doesn't
         // need to block if the queue is empty and permits are
         // available.
-    }				
+        return false;
+    }
 
     /**
      * Factors out code that checks to see if a permit can be obtained
@@ -91,17 +85,31 @@ public class FairSemaphoreMO
      *
      * @return Returns true if the permit was obtained, else false.
      */
-    private boolean tryToGetPermitUnlocked() {
-        // We don't need to wait if there the queue is empty and
+    protected boolean tryToGetPermitUnlocked() {
+        // We don't need to wait if the queue is empty and
         // permits are available.
         // TODO -- you fill in here.
+        return false;
+    }
+
+    /**
+     * Constructs a new Waiter (required for test mocking).
+     *
+     * @return A new Waiter instance
+     */
+    protected Waiter createWaiter() {
+        return new Waiter();
     }
 
     /**
      * Handle the case where we need to block since there are already
      * waiters in the queue or no permits are available.
      */
-    private void waitForPermit() throws InterruptedException {
+    protected void waitForPermit() throws InterruptedException {
+        // Call createWaiter helper method to allocate a new Waiter that
+        // acts as the "specific-notification lock".
+        final Waiter waiter = createWaiter();
+
         // TODO -- implement "fair" semaphore acquire semantics using
         // the Specific Notification pattern.
     }
@@ -123,5 +131,23 @@ public class FairSemaphoreMO
         // @@ TODO -- you fill in here replacing 0 with the right
         // value.
         return 0;
+    }
+
+    /**
+     * Define a class that can be used in the "WaitQueue" to wait for
+     * a specific thread to be notified.
+     */
+    protected static class Waiter {
+        /**
+         * Keeps track of whether the Waiter was released or not to
+         * detected and handle "spurious wakeups".
+         */
+        boolean mReleased = false;
+
+        /**
+         * Constructor used for mocking.
+         */
+        Waiter() {
+        }
     }
 }

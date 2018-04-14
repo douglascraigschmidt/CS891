@@ -20,7 +20,8 @@ public class UnitTest1A {
     private BeingManager.Factory.Type beingManager =
         BeingManager.Factory.Type.ASYNC_TASK;
     private PalantiriManager.Factory.Type palantirManager =
-        PalantiriManager.Factory.Type.CONCURRENT_MAP_FAIR_SEMAPHORE;
+            PalantiriManager.Factory.Type.CONCURRENT_MAP_FAIR_SEMAPHORE;
+            //PalantiriManager.Factory.Type.SPIN_LOCK_SEMAPHORE;
 
     @Rubric(value = "normalTest",
             goal = "The goal of this evaluation is to ensure that your implementation " +

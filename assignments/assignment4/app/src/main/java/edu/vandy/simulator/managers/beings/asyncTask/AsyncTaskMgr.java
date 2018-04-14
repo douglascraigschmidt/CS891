@@ -161,6 +161,7 @@ public class AsyncTaskMgr
                            + e);
             // Shutdown the simulation now.
             // TODO -- you fill in here.
+            shutdownNow();
         }
 
         // Print the number of beings that were processed.
@@ -181,8 +182,8 @@ public class AsyncTaskMgr
     public void shutdownNow() {
         Controller.log(TAG + ": shutdownNow: entered");
 
-        // Cancel all the outstanding async tasks immediately.  TODO
-        // -- you fill in here.  Graduate students must use Java 8
+        // Cancel all the outstanding async tasks immediately.
+        // TODO -- you fill in here.  Graduate students must use Java 8
         // features, whereas undergraduate students can optionally use
         // Java 8 features.
 

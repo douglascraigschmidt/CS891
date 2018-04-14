@@ -78,7 +78,7 @@ public class ConcurrentMapFairSemaphoreMgr
         // concurrent access to the given Palantiri.  Grad students
         // must use a FairSemaphoreCO, whereas ugrad students must use
         // a FairSemaphoreMO.
-        
+
         // TODO -- you fill in here.
     }
 
@@ -96,7 +96,8 @@ public class ConcurrentMapFairSemaphoreMgr
         // this key with "false" to indicate the Palantir isn't
         // available and then return that palantir to the client.
         // There should be *no* synchronizers in this method.
-        // TODO -- you fill in here.
+        // TODO -- you fill in here.;
+        return null;
     }
 
     /**
