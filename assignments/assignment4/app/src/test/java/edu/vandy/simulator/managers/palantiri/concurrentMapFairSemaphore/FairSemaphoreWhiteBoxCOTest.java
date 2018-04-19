@@ -59,6 +59,10 @@ public class FairSemaphoreWhiteBoxCOTest {
      */
     @Before
     public void before() throws Exception {
+        if (Helpers.ignoreTest(FairSemaphoreCO.class)) {
+            return;
+        }
+
         ReflectionHelper.injectValueIntoFirstMatchingField(
                 mFairSemaphoreMock, mQueueMock, LinkedList.class);
         ReflectionHelper.injectValueIntoFirstMatchingField(
