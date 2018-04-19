@@ -8,9 +8,9 @@ buildscript {
         google()
     }
 
-    dependencies {
-		// Required by Vanderbilt autograder - do not remove
-		classpath 'edu.vanderbilt.grader:gradle-plugin:1.4.52'
+    dependencies 
+		// Required by Vanderbilt autograder - do not remov
+		classpath 'edu.vanderbilt.grader:gradle-plugin:1.+'
         classpath 'com.android.tools.build:gradle:3.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
