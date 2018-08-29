@@ -16,14 +16,10 @@ public class Array<E>
     private Object[] mElementData;
 
     /**
-     * Index to the last element in the array, which indicates the
-     * next "open" slot in the array, i.e., where a call to add() will
-     * place the new element: mElementData[mEnd] = element.
-     */
-    private int mEnd;
-
-    /**
      * The size of the Array (the number of elements it contains).
+     * This field also indicates the next "open" slot in the array,
+     * i.e., where a call to add() will place the new element:
+     * mElementData[mSize] = element.
      */
     private int mSize;
 
