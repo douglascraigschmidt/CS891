@@ -1,8 +1,10 @@
 package edu.vandy.utils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A generic array class implemented via a single contiguous buffer.
@@ -16,10 +18,12 @@ public class Array<E>
     private Object[] mElementData;
 
     /**
+     * Index to the last element in the array.
+     */
+    private int mEnd;
+
+    /**
      * The size of the Array (the number of elements it contains).
-     * This field also indicates the next "open" slot in the array,
-     * i.e., where a call to add() will place the new element:
-     * mElementData[mSize] = element.
      */
     private int mSize;
 
@@ -135,12 +139,12 @@ public class Array<E>
     }
 
     /**
-     * Removes the element at the specified position in this list.
+     * Removes the element at the specified position in this array.
      * Shifts any subsequent elements to the left (subtracts one from
      * their indices).
      *
      * @param index the index of the element to be removed
-     * @return the element that was removed from the list
+     * @return the element that was removed from the array
      * @throws IndexOutOfBoundsException
      */
     public E remove(int index) {
@@ -168,7 +172,7 @@ public class Array<E>
     }
 
     /**
-     * Replaces the element at the specified position in this list with
+     * Replaces the element at the specified position in this array with
      * the specified element.
      *
      * @param index index of the element to replace
@@ -196,6 +200,7 @@ public class Array<E>
      */
     private void ensureCapacityInternal(int minCapacity) {
         // TODO -- you fill in here.
+        }
     }
 
     /**
@@ -218,20 +223,20 @@ public class Array<E>
     }
 
     /**
-     * Returns an array containing all of the elements in this list in
+     * Returns an array containing all of the elements in this array in
      * proper sequence (from first to last element); the runtime type
      * of the returned array is that of the specified array.  If the
-     * list fits in the specified array, it is returned therein.
+     * array fits in the specified array, it is returned therein.
      * Otherwise, a new array is allocated with the runtime type of
-     * the specified array and the size of this list.
+     * the specified array and the size of this array.
      *
-     * @param a the array into which the elements of the list are to
+     * @param a the array into which the elements of the array are to
      *          be stored, if it is big enough; otherwise, a new array of the
      *          same runtime type is allocated for this purpose.
-     * @return an array containing the elements of the list
+     * @return an array containing the elements of the array
      * @throws ArrayStoreException if the runtime type of the specified array
      *         is not a supertype of the runtime type of every element in
-     *         this list
+     *         this array
      * @throws NullPointerException if the specified array is null
      */
     @SuppressWarnings("unchecked")
@@ -255,10 +260,165 @@ public class Array<E>
     }
 
     /**
-     * @return null (since this method is a no-op for ugrads)
+     * Returns an iterator over the elements in this Array in proper
+     * sequence.
+     *
+     * @return an iterator over the elements in this Array in proper
+     * sequence
      */
-    @Override
     public Iterator<E> iterator() {
-        return null;
+        // TODO - you fill in here.
+    }
+
+    /**
+     * This class defines an iterator over the elements in an Array in
+     * proper sequence.
+     */
+    private class ArrayIterator 
+           implements Iterator<E> {
+        /**
+         * Current position in the Array (defaults to 0).
+         */
+        // TODO - you fill in here.
+
+        /**
+         * Index of last element returned; -1 if no such element.
+         */
+        // TODO - you fill in here.
+
+        /** 
+         * @return True if the iteration has more elements that
+         * haven't been iterated through yet, else false.
+         */
+        @Override
+        public boolean hasNext() {
+        // TODO - you fill in here.
+        }
+
+        /**
+         * @return The next element in the iteration.
+         */
+        @Override
+        public E next() {
+            // TODO - you fill in here.
+        }
+
+        /**
+         * Removes from the underlying collection the last element
+         * returned by this iterator. This method can be called only
+         * once per call to next().
+         *
+         * @throws IllegalStateException if no last element was
+         * returned by the iterator
+         */
+        @Override
+        public void remove() {
+            // TODO - you fill in here
+        }
+    }
+
+    /*
+     * The following methods and nested class use Java 8 features.
+     */
+
+    /**
+     * Replaces each element of this array with the result of applying
+     * the operator to that element.  Errors or runtime exceptions
+     * thrown by the operator are relayed to the caller.
+     *
+     * @param operator the operator to apply to each element
+     */
+    public void replaceAll(UnaryOperator<E> operator) {
+        // TODO -- you fill in here.
+    }
+
+    /**
+     * Performs the given action for each element of the array until
+     * all elements have been processed or the action throws an
+     * exception.  Unless otherwise specified by the implementing
+     * class, actions are performed in the order of iteration (if an
+     * iteration order is specified).  Exceptions thrown by the action
+     * are relayed to the caller.
+     *
+     * @param action The action to be performed for each element
+     */
+    public void forEach(Consumer<? super E> action) {
+        // TODO -- you fill in here.
+    }
+
+    /**
+     * @return A parallel stream.
+     */
+    public Stream<E> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
+    }
+
+    /**
+     * @return A sequential stream.
+     */
+    public Stream<E> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    /**
+     * Creates a {@link Spliterator} over the elements in the array.
+     *
+     * @return a {@code Spliterator} over the elements in the array
+     */
+    public Spliterator<E> spliterator() {
+        // TODO -- you fill in here.
+    }
+
+    /**
+     * Defines an object for traversing and partitioning elements of a
+     * Array.
+     */
+    private static final class ArraySpliterator<E>
+        extends Spliterators.AbstractSpliterator<E> {
+        /**
+         * The array to traverse and/or partition.
+         */
+        // TODO -- you fill in here.
+
+        /**
+         * Current index, modified on advance/split.
+         */
+        // TODO -- you fill in here.
+
+        /**
+         * One past the end of the spliterator range.
+         */
+        // TODO -- you fill in here.
+
+        /**
+         * Create new spliterator covering the given range.
+         */
+        ArraySpliterator(Array<E> array,
+                         int origin,
+                         int end) {
+            super(array.size(),
+                  Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED );
+
+            mArray = array;
+            mIndex = origin;
+            mEnd = end;
+        }
+
+        /**
+         * If a remaining element exists, performs the given action on
+         * it, returning true; else returns false.
+         */
+        public boolean tryAdvance(Consumer<? super E> action) {
+            // TODO -- you fill in here.
+        }
+
+        /**
+         * Returns a Spliterator covering elements, that will, upon
+         * return from this method, not be covered by this
+         * Spliterator.
+         */
+        public ArraySpliterator<E> trySplit() {
+            // TODO -- you fill in here.
+        }
     }
 }
