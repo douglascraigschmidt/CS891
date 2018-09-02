@@ -156,7 +156,6 @@ public class Array<E>
      */
     private void rangeCheck(int index) {
         // TODO -- you fill in here.
-                                                + " is out of bounds");
     }
 
     /**
