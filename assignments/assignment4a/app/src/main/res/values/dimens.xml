@@ -1,0 +1,26 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="touch_raise">12dp</dimen>
+
+    <!-- Dimensions used for the base activity -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Dimensions used for the input URL list -->
+    <dimen name="url_list_item_padding">2dp</dimen>
+    <dimen name="url_text_view_padding">2dp</dimen>
+
+    <!-- Dimensions used for the image gallery -->
+    <dimen name="image_grid_item_margins">2dp</dimen>
+    <dimen name="image_view_padding">0dp</dimen>
+    <dimen name="image_view_margins">0dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="url_image_size">64dp</dimen>
+    <dimen name="url_list_item_height">64dp</dimen>
+    <dimen name="url_list_peek_height">@dimen/url_list_item_height</dimen>
+    <dimen name="web_view_list_height">300dp</dimen>
+    <dimen name="min_peek_height">8dp</dimen>
+    <dimen name="url_grid_image_size">24dp</dimen>
+</resources>

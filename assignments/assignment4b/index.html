@@ -1,0 +1,118 @@
+<html>
+
+<title>Image Crawler Completable Future App (Assignment 3b)</title>
+
+<body text = "#000000"
+      link="#000fff"
+      vlink="#ff0f0f"
+      bgcolor="#ffffff">
+
+  <hr>
+  <h3>Image Crawler Completable Future App (Assignment 3b)</h3>
+
+  <p>The purpose of the second part of this assignment is to deepen
+    your experience using Java 8 functional programming features and
+    their integration with Java 8 completable futures.  In particular,
+    in this assignment you'll develop an app that uses the Java 8
+    completable futures framework to obtain, store, and transform
+    images.</p>
+
+  <p> The code you'll write for this assignment will have GUI and will
+    run as an app.  Feel free to use the GUI to help debug your
+    code. </p>
+
+  <h4>Getting Started</h4>
+
+  <hr width=50% align=left>
+  <h4>Overview of the Assignment 3b</h4>
+
+  <p> In this part of the assignment you'll complete the
+  implementation of an image crawler class in the
+  <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/CompletableFutureCrawler1.java</CODE>
+  file that obtains, stores, and transforms images.  This class uses
+  Java 8 completable futures to perform an "image crawl" starting from
+  a root Uri.  Depending on the parameters used to run the tests,
+  images from HTML page reachable from the root Uri are either
+  downloaded from a remote web server or read from the local file
+  system and the results are stored in files.  You can also
+  enable/disble transforms via the GUI. </p>
+
+  <p>The bulk of the code for the app is provided in the skeletons.
+    In fact, a complete solution using Java 7 features provided in the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/SequentialLoopsCrawler.java</CODE>
+    file.  Your will therefore focus on converting this Java 7-based
+    class to the <CODE>CompletableFutureCrawler1</CODE> class that
+    uses Java 8 completable futures. <EM> This
+    <CODE>SequentialLoopsCrawler</CODE> implementation differs
+    somewhat from the version provided in assignment 3a, so you'll
+    need to revise portions of your Java 8 solution from the earlier
+    assignment to account for these changes.</EM></p>
+
+    <p> Everyone taking the course (i.e., both ugrads and grads) must
+    also include your completed implementations of all the methods in
+    the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArrayCollector.java</CODE>
+    and
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/Array.java</CODE>
+    files.  Make sure these classes work properly or you will lose
+    points. </p>
+
+  </ul>
+
+  <p> Your solution should use <EM>no</EM> loops in this assignment
+    and instead use Java 8 completable future methods.
+    </p>
+
+  <hr width=50% align=left> <h4>Skeleton Code</h4>
+
+  <p> Skeleton code for this assignment is available <a
+    href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment3b/">here</a>
+    in my GitHub account.  Now that you've setup your <a
+    href="https://about.gitlab.com/">GitLab</a> account you can pull
+    this skeleton code in your repository, read it carefully, and
+    complete the "TODO" markers.  </p>
+
+  <hr width=50% align=left> <h4>Unit Tests</h4>
+
+  <p> JUnit unit tests in the
+  <code>image-crawler/src/test/java/edu/vanderbilt/imagecrawler</code>
+  folder are provided to increase our confidence that your
+  implementation is working as expected.  You can run all the unit
+  tests by right-clicking on 'AllTests' in this folder. </p>
+
+  <p> If you need help learning how to use the Android Studio GUI to
+  run the JUnit test locally on your computer please see <A
+  HREF="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html#run">here</a>
+  and/or ask questions.  As usual, testing only demonstrates the
+  presence of bugs, not their absence, so don't rely solely on the
+  JUnit tests to detect problems in your code. </p>
+
+  <hr width=50% align=left> <h4>Additional Resources</h4>
+
+  <p> The following resources may be helpful in completing this
+    assignment: </p>
+
+  <ul> 
+
+  <li>Videos that give a detailed overview of Java 8 completable
+    futures are available in Week 8 of the CS 891 videos <a
+    href="http://www.dre.vanderbilt.edu/~schmidt/cs891">here</a>. <p>
+
+  <li>Other good overviews of Java 8 completable futures appear <A
+  HREF="http://www.baeldung.com/java-completablefuture">here</A> and
+  <A
+  HREF="http://www.nurkiewicz.com/2013/05/java-8-definitive-guide-to.html">here</A>.
+  I highly recommend you get the book <A
+  HREF="https://www.manning.com/books/java-8-in-action">Java 8 in
+  Action</A> to learn more about Java 8 completable futures. </li>
+  </ul>
+
+  <hr width=50% align=left> <h4>Concluding Remarks</h4> <p>
+
+    <p> Assignment 3b is more complicated than 3a, so please start the
+    assignment soon and ask questions in class, office hours, and on
+    the discussion forums.  As usual, the app, image crawler
+    skeletons, and JUnit tests are extensive, though you don't need to
+    understand them all to complete your solution. </p>
+
+</body> </html>

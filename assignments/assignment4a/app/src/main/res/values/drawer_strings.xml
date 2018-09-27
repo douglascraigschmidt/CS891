@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="development_settings">Image Crawler Settings</string>
+    <string name="application_name">Image Crawler Configuration</string>
+    <string name="launcher_name">Image Crawler (Debug)</string>
+</resources>
