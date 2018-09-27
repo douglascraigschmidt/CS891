@@ -22,7 +22,6 @@ import edu.vanderbilt.imagecrawler.platform.PlatformImage;
 import edu.vanderbilt.imagecrawler.transforms.Transform;
 import edu.vanderbilt.imagecrawler.transforms.TransformDecoratorWithImage;
 import edu.vanderbilt.imagecrawler.utils.Array;
-import edu.vanderbilt.imagecrawler.utils.ArrayCollector;
 import edu.vanderbilt.imagecrawler.utils.BlockingTask;
 import edu.vanderbilt.imagecrawler.utils.ConcurrentHashSet;
 import edu.vanderbilt.imagecrawler.utils.Crawler;
@@ -251,9 +250,11 @@ public abstract class ImageCrawler
      */
     protected Array<URL> getImagesOnPage(Crawler.Page page) {
         log("Getting images on page ...");
+        // Create an Array to store the results.
+        Array<URL> results = new Array<>();
 
         // Return an array of all the IMG SRC URLs in this page.
-        return page
+        page
             // Select all the image elements in the page.
             .getPageElementsAsUrls(Crawler.Type.IMAGE)
 
@@ -263,8 +264,12 @@ public abstract class ImageCrawler
             // Remove duplicate image URL strings.
             .distinct()
 
-            // Trigger intermediate operations and return an array.
-            .collect(ArrayCollector.toArray());
+            // Trigger intermediate operations and add elements to the
+            // array.
+            .forEach(results::add);
+
+        // Return the array.
+        return results;
     }
 
     /**

@@ -44,17 +44,25 @@ public class DirectoryCrawler implements Crawler {
 
 		@Override
 		public Array<WebPageElement> getPageElements(Type... types) {
-			return getPageElementsAsStrings(types)
+			Array<WebPageElement> results = new Array<>();
+
+			getPageElementsAsStrings(types)
 					.stream()
 					.map(WebPageElement::newPageElement)
-					.collect(ArrayCollector.toArray());
+					.forEach(results::add);
+
+			return results;
 		}
 
 		@Override
 		public Array<URL> getPageElementsAsUrls(Type... types) {
-			return getPageElementsAsStrings(types).stream()
+			Array<URL> results = new Array<>();
+
+			getPageElementsAsStrings(types).stream()
 					.map(ExceptionUtils.rethrowFunction(URL::new))
-					.collect(ArrayCollector.toArray());
+					.forEach(results::add);
+
+			return results;
 		}
 
 		@Override
@@ -66,7 +74,9 @@ public class DirectoryCrawler implements Crawler {
 				return new Array<>();
 			}
 
-			return Arrays.stream(types)
+			Array<String>  results = new Array<>();
+
+			Arrays.stream(types)
 					.flatMap(type -> {
 						if (type == PAGE) {
 							return Stream.of(files)
@@ -79,7 +89,9 @@ public class DirectoryCrawler implements Crawler {
 									.map(File::toURI)
 									.map(URI::toString);
 						}
-					}).collect(ArrayCollector.toArray());
+					}).forEach(results::add);
+
+			return results;
 		}
 
 		/**

@@ -36,18 +36,26 @@ public class StreamsUtils {
         // When all futures have completed return a CompletableFuture to
         // a list of joined elements of type T.
         return allDoneFuture
-            .thenApply(v -> futureArray
-                       // Convert futureList into a stream of
-                       // completable futures.
-                       .stream()
+            .thenApply(v -> {
+                    // Create an array to store results.
+                    Array<T> results = new Array<>();
 
-                       // Use map() to join() all completablefutures
-                       // and yield objects of type T.  Note that
-                       // join() should never block.
-                       .map(CompletableFuture::join)
+                    futureArray
+                        // Convert futureList into a stream of
+                        // completable futures.
+                        .stream()
 
-                       // Collect the results of type T into a list.
-                       .collect(ArrayCollector.toArray()));
+                        // Use map() to join() all completablefutures
+                        // and yield objects of type T.  Note that
+                        // join() should never block.
+                        .map(CompletableFuture::join)
+
+                        // Add the results of type T into the array.
+                        .forEach(results::add);
+
+                    // Return the results array.
+                    return results;
+                });
     }
 
     /**

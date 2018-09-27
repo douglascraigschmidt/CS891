@@ -127,7 +127,9 @@ public class WebPageCrawler implements Crawler {
         public Array<WebPageElement> getPageElements(Type... types) {
             ImageCrawler.throwExceptionIfCancelled();
 
-            return Arrays.stream(types)
+            Array<WebPageElement> results = new Array<>();
+
+            Arrays.stream(types)
                     .flatMap(type -> {
                         if (type == PAGE) {
                             return document.select("a[href]")
@@ -139,21 +141,31 @@ public class WebPageCrawler implements Crawler {
                                     .map(element -> element.attr("abs:src"))
                                     .map(WebPageElement::newImageElement);
                         }
-                    }).collect(ArrayCollector.toArray());
+                    }).forEach(results::add);
+
+            return results;
         }
 
         @Override
         public Array<URL> getPageElementsAsUrls(Type... types) {
-            return getPageElementsAsStrings(types).stream()
+            Array<URL> results = new Array<>();
+
+            getPageElementsAsStrings(types).stream()
                     .map(ExceptionUtils.rethrowFunction(URL::new))
-                    .collect(ArrayCollector.toArray());
+                    .forEach(results::add);
+
+            return results;
         }
 
         @Override
         public Array<String> getPageElementsAsStrings(Type... types) {
-            return getPageElements(types).stream()
+            Array<String> results = new Array<>();
+
+            getPageElements(types).stream()
                     .map(element -> element.mUrl)
-                    .collect(ArrayCollector.toArray());
+                    .forEach(results::add);
+
+            return results;
         }
 
         private void __printSearchResultsStarting(Type type, String uri, Document doc) {
