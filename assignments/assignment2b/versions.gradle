@@ -3,7 +3,7 @@ def versionMinor = 0
 def versionPatch = 2
 
 ext.versions = [
-        android          : '3.2.0',
+        android          : '3.2.1',
         kotlin           : "1.2.71",
         anko             : "0.10.5",
         support          : "1.0.0-rc02",
@@ -32,7 +32,7 @@ ext.build_versions = [
         compileSdk: 28,
         targetSdk : 28,
         minSdk    : 26,
-        buildTools: "28.0.2",
+        buildTools: "28.0.3",
         java      : 1.8,
         code      : versionMajor * 10000 + versionMinor * 100 + versionPatch,
         name      : "${versionMajor}.${versionMinor}.${versionPatch}"
