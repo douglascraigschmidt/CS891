@@ -518,7 +518,7 @@ public abstract class ImageCrawler
     public enum Type {
         SEQUENTIAL_LOOPS(SequentialLoopsCrawler.class),
         FORK_JOIN1(ForkJoinCrawler1.class),
-        FORK_JOIN2(ForkJoinCrawler2.class),
+        FORK_JOIN2(ForkJoinCrawler2.class);
 
         public final Class<? extends ImageCrawler> clazz;
 

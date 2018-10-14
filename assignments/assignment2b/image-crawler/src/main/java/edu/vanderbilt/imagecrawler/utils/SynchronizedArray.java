@@ -264,7 +264,7 @@ public class SynchronizedArray<E>
      */
 
     /**
-     * Must be manually sychronized by the user.
+     * Must be manually synchronized by the user.
 
      * @return A parallel stream.  
      */
@@ -274,7 +274,7 @@ public class SynchronizedArray<E>
     }
 
     /**
-     * Must be manually sychronized by the user.
+     * Must be manually synchronized by the user.
      *
      * @return A sequential stream.
      */
