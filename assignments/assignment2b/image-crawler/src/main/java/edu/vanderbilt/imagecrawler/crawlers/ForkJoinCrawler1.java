@@ -142,7 +142,7 @@ public class ForkJoinCrawler1
                         // the appropriate Java 8 sequential stream.
                         return 0;
                     } else if (Assignment.isUndergraduateTodo()) {
-                        // Use the makeForkJoinList() factory method
+                        // Use the makeForkJoinArray() factory method
                         // to create an empty array of ForkJoinTasks
                         // used to process all images and hyperlinks
                         // on this page.
@@ -240,7 +240,7 @@ public class ForkJoinCrawler1
                         // stream.
                         Array<ForkJoinTask<Image>> forks = null;
                     } else if (Assignment.isUndergraduateTodo()) {
-                        // Use the makeForkJoinList() factory method to
+                        // Use the makeForkJoinArray() factory method to
                         // create an array of ForkJoinTasks that will
                         // transform Images in parallel.
 
