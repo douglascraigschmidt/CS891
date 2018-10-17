@@ -422,17 +422,17 @@ public class UnsynchronizedArray<E>
         /**
          * The array to traverse and/or partition.
          */
-        // TODO (Graduates) - you fill in here
+        // TODO - you fill in here
 
         /**
          * Current index, modified on advance/split.
          */
-        // TODO (Graduates) - you fill in here
+        // TODO - you fill in here
 
         /**
          * One past the end of the spliterator range.
          */
-        // TODO (Graduates) - you fill in here
+        // TODO - you fill in here
 
         /**
          * Create new spliterator covering the given range.
@@ -443,7 +443,7 @@ public class UnsynchronizedArray<E>
             super(array.size(),
                     Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED);
 
-            // TODO (Graduates) - you fill in here
+            // TODO - you fill in here
         }
 
         /**
@@ -451,7 +451,7 @@ public class UnsynchronizedArray<E>
          * it, returning true; else returns false.
          */
         public boolean tryAdvance(Consumer<? super E> action) {
-            // TODO (Graduates) - you fill in here
+            // TODO - you fill in here
             return false;
         }
 
@@ -461,7 +461,7 @@ public class UnsynchronizedArray<E>
          * Spliterator.
          */
         public ArraySpliterator<E> trySplit() {
-            // TODO (Graduates) - you fill in here
+            // TODO - you fill in here
             return null;
         }
     }
