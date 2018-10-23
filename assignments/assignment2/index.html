@@ -1,0 +1,126 @@
+<html>
+
+<title>Image Crawler Fork-Join Pool App (Assignment 2 Final Submission)</title>
+
+<body text = "#000000"
+      link="#000fff"
+      vlink="#ff0f0f"
+      bgcolor="#ffffff">
+
+  <hr>
+  <h3>Image Crawler Fork-Join Pool App (Assignment 2 Final Submission)</h3>
+
+  <p>The purpose of this assignment is to deepen your experience using
+    Java 8 functional programming features together with Java 8
+    sequential streams and their integration with the Java fork-join
+    pool framework.  In particular, in this assignment you'll improve
+    the implementation of the app from Assignments 2a and 2b that uses
+    the Java fork-join pool framework to obtain, store, and transform
+    images.  </p>
+
+  <p> Like Assignments 2a and 2b, the code you'll write here will have
+    GUI and will run as an app. Please use this GUI along with the
+    JUnit tests discussed below to help test and debug your
+    solution. </p>
+
+  <hr width=50% align=left>
+  <h4>Overview of the Assignment 2b</h4>
+
+  <p>The bulk of the code for the app is provided in the skeletons.
+    Your efforts will focus on the following tasks:
+
+  <UL>
+
+    <LI> Implement the methods in the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArray.java</CODE>
+    file.  The bulk of the methods in this class can be copied from
+    your <CODE>Array.java</CODE> implementation from previous
+    assignments.  However, there are a few changes.  For example, the
+    latest <CODE>Array.java</CODE> file has been converted from a
+    class into an interface to enhance flexibility.  You'll therefore
+    find it necessary to implement and use several new accessor
+    methods for various fields previously defined in the <CODE>Array</CODE> class.<P>
+
+    <LI> Complete the collector implementation in the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArrayCollector.java</CODE>
+    file.  Graduate students must implement the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/SynchronizedArray</CODE>
+    class implementation and use it in their
+    <CODE>ArrayCollector.java</CODE> implementation. Undergraduate
+    students can ignore the <CODE>SynchronizedArray</CODE> class and
+    use the <CODE>UnsynchronizedArray</CODE> class.<P>
+
+    <LI> Complete the image crawler class implementation in the
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/ForkJoinCrawler1.java</CODE>
+    and
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/ForkJoinCrawler2.java</CODE>
+    files, which uses the Java fork-join pool framework to perform an
+    "image crawl" starting from a root Uri.  All students must use
+    Java 8 lambda expressions, method references, and sequential
+    streams for their <CODE>ForkJoinCrawler2.java</CODE>
+    implementation. <P>
+
+    <LI> Undergraduates will need to implement the
+    <CODE>ArraySpliterator</CODE> in <CODE>UnsynchronizedArray</CODE>
+    (graduate students did this as part of a previous assignment).
+  </UL>
+
+  <hr width=50% align=left> <h4>Skeleton Code</h4>
+
+  <p> Skeleton code for this assignment is available
+    at <a href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment2/">this
+    link</a> in my GitHub account.  Now that you've setup
+    your <a href="https://about.gitlab.com/">GitLab</a> account you
+    can pull this skeleton code in your repository, read it carefully,
+    and complete the "TODO" markers.  </p>
+
+  <hr width=50% align=left> <h4>JUnit Tests</h4>
+
+  <p> Extensive JUnit tests in the
+  <code>image-crawler/src/test/java/edu/vanderbilt/imagecrawler</code>
+  folder are provided to increase our confidence that your
+  implementation is working as expected.  You can run all the unit
+  tests by right-clicking on <CODE>crawlers</CODE> and
+  <CODE>utils</CODE> in this folder and running them. </p>
+
+  <p> If you need help learning how to use the Android Studio GUI to
+  run the JUnit tests locally on your computer please see <A
+  HREF="https://developer.android.com/training/testing/unit-testing/local-unit-tests.html#run">here</a>
+  and/or ask questions.  As usual, testing only demonstrates the
+  presence of bugs, not their absence, so don't rely solely on the
+  JUnit tests to detect problems in your code. </p>
+
+  <hr width=50% align=left> <h4>Additional Resources</h4>
+
+  <p> The following resources may be helpful in completing this
+    assignment: </p>
+
+  <ul> 
+
+  <li>Videos that present a detailed overview of the Java fork-join
+    framework are available in weeks 4 and 5 of my <A
+    HREF="http://www.dre.vanderbilt.edu/~schmidt/cs891f/">CS 891 class
+    website</A>. <p>
+
+  <li>Videos that present a detailed overview of the Java 8 sequential
+    streams framework are available in weeks 5 and 6 of my <A
+    HREF="http://www.dre.vanderbilt.edu/~schmidt/cs891f/">CS 891 class
+    website</A>. <p>
+
+  <li>Good overviews of the Java fork-join pool appear <A
+  HREF="https://www.infoq.com/interviews/doug-lea-fork-join">here</A>
+  and <A
+  HREF="http://www.oracle.com/technetwork/articles/java/fork-join-422606.html">here</A>.
+</li>
+</ul>
+
+  <hr width=50% align=left> <h4>Concluding Remarks</h4> <p>
+
+    <p> Assignments 2a and 2b are designed to give you experience
+    programming directly to the Java fork-join pool framework APIs
+    using Java 8 features, including lambda expressions, method
+    references, and sequential streams.  The app, image crawler
+    skeletons, and JUnit tests are extensive, though you don't need to
+    understand them all to complete your solution. </p>
+
+</body> </html>

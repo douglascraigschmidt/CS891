@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="WebViewBottomSheet" parent="Base.ThemeOverlay.AppCompat.Dark">
+        <item name="android:background">@color/bottom_sheet_background_color</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+</resources>
