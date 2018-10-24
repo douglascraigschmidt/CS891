@@ -22,7 +22,7 @@ public class SynchronizedArray<E>
     }
 
     /**
-     * Constructs a synchronized array from an {@code
+     * Constructs an empty synchronized array from an {@code
      * unsynchronizedArray}.
      */
     public SynchronizedArray(Array<E> unsynchronizedArray) {
@@ -48,6 +48,7 @@ public class SynchronizedArray<E>
      */
     public boolean isEmpty() {
         // TODO -- you fill in here.
+        return false;
     }
 
     /**
@@ -57,6 +58,7 @@ public class SynchronizedArray<E>
      */
     public int size() {
         // TODO -- you fill in here.
+        return 0;
     }
 
     /**
@@ -70,6 +72,7 @@ public class SynchronizedArray<E>
      */
     public int indexOf(Object o) {
         // TODO -- you fill in here.
+        return 0;
     }
 
     /**
@@ -87,6 +90,7 @@ public class SynchronizedArray<E>
      */
     public boolean addAll(Collection<? extends E> c) {
         // TODO -- you fill in here.
+        return false;
     }
 
     /**
@@ -104,6 +108,7 @@ public class SynchronizedArray<E>
      */
     public boolean addAll(Array<E> a) {
         // TODO -- you fill in here.
+        return false;
     }
 
     /**
@@ -117,6 +122,7 @@ public class SynchronizedArray<E>
      */
     public E remove(int index) {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -128,6 +134,7 @@ public class SynchronizedArray<E>
      */
     public E get(int index) {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -141,6 +148,7 @@ public class SynchronizedArray<E>
      */
     public E set(int index, E element) {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -151,6 +159,7 @@ public class SynchronizedArray<E>
      */
     public boolean add(E element) {
         // TODO -- you fill in here.
+        return false;
     }
 
     /**
@@ -158,6 +167,7 @@ public class SynchronizedArray<E>
      */
     public Array<E> toUnsynchronizedArray() {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -166,6 +176,7 @@ public class SynchronizedArray<E>
      */
     public Object[] uncheckedToArray() {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -185,6 +196,7 @@ public class SynchronizedArray<E>
      */
     public Object[] toArray() {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -207,6 +219,7 @@ public class SynchronizedArray<E>
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -218,6 +231,7 @@ public class SynchronizedArray<E>
      */
     public Iterator<E> iterator() {
         // TODO - you fill in here.
+        return null;
     }
 
     /**
@@ -256,6 +270,7 @@ public class SynchronizedArray<E>
      */
     public Stream<E> parallelStream() {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -265,6 +280,7 @@ public class SynchronizedArray<E>
      */
     public Stream<E> stream() {
         // TODO -- you fill in here.
+        return null;
     }
 
     /**
@@ -275,5 +291,6 @@ public class SynchronizedArray<E>
      */
     public Spliterator<E> spliterator() {
         // TODO -- you fill in here.
+        return null;
     }
 }

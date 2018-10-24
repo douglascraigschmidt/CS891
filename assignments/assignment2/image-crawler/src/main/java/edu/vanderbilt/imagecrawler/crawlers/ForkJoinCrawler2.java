@@ -284,6 +284,7 @@ public class ForkJoinCrawler2
             // actually created (i.e., it wasn't already in cached).
 
             // TODO -- you fill in here.
+            return null;
         }
     }
 }

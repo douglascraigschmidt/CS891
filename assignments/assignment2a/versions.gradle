@@ -3,7 +3,7 @@ def versionMinor = 0
 def versionPatch = 2
 
 ext.versions = [
-        android          : '3.2.0',
+        android          : '3.2.1',
         kotlin           : "1.2.71",
         anko             : "0.10.5",
         support          : "1.0.0-rc02",

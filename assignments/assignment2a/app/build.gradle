@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+
+    buildToolsVersion = '28.0.3'
     defaultConfig {
         applicationId "edu.vanderbilt.androidimagecrawler"
         versionCode 1

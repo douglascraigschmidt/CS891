@@ -1,6 +1,6 @@
 <html>
 
-<title>Image Crawler Stream App (Assignment 2b)</title>
+<title>Image Crawler Parallel Stream App (Assignment 3)</title>
 
 <body text = "#000000"
       link="#000fff"
@@ -8,32 +8,13 @@
       bgcolor="#ffffff">
 
   <hr>
-  <h3>Image Crawler Stream App (Assignment 2b)</h3>
+  <h3>Image Crawler Parallel Stream App (Assignment 3)</h3>
 
-  <p>The purpose of the second part of this two-part assignment is to
-    deepen your experience using Java 8 functional programming
-    features and their integration with Java 8 parallel streams.  In
-    particular, in this assignment you'll develop an app that uses the
-    Java 8 streams framework to obtain, transform, and store
-    images.</p>
-
-  <p> Although we'll be using Android Studio, the code you'll write
-    for this assignment will not have GUI and will not run as an app. </p>
-
-  <h4>Getting Started</h4>
-
-  <p> Before you complete the initial submission of Assignment 2b
-    you'll need to do the following: </p>
-
-  <ul>
-
-    <li> Carefully examine my review comments on your implementation
-    of <a
-    href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment2a/">assignment
-    2a</a> and make sure you integrate the corresponding fixes into
-    your assignment 2b submission. </li>
-
-  </ul>
+  <p>The purpose of this assignment is to deepen your experience using
+    Java 8 functional programming features and their integration with
+    Java 8 parallel streams.  In particular, in this assignment you'll
+    develop an app that uses the Java 8 streams framework to obtain,
+    transform, and store images.</p>
 
   <hr width=50% align=left>
   <h4>Overview of the Assignment 2b</h4>
@@ -53,28 +34,23 @@
     <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/SequentialLoopsCrawler.java</CODE>
     file.  Your will therefore focus on converting this Java 7-based
     class to the <CODE>ParallelStreamsCrawler</CODE> class that uses
-    Java 8 parallel streams. <EM> This
-    <CODE>SequentialLoopsCrawler</CODE> implementation differs
-    somewhat from the version provided in assignment 2a, so you'll
-    need to revise portions of your Java 8 solution from assignment 2a
-    to account for these changes.</EM></p>
+    Java 8 parallel streams. </p>
 
     <p> Everyone taking the course (i.e., both ugrads and grads) must
     also complete implementations of all the methods in the
-    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArrayCollector.java</CODE>
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArrayCollector.java</CODE>,
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArray.java</CODE>,
     and
-    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/Array.java</CODE>
-    files.  </p>
-  </ul>
+    <CODE>image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/SynchronizedArray.java</CODE>
+    files.  </p> </ul>
 
   <p> Your solution should use <EM>no</EM> loops in this assignment
-    and instead use Java 8 parallel stream aggregate operations.
-    </p>
+    and instead use Java 8 parallel stream aggregate operations.  </p>
 
   <hr width=50% align=left> <h4>Skeleton Code</h4>
 
   <p> Skeleton code for this assignment is available <a
-    href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment2b/">here</a>
+    href="https://github.com/douglascraigschmidt/CS891/tree/master/assignments/assignment3/">here</a>
     in my GitHub account.  Now that you've setup your <a
     href="https://about.gitlab.com/">GitLab</a> account you can pull
     this skeleton code in your repository, read it carefully, and
@@ -82,7 +58,7 @@
 
   <hr width=50% align=left> <h4>Unit Tests</h4>
 
-  <p> JUnit unit tests in the
+  <p> The JUnit unit tests in the
   <code>image-crawler/src/test/java/edu/vanderbilt/imagecrawler</code>
   folder are provided to increase our confidence that your
   implementation is working as expected.  You can run all the unit
@@ -101,32 +77,31 @@
 
   <ul> 
 
-  <li>A video that gives a pithy overview of Java 8 parallel streams
-    is available <a
-    href="https://www.youtube.com/watch?v=I_soxqUH1FE&t=48s&list=PLZ9NgFYEMxp4p5piHxajQXRRlsyDCLvI3&index=55">here</a>.
-    Naturally, we'll cover this material in class, which will be
-    available in my YouTube CS891 playlist <A
-    HREF="https://www.youtube.com/playlist?list=PLZ9NgFYEMxp6aIJ8c6sxI8jakvub-vQxb">here</A>.</li>
-    <p>
+  <li>Videos that present a detailed overview of the Java 8 parallel
+    streams framework are available in weeks 7, 8, 9, and 10 of my <A
+    HREF="http://www.dre.vanderbilt.edu/~schmidt/cs891f/">CS 891 class
+    website</A>. <p>
 
-  <li>Good overviews of Java 8 streams appear <A
+  <li>Good overviews of Java 8 sequential and parallel streams appear
+  <A
   HREF="http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html">here</A>
   and <A
   HREF="http://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html">here</A>.
   I highly recommend you get the book <A
   HREF="https://www.manning.com/books/java-8-in-action">Java 8 in
-  Action</A> to learn more about Java 8 streams programming. </li>  
-</ul>
+  Action</A> to learn more about Java 8 streams programming. </li>
+  </ul>
 
   <hr width=50% align=left> <h4>Concluding Remarks</h4> <p>
 
-    <p> Once you've got Assignment 2a working (and address all my
-    reviewer comments) it should be straightforward to implement
-    Assignment 2b, which is designed to deepen your experience
-    developing apps using Java 8 functional programming features and
-    Java 8 parallel streams.  The skeletons and JUnit tests are more
-    extensive, though you don't need to understand them all to
-    complete your solution.  Please ask questions in class, office
-    hours, and on the discussion forums. </p>
+    <p> Once you've got Assignment 2 working properly (and address all
+    my reviewer comments) it should be relatively straightforward to
+    implement Assignment 3, which is designed to deepen your
+    experience developing apps using Java 8 functional programming
+    features and Java 8 parallel streams <CODE>without</CODE> the need
+    to program the fork-join thread pool directly.  The skeletons and
+    JUnit tests are extensive, though you don't need to understand
+    them all to complete your solution.  Please ask questions in
+    class, office hours, and on the discussion forums. </p>
 
 </body> </html>
