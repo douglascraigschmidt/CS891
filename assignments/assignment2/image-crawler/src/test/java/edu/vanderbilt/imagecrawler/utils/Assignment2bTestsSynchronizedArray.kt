@@ -87,6 +87,9 @@ class Assignment2bTestsSynchronizedArray {
 
     @Before
     fun before() {
+        if (!testType(GRADUATE)) {
+            return
+        }
         array.setField("", mockArray, Array::class.java)
     }
 
