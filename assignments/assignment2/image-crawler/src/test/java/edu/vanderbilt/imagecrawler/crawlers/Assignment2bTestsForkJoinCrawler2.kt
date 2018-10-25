@@ -137,8 +137,6 @@ class Assignment2bTestsForkJoinCrawler2 {
      * Test helper that handles both undergraduate and graduate cases.
      */
     private fun testURLCrawlerTask(type: Int, pages: Int, images: Int) {
-        Assignment.types = type
-
         /******* TEST SETUP ************/
 
         val rootUrl = "/root"
@@ -187,10 +185,7 @@ class Assignment2bTestsForkJoinCrawler2 {
         `when`(mockWebPageCrawler.getPage(rootUrl)).thenReturn(mockPage)
         `when`(mockPage.getPageElements(Crawler.Type.IMAGE, Crawler.Type.PAGE)).thenReturn(mockPageElements)
 
-        when (type) {
-            // Graduates must use streams.
-            GRADUATE -> `when`(mockPageElements.stream()).thenReturn(elements.stream())
-            else -> fail("Assignment.type has not been set")
+        `when`(mockPageElements.stream()).thenReturn(elements.stream())
         }
 
         val task = mockCrawler.URLCrawlerTask(rootUrl, 1)
@@ -204,12 +199,8 @@ class Assignment2bTestsForkJoinCrawler2 {
 
         assertEquals(imageRet * images + pageRet * pages, count)
 
-        when (type) {
-            GRADUATE -> {
-                verify(mockCrawler, never()).makeForkJoinArray<Image>()
-                verify(mockPageElements, times(1)).stream()
-            }
-            else -> fail("Assignment.type has not been set")
+        verify(mockCrawler, never()).makeForkJoinArray<Image>()
+        verify(mockPageElements, times(1)).stream()
         }
 
         verify(mockWebPageCrawler, times(1)).getPage(rootUrl)
@@ -231,8 +222,6 @@ class Assignment2bTestsForkJoinCrawler2 {
      * Test helper that handles both undergraduate and graduate cases.
      */
     private fun testProcessImageTask(type: Int) {
-        Assignment.types = type
-
         /******* TEST SETUP ************/
 
         val url = "http://www.foo.com/bar.jpg"
@@ -253,11 +242,6 @@ class Assignment2bTestsForkJoinCrawler2 {
         // to this real transform list.
         mockCrawler.setField("mTransforms", transforms)
 
-        when (type) {
-            GRADUATE -> Unit
-            else -> fail("Assignment.type has not been set")
-        }
-
         `when`(mockCrawler.getOrDownloadImage(any(URL::class.java))).thenReturn(mockImage)
         `when`(mockCrawler.makePerformTransformTask(any(), any())).thenReturn(mockForkJoinImageTask)
 
@@ -276,10 +260,7 @@ class Assignment2bTestsForkJoinCrawler2 {
         // Check for first call.
         verify(mockCrawler, times(1)).getOrDownloadImage(URL(url))
 
-        when (type) {
-            // No way to check if undergraduates decided to use streams.
-            GRADUATE -> verify(mockCrawler, never()).makeForkJoinArray<Image>()
-            else -> fail("Assignment.type has not been set")
+        verify(mockCrawler, never()).makeForkJoinArray<Image>()
         }
 
         // Check for the correct number of calls to makeProcessTransformTask
