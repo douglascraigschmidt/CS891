@@ -4,8 +4,6 @@ import edu.vanderbilt.imagecrawler.helpers.ReflectionHelper
 import edu.vanderbilt.imagecrawler.helpers.setField
 import edu.vanderbilt.imagecrawler.transforms.Transform
 import edu.vanderbilt.imagecrawler.utils.*
-import edu.vanderbilt.imagecrawler.utils.Assignment.GRADUATE
-import edu.vanderbilt.imagecrawler.utils.Assignment.UNDERGRADUATE
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -53,21 +51,21 @@ class Assignment2bTestsForkJoinCrawler2 {
 
     @Test
     fun testURLCrawlerTaskNoPagesOrImages() {
-        testURLCrawlerTask(GRADUATE, 0, 0)
+        testURLCrawlerTask(0, 0)
     }
 
     //--------------------------------------------------------------
 
     @Test
     fun testURLCrawlerTaskNoPages() {
-        testURLCrawlerTask(GRADUATE, 0, 100 + Random().nextInt(100))
+        testURLCrawlerTask(0, 100 + Random().nextInt(100))
     }
 
     //--------------------------------------------------------------
 
     @Test
     fun testURLCrawlerTaskNoImages() {
-        testURLCrawlerTask(GRADUATE, 100 + Random().nextInt(100), 0)
+        testURLCrawlerTask(100 + Random().nextInt(100), 0)
     }
 
     //--------------------------------------------------------------
@@ -75,17 +73,11 @@ class Assignment2bTestsForkJoinCrawler2 {
     @Test
     fun testURLCrawlerTaskGradMany() {
         val random = Random()
-        testURLCrawlerTask(GRADUATE, 100 + random.nextInt(100), 100 + random.nextInt(100))
+        testURLCrawlerTask(100 + random.nextInt(100), 100 + random.nextInt(100))
     }
 
     //--------------------------------------------------------------
 
-    @Test
-    fun testProcessImageTask() {
-        testProcessImageTask(GRADUATE)
-    }
-
-    //-------------------------------------------------------------
     @Test
     fun testProcessImageTaskWhenDownFails() {
         val url = "http://www.foo.com/bar.jpg"
@@ -136,7 +128,7 @@ class Assignment2bTestsForkJoinCrawler2 {
     /**
      * Test helper that handles both undergraduate and graduate cases.
      */
-    private fun testURLCrawlerTask(type: Int, pages: Int, images: Int) {
+    private fun testURLCrawlerTask(pages: Int, images: Int) {
         /******* TEST SETUP ************/
 
         val rootUrl = "/root"
@@ -186,7 +178,6 @@ class Assignment2bTestsForkJoinCrawler2 {
         `when`(mockPage.getPageElements(Crawler.Type.IMAGE, Crawler.Type.PAGE)).thenReturn(mockPageElements)
 
         `when`(mockPageElements.stream()).thenReturn(elements.stream())
-        }
 
         val task = mockCrawler.URLCrawlerTask(rootUrl, 1)
         task.mDepth = startDepth
@@ -201,7 +192,6 @@ class Assignment2bTestsForkJoinCrawler2 {
 
         verify(mockCrawler, never()).makeForkJoinArray<Image>()
         verify(mockPageElements, times(1)).stream()
-        }
 
         verify(mockWebPageCrawler, times(1)).getPage(rootUrl)
         verify(mockPage, times(1)).getPageElements(Crawler.Type.IMAGE, Crawler.Type.PAGE)
@@ -221,7 +211,8 @@ class Assignment2bTestsForkJoinCrawler2 {
     /**
      * Test helper that handles both undergraduate and graduate cases.
      */
-    private fun testProcessImageTask(type: Int) {
+    @Test
+    fun testProcessImageTask() {
         /******* TEST SETUP ************/
 
         val url = "http://www.foo.com/bar.jpg"
@@ -261,7 +252,6 @@ class Assignment2bTestsForkJoinCrawler2 {
         verify(mockCrawler, times(1)).getOrDownloadImage(URL(url))
 
         verify(mockCrawler, never()).makeForkJoinArray<Image>()
-        }
 
         // Check for the correct number of calls to makeProcessTransformTask
         // and also ensure that all calls were passed the correct arguments.
