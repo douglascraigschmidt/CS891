@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_image_descriptor">downloaded image</string>
+    <string name="input_url_list_is_null">The received image URL list is null</string>
+    <string name="input_url_list_is_empty">The received image URL list is empty</string>
+    <string name="no_images_received">No images to display</string>
+    <string name="title_activity_details">Details</string>
+    <string name="no_title">Unknown title</string>
+</resources>
