@@ -14,9 +14,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import edu.vanderbilt.imagecrawler.crawlers.RxJava.RxFlowableParallelCrawler;
-import edu.vanderbilt.imagecrawler.crawlers.RxJava.RxObservableParallelCrawler;
-import edu.vanderbilt.imagecrawler.crawlers.RxJava.RxObservableSequentialCrawler;
 import edu.vanderbilt.imagecrawler.platform.Cache;
 import edu.vanderbilt.imagecrawler.platform.Controller;
 import edu.vanderbilt.imagecrawler.platform.PlatformImage;
@@ -519,17 +516,7 @@ public abstract class ImageCrawler
      */
     public enum Type {
         SEQUENTIAL_LOOPS(SequentialLoopsCrawler.class),
-        SEQUENTIAL_STREAMS(SequentialStreamsCrawler.class),
-        PARALLEL_STREAMS1(ParallelStreamsCrawler1.class),
-        PARALLEL_STREAMS2(ParallelStreamsCrawler2.class),
-        COMPLETABLE_FUTURES1(CompletableFuturesCrawler1.class),
-        COMPLETABLE_FUTURES2(CompletableFuturesCrawler2.class),
-        FORK_JOIN1(ForkJoinCrawler1.class),
-        FORK_JOIN2(ForkJoinCrawler2.class),
-        KOTLIN_COROUTINES(KotlinCoroutineCrawler.class),
-        RX_OBSERVABLE_SEQUENTIAL(RxObservableSequentialCrawler.class),
-        RX_OBSERVABLE_PARALLEL(RxObservableParallelCrawler.class),
-        RX_FLOWABLE_PARALLEL(RxFlowableParallelCrawler.class);
+        COMPLETABLE_FUTURES1(CompletableFuturesCrawler1.class);
 
         public final Class<? extends ImageCrawler> clazz;
 
