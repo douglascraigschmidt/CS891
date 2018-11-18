@@ -1,0 +1,59 @@
+// Top-level build file where you can add configuration
+// options common to all sub-projects/modules.
+buildscript {
+    apply from: 'versions.gradle'
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+		// Required by Vanderbilt autograder - do not remove
+		classpath 'edu.vanderbilt.grader:gradle-plugin:1.4.64'
+        classpath "com.android.tools.build:gradle:$versions.android"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+    }
+}
+
+plugins {
+    // Specifying 'apply false' eliminates gradle warning message:
+    // "Kotlin plugin should be enabled before 'kotlin-kapt'"
+    id "org.jetbrains.kotlin.kapt" version "1.2.61" apply false
+}
+
+// Block that initializes settings common to all project modules (sub-projects).
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    // This is an example of how to ensure that a project with multiple android
+    // sub-modules will use the same android plugin settings and versions. This
+    // project only has a single Android module so this is not really necessary
+    // here, but it also doesn't hurt.
+    subprojects {
+        afterEvaluate {
+            if (project.plugins.findPlugin('android') ?: project.plugins.findPlugin('android-library')) {
+                android {
+                    compileSdkVersion build_versions.compileSdk
+
+                    defaultConfig {
+                        minSdkVersion build_versions.minSdk
+                        targetSdkVersion build_versions.compileSdk
+                    }
+
+                    compileOptions {
+                        sourceCompatibility build_versions.java
+                        targetCompatibility build_versions.java
+                    }
+                }
+
+                androidExtensions {
+                    experimental true
+                }
+            }
+        }
+    }
+}

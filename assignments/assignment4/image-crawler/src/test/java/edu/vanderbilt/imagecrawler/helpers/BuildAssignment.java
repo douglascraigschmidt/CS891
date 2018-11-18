@@ -32,6 +32,6 @@ public class BuildAssignment {
         AssignmentBuilder.buildAssignment(
                 DefaultController.build(false),
                 // No need to change this between assignments!
-                ImageCrawler.Type.COMPLETABLE_FUTURES1);
+                ImageCrawler.Type.FORK_JOIN1);
     }
 }

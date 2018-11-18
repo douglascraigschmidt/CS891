@@ -1,0 +1,4 @@
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="development_settings">Development Settings</string>
+</resources>

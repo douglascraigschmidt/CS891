@@ -296,8 +296,7 @@ public abstract class ImageCrawler
 
             // Save the image into the cache.
             try (OutputStream outputStream =
-                 item.getOutputStream(
-                                      Cache.Operation.WRITE,
+                 item.getOutputStream(Cache.Operation.WRITE,
                                       image.size())) {
                 image.writeImage(outputStream);
             }
