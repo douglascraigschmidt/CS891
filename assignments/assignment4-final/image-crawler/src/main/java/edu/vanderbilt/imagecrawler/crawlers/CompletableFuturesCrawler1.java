@@ -53,8 +53,8 @@ public class CompletableFuturesCrawler1
      * @param depth The current depth of the recursive processing
      * @return A future to the the number of images downloaded/stored
      */
-    private CompletableFuture<Integer> performCrawlAsync(String pageUri,
-                                                         int depth) {
+    protected CompletableFuture<Integer> performCrawlAsync(String pageUri,
+                                                           int depth) {
         log(">> Depth: " + depth + " [" + pageUri + "]" + " (" + Thread.currentThread().getId() + ")");
 
         // Return 0 if we've reached the depth limit of the web
@@ -87,8 +87,8 @@ public class CompletableFuturesCrawler1
      * @param depth The current depth of the recursive processing
      * @return A future to the the number of images downloaded/stored
      */
-    private CompletableFuture<Integer> performCrawlHelper(String pageUri,
-                                                          int depth) {
+    protected CompletableFuture<Integer> performCrawlHelper(String pageUri,
+                                                            int depth) {
         try {
             // Get a future to the HTML page associated with pageUri.
             CompletableFuture<Crawler.Page> pageFuture =
@@ -129,7 +129,7 @@ public class CompletableFuturesCrawler1
      * @param pageUri The URL that we're crawling at this point
      * @return A completable future to the HTML page.
      */
-    private CompletableFuture<Crawler.Page> getPageAsync(String pageUri) {
+    protected CompletableFuture<Crawler.Page> getPageAsync(String pageUri) {
         // Load the HTML page asynchronously and return a completable
         // future to that page.
         // TODO -- you fill in here (replace null with proper code).
@@ -145,7 +145,7 @@ public class CompletableFuturesCrawler1
      * @return A completable future to an integer containing the
      *         number of images downloaded/stored on this page
      */
-    private CompletableFuture<Integer> getImagesOnPageAsync
+    protected CompletableFuture<Integer> getImagesOnPageAsync
         (CompletableFuture<Crawler.Page> pageFuture) {
         // Return a completable future to an integer containing the
         // number of images processed on this page.  This method
@@ -166,7 +166,7 @@ public class CompletableFuturesCrawler1
      * @return A future to an integer containing # of images
      *         downloaded/stored on pages linked from this page
      */
-    private CompletableFuture<Integer> 
+    protected CompletableFuture<Integer> 
         crawlHyperLinksOnPageAsync(CompletableFuture<Crawler.Page> pageFuture,
                                    int depth) {
         // Return a future to an integer containing the # of images
@@ -186,7 +186,7 @@ public class CompletableFuturesCrawler1
      * @return A completable future to the combined results of the two
      *         futures params after they complete
      */
-    private CompletableFuture<Integer> combineResultsAsync
+    protected CompletableFuture<Integer> combineResultsAsync
         (CompletableFuture<Integer> imagesOnPageFuture,
          CompletableFuture<Integer> imagesOnPageLinksFuture) {
         // Returns a completable future to the combined results of the
@@ -204,8 +204,8 @@ public class CompletableFuturesCrawler1
      * @return A completable future to an integer that counts how many
      *         images were in each hyperlink on the page
      */
-    private CompletableFuture<Integer> crawlHyperLinksOnPage(Crawler.Page page,
-                                                             int depth) {
+    protected CompletableFuture<Integer> crawlHyperLinksOnPage(Crawler.Page page,
+                                                               int depth) {
         // Return a completable future to an integer that counts the #
         // of nested hyperlinks accessible from the page.  This method
         // should contain one or more streams that use aggregate
@@ -226,7 +226,7 @@ public class CompletableFuturesCrawler1
      * images were downloaded, stored, and transformed for all the
      * {@code urls} on the page
      */
-    private CompletableFuture<Integer> processImages(Array<URL> urls) {
+    protected CompletableFuture<Integer> processImages(Array<URL> urls) {
         // Return a completable future containing the # of images that
         // were downloaded, stored, and transformed.  This method
         // should contain one or more streams that use aggregate
@@ -246,7 +246,7 @@ public class CompletableFuturesCrawler1
      * @return A completable future to an stream of Images indicating the transform
      * operation(s) success or failure.
      */
-    private CompletableFuture<Stream<Image>> transformImageAsync
+    protected CompletableFuture<Stream<Image>> transformImageAsync
         (CompletableFuture<Image> imageFuture) {
         // Return a completable future to an array of Images that
         // indicate success/failure of the images that were processed
