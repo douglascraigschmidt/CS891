@@ -252,7 +252,7 @@ public class CompletableFuturesCrawler1
         // indicate success/failure of the images that were processed
         // by applying the transforms in the mTransforms field.  This
         // method should contain completable future methods (e.g.,
-        // thenApply() and FuturesCollector.toFuture()), stream
+        // thenCompose() and FuturesCollector.toFuture()), stream
         // aggregate operations (e.g., filter(), map(), and
         // collect()), and other methods (e.g., createNewCacheItem()
         // and applyTransformAsync()).
