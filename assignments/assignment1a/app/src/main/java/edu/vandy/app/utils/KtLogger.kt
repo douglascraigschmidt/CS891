@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING", "NOTHING_TO_INLINE")
+
 package edu.vandy.app.utils
 
 import android.util.Log

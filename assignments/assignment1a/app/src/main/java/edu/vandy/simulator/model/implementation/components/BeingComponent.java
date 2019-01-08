@@ -33,9 +33,8 @@ import static edu.vandy.simulator.model.implementation.components.SimulatorModel
  * automatically triggers the creation a model snapshot that is
  * forwarded to the presentation layer.
  */
-public abstract class BeingComponent extends
-        BaseComponent<SimulatorModel.Type,
-                BeingComponent.State> {
+public abstract class BeingComponent 
+       extends BaseComponent<SimulatorModel.Type, BeingComponent.State> {
     /**
      * Logging tag.
      */
@@ -67,11 +66,13 @@ public abstract class BeingComponent extends
      * Value for all states that have no duration.
      */
     private static final int NO_DURATION = 0;
+
     /**
      * Thread-safe long value used to allocate unique 1 base
      * indexed being ids.
      */
     private static AtomicInteger sIdProvider = new AtomicInteger(100);
+
     /**
      * volatile flag used to signal the current being
      * component to immediately terminate. This flag
@@ -80,6 +81,7 @@ public abstract class BeingComponent extends
      * running simulation.
      */
     private volatile boolean mCancelled = false;
+
     /**
      * The duration to pause the being thread when it
      * enters a new state. This duration is different
@@ -167,8 +169,8 @@ public abstract class BeingComponent extends
             int SLEEP_INTERVAL = 100;
             long interval = Math.min(SLEEP_INTERVAL, duration);
             while (duration > 0
-                    && !isCancelled.get()
-                    && !Thread.interrupted()) {
+                   && !isCancelled.get()
+                   && !Thread.interrupted()) {
                 Thread.sleep(Math.min(interval, duration));
                 duration -= interval;
             }
@@ -209,8 +211,8 @@ public abstract class BeingComponent extends
         // other thread during the pause.
         //TODO: get rid of controller.
         return pauseThread(
-                Controller.getRandomDelay(min, max),
-                isCancelled);
+                           Controller.getRandomDelay(min, max),
+                           isCancelled);
     }
 
     /**
@@ -261,8 +263,8 @@ public abstract class BeingComponent extends
         // no attempt is ever made to change this state.
         if (isRemoved() && state != REMOVED) {
             throw new IllegalStateException(
-                    "Component has been REMOVED and " +
-                            "cannot be set to any new state");
+                                            "Component has been REMOVED and " +
+                                            "cannot be set to any new state");
         }
 
         // To hide the implementation details from Being implementations,
@@ -271,23 +273,23 @@ public abstract class BeingComponent extends
         // allows the presentation to support nice find grained visual
         // effects for the BUSY operation.
         switch (state) {
-            case BUSY: {
-                setState(ACQUIRING);
-                setState(GAZING);
-                setState(RELEASING);
-                return;
-            }
-            case REMOVED: {
-                // Set removed flag and call base class to immediately
-                // trigger a snapshot. Once in a component has moved
-                // to the REMOVED state, it can never be moved to
-                // any other state.
-                setRemoved(true);
-                super.setState(state, e, message);
-                return;
-            }
+        case BUSY: {
+            setState(ACQUIRING);
+            setState(GAZING);
+            setState(RELEASING);
+            return;
+        }
+        case REMOVED: {
+            // Set removed flag and call base class to immediately
+            // trigger a snapshot. Once in a component has moved
+            // to the REMOVED state, it can never be moved to
+            // any other state.
+            setRemoved(true);
+            super.setState(state, e, message);
+            return;
+        }
 
-            default: // Normal state processing.
+        default: // Normal state processing.
         }
 
         // All model specific state values must be set before
@@ -333,7 +335,7 @@ public abstract class BeingComponent extends
     public void shutdownNow() {
         if (mCancelled) {
             Controller.log("Implementation Error: shutdownNow of " +
-                    "BeingComponent should only be called once.");
+                           "BeingComponent should only be called once.");
         }
 
         mCancelled = true;
@@ -365,11 +367,11 @@ public abstract class BeingComponent extends
     @Override
     public String toString() {
         return getType() +
-                "[" + getId() + "]" +
-                " " + getState() +
-                " palantirId=" + getPalantirId() +
-                (getException() != null ? " e=" + getException() : "") +
-                (getMessage() != null ? " msg='" + getMessage() + "'" : "");
+            "[" + getId() + "]" +
+            " " + getState() +
+            " palantirId=" + getPalantirId() +
+            (getException() != null ? " e=" + getException() : "") +
+            (getMessage() != null ? " msg='" + getMessage() + "'" : "");
     }
 
     /**
@@ -394,23 +396,23 @@ public abstract class BeingComponent extends
         public long duration() {
             long duration;
             switch (this) {
-                case HOLDING:
-                    duration = HOLDING_DURATION;
-                    break;
-                case RELEASING:
-                    duration = RELEASING_DURATION;
-                    break;
-                case ACQUIRING:
-                    duration = ACQUIRING_DURATION;
-                    break;
-                case WAITING:
-                    duration = WAITING_DURATION;
-                    break;
-                case GAZING:
-                    duration = Controller.getRandomDelay();
-                    break;
-                default:
-                    duration = NO_DURATION;
+            case HOLDING:
+                duration = HOLDING_DURATION;
+                break;
+            case RELEASING:
+                duration = RELEASING_DURATION;
+                break;
+            case ACQUIRING:
+                duration = ACQUIRING_DURATION;
+                break;
+            case WAITING:
+                duration = WAITING_DURATION;
+                break;
+            case GAZING:
+                duration = Controller.getRandomDelay();
+                break;
+            default:
+                duration = NO_DURATION;
             }
 
             // Tune the state's duration if it hasn't been explicitly
@@ -449,15 +451,15 @@ public abstract class BeingComponent extends
          */
         public boolean fixed() {
             switch (this) {
-                case ACQUIRING:
-                case RELEASING: {
-                    // Scalable - app tunable.
-                    return false;
-                }
+            case ACQUIRING:
+            case RELEASING: {
+                // Scalable - app tunable.
+                return false;
+            }
 
-                default:
-                    // Fixed - not app tunable.
-                    return true;
+            default:
+                // Fixed - not app tunable.
+                return true;
             }
         }
     }

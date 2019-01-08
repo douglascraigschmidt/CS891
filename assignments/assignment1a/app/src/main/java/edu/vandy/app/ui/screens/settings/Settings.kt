@@ -9,13 +9,13 @@ import edu.vandy.app.preferences.PreferenceProvider
 import edu.vandy.app.ui.adapters.dpToPx
 import edu.vandy.app.ui.screens.main.SimulationView
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantirManager
+import edu.vandy.simulator.managers.palantiri.PalantiriManager
 
 /**
  * All settings that are saved/restored from shared
  * preferences and changeable from the SettingsDialogFragment.
  */
-internal object Settings {
+object Settings {
     /**
      * Used to support shared preference versions so that this value
      * can be incremented to force the all shared preferences to be
@@ -83,7 +83,7 @@ internal object Settings {
     private val DEFAULT_AUTO_SCALE = true
     private val DEFAULT_VIEW_TRANSPARENCY = 15
     private val DEFAULT_BEING_MANAGER_TYPE = BeingManager.Factory.Type.RUNNABLE_THREADS
-    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantirManager.Factory.Type.ARRAY_BLOCKING_QUEUE
+    private val DEFAULT_PALANTIRI_MANAGER_TYPE = PalantiriManager.Factory.Type.ARRAY_BLOCKING_QUEUE
     private val DEFAULT_SAVE_ON_EXIT = true
     private val DEFAULT_PERFORMANCE_MODE = false
     private val DEFAULT_STRICT_MODE = false
@@ -143,18 +143,23 @@ internal object Settings {
      * Tunable range values set by SimulationView to account
      * for different display sizes and resolutions.
      */
+    @JvmStatic
     var beingSizeRange: Range<Int>
             by Preference(BEING_SIZE_RANGE,
                           SIMULATION_BEING_SIZE_RANGE_PREF)
+    @JvmStatic
     var beingCountRange: Range<Int>
             by Preference(BEING_COUNT_RANGE,
                           SIMULATION_BEING_COUNT_RANGE_PREF)
+    @JvmStatic
     var palantirSizeRange: Range<Int>
             by Preference(PALANTIR_SIZE_RANGE,
                           SIMULATION_PALANTIR_SIZE_RANGE_PREF)
+    @JvmStatic
     var palantirCountRange: Range<Int>
             by Preference(PALANTIR_COUNT_RANGE,
                           SIMULATION_PALANTIR_COUNT_RANGE_PREF)
+    @JvmStatic
     var stateSizeRange: Range<Int>
             by Preference(STATE_SIZE_RANGE,
                           SIMULATION_STATE_SIZE_RANGE_PREF)
@@ -163,75 +168,98 @@ internal object Settings {
      * These preferences have fixed names so that other classes
      * can use the preference key name to observe changes on that key.
      */
+    @JvmStatic
     var beingCount: Int
             by Preference(DEFAULT_BEING_COUNT,
                           SIMULATION_BEING_COUNT_PREF)
+    @JvmStatic
     var palantirCount: Int
             by Preference(DEFAULT_PALANTIRI_COUNT,
                           SIMULATION_PALANTIR_COUNT_PREF)
+    @JvmStatic
     var gazingIterations: Int
             by Preference(DEFAULT_GAZING_ITERATIONS,
                           SIMULATION_GAZING_ITERATIONS_COUNT_PREF)
+    @JvmStatic
     var animationSpeed: Int
             by Preference(DEFAULT_ANIMATION_SPEED,
                           SIMULATION_ANIMATION_SPEED_PREF)
+    @JvmStatic
     var showSprites: Boolean
             by Preference(DEFAULT_SHOW_SPRITES,
                           SIMULATION_SHOW_SPRITES_PREF)
+    @JvmStatic
     var showPaths: Boolean
             by Preference(DEFAULT_SHOW_PATHS,
                           SIMULATION_SHOW_PATHS_PREF)
+    @JvmStatic
     var showStates: Boolean
             by Preference(DEFAULT_SHOW_STATES,
                           SIMULATION_SHOW_STATES_PREF)
+    @JvmStatic
     var sprite: Int
             by Preference(DEFAULT_SPRITE,
                           SIMULATION_SPRITE_PREF)
+    @JvmStatic
     var logging: Boolean
             by Preference(DEFAULT_LOGGING,
                           SIMULATION_LOGGING_PREF)
+    @JvmStatic
     var showWireFrames: Boolean
             by Preference(DEFAULT_SHOW_WIRE_FRAMES,
                           SIMULATION_SHOW_WIRE_FRAMES_PREF)
+    @JvmStatic
     var gazingDuration: Range<Int>
             by Preference(DEFAULT_GAZING_DURATION,
                           SIMULATION_GAZING_DURATION_PREF,
                           RangeAdapter())
+    @JvmStatic
     var autoScale: Boolean
             by Preference(DEFAULT_AUTO_SCALE,
                           SIMULATION_AUTO_SCALE_PREF)
+    @JvmStatic
     var viewTransparency: Int
             by Preference(DEFAULT_VIEW_TRANSPARENCY,
                           SIMULATION_VIEW_TRANSPARENCY_PREF)
+    @JvmStatic
     var beingManagerType: BeingManager.Factory.Type
             by Preference(DEFAULT_BEING_MANAGER_TYPE,
                           SIMULATION_BEING_MANAGER_TYPE_PREF,
                           EnumAdapter(BeingManager.Factory.Type::class.java))
-    var PALANTIR_MANAGER_TYPE: PalantirManager.Factory.Type
+    @JvmStatic
+    var palantirManagerType: PalantiriManager.Factory.Type
             by Preference(DEFAULT_PALANTIRI_MANAGER_TYPE,
                           SIMULATION_PALANTIRI_MANAGER_TYPE_PREF,
-                          EnumAdapter(PalantirManager.Factory.Type::class.java))
+                          EnumAdapter(PalantiriManager.Factory.Type::class.java))
+    @JvmStatic
     var beingSize: Int
             by Preference(DEFAULT_BEING_SIZE,
                           SIMULATION_BEING_SIZE_PREF)
+    @JvmStatic
     var palantirSize: Int
             by Preference(DEFAULT_PALANTIRI_SIZE,
                           SIMULATION_PALANTIRI_SIZE_PREF)
+    @JvmStatic
     var stateSize: Int
             by Preference(DEFAULT_STATE_SIZE,
                           SIMULATION_STATE_SIZE_PREF)
+    @JvmStatic
     var saveOnExit: Boolean
             by Preference(DEFAULT_SAVE_ON_EXIT,
                           SIMULATION_SAVE_ON_EXIT_PREF)
+    @JvmStatic
     var performanceMode: Boolean
             by Preference(DEFAULT_PERFORMANCE_MODE,
                           SIMULATION_PERFORMANCE_MODE_PREF)
+    @JvmStatic
     var strictMode: Boolean
             by Preference(DEFAULT_STRICT_MODE,
                           SIMULATION_STRICT_MODE_PREF)
+    @JvmStatic
     var modelChecker: Boolean
             by Preference(DEFAULT_MODEL_CHECKER,
                           SIMULATION_MODEL_CHECKER_PREF)
+    @JvmStatic
     var showProgress: Boolean
             by Preference(DEFAULT_SHOW_PROGRESS,
                           SIMULATION_SHOW_PROGRESS_PREF)
@@ -276,7 +304,7 @@ internal object Settings {
             beingCount = DEFAULT_BEING_COUNT
             palantirCount = DEFAULT_PALANTIRI_COUNT
             gazingIterations = DEFAULT_GAZING_ITERATIONS
-            PALANTIR_MANAGER_TYPE = DEFAULT_PALANTIRI_MANAGER_TYPE
+            palantirManagerType = DEFAULT_PALANTIRI_MANAGER_TYPE
             beingManagerType = DEFAULT_BEING_MANAGER_TYPE
         }
 

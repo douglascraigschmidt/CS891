@@ -1,8 +1,5 @@
 package edu.vandy.simulator.managers.beings;
 
-import android.support.annotation.CallSuper;
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ import static java.util.stream.Collectors.toList;
  * contains a factory for generating different BeingManager
  * implementation strategies.
  */
-public abstract class BeingManager<T extends Being> 
+public abstract class BeingManager<T extends Being>
        implements ModelProvider {
     /**
      * Logging tag.
@@ -41,7 +38,7 @@ public abstract class BeingManager<T extends Being>
      * A back reference to the controlling Simulator instance that
      * manages all request routing as well as error handling.
      */
-    private Simulator mSimulator;
+    public Simulator mSimulator;
 
     /**
      * The model parameters.
@@ -66,7 +63,7 @@ public abstract class BeingManager<T extends Being>
      *
      * @return A new Being concrete instance.
      */
-    protected abstract T newBeing();
+    public abstract T newBeing();
 
     /**
      * Called to run the simulation.
@@ -125,14 +122,14 @@ public abstract class BeingManager<T extends Being>
      * @return The number of beings in this model.
      */
     final public int getBeingCount() {
-        return mBeings.size();
+        return getBeings().size();
     }
 
     /**
      * @return The list of beings in this model.
      */
     @NotNull
-    final public List<T> getBeings() {
+    public List<T> getBeings() {
         return mBeings;
     }
 
@@ -141,7 +138,7 @@ public abstract class BeingManager<T extends Being>
      */
     @Override
     final public @NotNull
-        Model getModel() {
+    Model getModel() {
         return mSimulator.getModel();
     }
 
@@ -151,7 +148,7 @@ public abstract class BeingManager<T extends Being>
      *
      * @param count The number of Beings to create.
      */
-    private List<T> makeBeings(int count) {
+    public List<T> makeBeings(int count) {
         // Reset Being static id generator.
         Being.resetIds();
 
@@ -176,7 +173,7 @@ public abstract class BeingManager<T extends Being>
      *
      * @param msg An optional message describing the error.
      */
-    final public void error(@NotNull String msg) {
+    public void error(@NotNull String msg) {
         mSimulator.error(msg);
     }
 
@@ -197,7 +194,7 @@ public abstract class BeingManager<T extends Being>
      * any allocated resources.
      */
     final public void shutdown() {
-        Log.i(TAG, "shutdown: called.");
+        log("shutdown: called.");
 
         // Call helper method to ask all beings to shutdown.  Passing
         // false to this method will ensure that beings are politely
@@ -210,7 +207,7 @@ public abstract class BeingManager<T extends Being>
             // forcefully interrupt all beings.  This call will also
             // wait for MAX_WAIT seconds to ensure that all beings are
             // shutdown.
-            Log.w(TAG, "shutdown: Beings didn't respond to shutdown request!");
+            log("shutdown: Beings didn't respond to shutdown request!");
             shutdownBeings(true);
         }
 
@@ -225,7 +222,7 @@ public abstract class BeingManager<T extends Being>
         // the previous run.
         shutdownNow();
 
-        Log.i(TAG, "shutdown: completed.");
+        log("shutdown: completed.");
     }
 
     /**
@@ -244,7 +241,7 @@ public abstract class BeingManager<T extends Being>
      * @return {@code true} if all beings were shutdown and {@code false}
      * if not all beings were shutdown.
      */
-    private boolean shutdownBeings(boolean interrupt) {
+    protected boolean shutdownBeings(boolean interrupt) {
         // Start off with the the number of running beings.
         if (getRunningBeingCount() == 0) {
             // Nothing to do if there are no beings running.
@@ -257,7 +254,7 @@ public abstract class BeingManager<T extends Being>
                 getBeings().forEach(being -> {
                         if (!being.isCancelled()) {
                             if (!being.interruptNow()) {
-                                Log.w(TAG, "Forced interrupt " +
+                                log("Forced interrupt " +
                                       "failed for " + being);
                             }
                         }
@@ -283,12 +280,12 @@ public abstract class BeingManager<T extends Being>
             // Return true if all beings have shutdown and false if not.
             return getRunningBeingCount() == 0;
         } catch (Exception e) {
-            Log.e(TAG, "shutdownBeings encountered exception: " + e);
+            log("shutdownBeings encountered exception: " + e);
             e.printStackTrace();
             // Rethrow.
             throw new IllegalStateException(e);
         } finally {
-            Log.d(TAG, "shutdownBeings: completed with "
+            log("shutdownBeings: completed with "
                   + getRunningBeingCount()
                   + "/" + getBeingCount() + " running beings.");
         }
@@ -302,7 +299,6 @@ public abstract class BeingManager<T extends Being>
      * implementation has it's own fields or
      * state to reset.
      */
-    @CallSuper
     public void reset() {
         // Just reset beings (no fields to reset).
         mBeings.forEach(Being::reset);
@@ -313,7 +309,6 @@ public abstract class BeingManager<T extends Being>
      * Subclasses should handle their own sanity checks and then call this
      * super class methods for the default checks.
      */
-    @CallSuper
     public void validateStartState() {
         for (T being : mBeings) {
             int running = 0;
@@ -322,14 +317,14 @@ public abstract class BeingManager<T extends Being>
 
             if (being.isRunning()) {
                 running++;
-                Log.w(TAG, "validateStartState: " + being + " in cancelled state!");
+                log("validateStartState: " + being + " in cancelled state!");
             }
             if (being.getPalantirId() != -1L) {
                 palantir++;
-                Log.w(TAG, "validateStartState: " + being + " has an associated Palantitr!");
+                log("validateStartState: " + being + " has an associated Palantitr!");
             }
             if (being.isCancelled()) {
-                Log.w(TAG, "validateStartState: " + being + " in still in a cancelled state!");
+                log("validateStartState: " + being + " in still in a cancelled state!");
                 cancelled++;
             }
 
@@ -347,7 +342,7 @@ public abstract class BeingManager<T extends Being>
      * @param being The Being.
      * @return The next available Palantir.
      */
-    public final Palantir acquirePalantir(Being being) {
+    public Palantir acquirePalantir(Being being) {
         return mSimulator.acquirePalantir(being);
     }
 
@@ -358,7 +353,7 @@ public abstract class BeingManager<T extends Being>
      *  @param being       The Being that is releasing the Palantir.
      * @param palantir The Palantir resource to release.
      */
-    public final void releasePalantir(Being being, Palantir palantir) {
+    public void releasePalantir(Being being, Palantir palantir) {
         mSimulator.releasePalantir(being, palantir);
     }
 
@@ -453,7 +448,7 @@ public abstract class BeingManager<T extends Being>
              * @return A new Being concrete instance.
              */
             @Override
-            protected NoBeing newBeing() {
+            public NoBeing newBeing() {
                 throw new RuntimeException("Not implemented");
             }
 
@@ -475,5 +470,15 @@ public abstract class BeingManager<T extends Being>
                 protected void acquirePalantirAndGaze() {}
             }
         }
+    }
+
+    /**
+     * Use println instead of Android Log class so that unit tests
+     * will not require mocking Android Log class.
+     *
+     * @param msg Any string.
+     */
+    private void log(String msg) {
+        System.out.println(TAG + " - " + msg);
     }
 }

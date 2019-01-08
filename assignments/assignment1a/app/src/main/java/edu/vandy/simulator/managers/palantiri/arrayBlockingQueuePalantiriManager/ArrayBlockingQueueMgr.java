@@ -8,7 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CancellationException;
 
 import edu.vandy.simulator.managers.palantiri.Palantir;
-import edu.vandy.simulator.managers.palantiri.PalantirManager;
+import edu.vandy.simulator.managers.palantiri.PalantiriManager;
 
 /**
  * Defines a mechanism that mediates concurrent access to a fixed
@@ -17,7 +17,7 @@ import edu.vandy.simulator.managers.palantiri.PalantirManager;
  * it's not meant for use in production code.
  */
 public class ArrayBlockingQueueMgr
-       extends PalantirManager {
+       extends PalantiriManager {
     /**
      * Debugging tag used by the Android logger.
      */
@@ -117,7 +117,7 @@ public class ArrayBlockingQueueMgr
     /**
      * Returns the number of available Palantiri.
      */
-    public int availablePermits() {
+    protected int availablePermits() {
         // Returns a count of the number of palantiri that are
         // available for use.
         return mAvailablePalantiri.size();

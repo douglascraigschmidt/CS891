@@ -52,7 +52,7 @@ fun View.toggleBottomSheetVisibility() {
  */
 fun View.peekBottomSheet(peekHeight: Int = 0, peekTime: Long = 1500) {
 
-    // Make sure that receiver view supports BottomSheetBehavior.
+    // Ensure that receiver view supports BottomSheetBehavior.
     try {
         BottomSheetBehavior.from(this)
     } catch (e: Exception) {

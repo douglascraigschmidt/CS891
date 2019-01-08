@@ -1,9 +1,10 @@
 package edu.vandy.simulator.model.implementation.snapshots;
 
-import android.support.v4.util.ArrayMap;
+import android.annotation.SuppressLint;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -48,10 +49,11 @@ public class ModelSnapshot implements Cloneable {
      * Constructs a new empty model snapshot and is used to
      * eliminate errors caused by null objects.
      */
+    @SuppressLint("UseSparseArrays")
     public ModelSnapshot() {
         mSimulator = null;
-        mBeings = new ArrayMap<>();
-        mPalantiri = new ArrayMap<>();
+        mBeings = new HashMap<>();
+        mPalantiri = new HashMap<>();
         mTriggeredById = -1L;
     }
 

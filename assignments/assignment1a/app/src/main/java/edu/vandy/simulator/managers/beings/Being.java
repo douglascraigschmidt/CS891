@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CancellationException;
 
+import edu.vandy.simulator.Controller;
 import edu.vandy.simulator.managers.palantiri.Palantir;
 import edu.vandy.simulator.model.implementation.components.BeingComponent;
 
@@ -32,18 +33,18 @@ public abstract class Being
     /**
      * Reference to the controlling simulator.
      */
-    protected final BeingManager mManager;
+    public final BeingManager mManager;
 
     /**
      * The thread this being is being run on and is package
      * private so that manager can access it for shutdown.
      */
-    private Thread mThread;
+    public Thread mThread;
 
     /**
      * The number of completed iterations.
      */
-    private int mCompleted;
+    public int mCompleted;
 
     /**
      * Constructor initializes the field.
@@ -81,7 +82,7 @@ public abstract class Being
      * @param gazingIterations The number of gazing operations.
      */
     @CallSuper
-    protected void runGazingSimulation(int gazingIterations) {
+    public void runGazingSimulation(int gazingIterations) {
         if (isRunning()) {
             error("Should not be possible that 'isRunning' " 
                   + "is true since it is cleared in the finally");
@@ -103,10 +104,10 @@ public abstract class Being
             }
         } catch (CancellationException e) {
             // Swallow cancellation exception but record the event.
-            Log.w(TAG, this + " has been cancelled!");
+            warn(this + " has been cancelled!");
         } finally {
             if (!isCancelled()) {
-                Log.d(TAG, this + " completed normally.");
+                Controller.log(this + " completed normally.");
             }
 
             // This call will clear the mThread field which is used
@@ -125,7 +126,7 @@ public abstract class Being
      * to acquire a Palantir. It simply forwards the request
      * to the BeingManager.
      */
-    protected Palantir acquirePalantir() {
+    public Palantir acquirePalantir() {
         return mManager.acquirePalantir(this);
     }
 

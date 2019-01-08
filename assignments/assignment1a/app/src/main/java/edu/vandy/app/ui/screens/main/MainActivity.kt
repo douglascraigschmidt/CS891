@@ -22,6 +22,7 @@ import edu.vandy.app.ui.screens.settings.SettingsDialogFragment
 import edu.vandy.app.ui.widgets.ToolbarManager
 import edu.vandy.app.utils.KtLogger
 import edu.vandy.app.utils.info
+import edu.vandy.app.utils.warn
 import edu.vandy.simulator.Controller
 import edu.vandy.simulator.model.implementation.components.SimulatorComponent
 import edu.vandy.simulator.model.implementation.snapshots.ModelSnapshot
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.simulation_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.contentView
 import org.jetbrains.anko.find
+import org.jetbrains.anko.longToast
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
@@ -43,8 +45,8 @@ class MainActivity : AppCompatActivity(),
     /** toolbar is maintained in ToolbarManager. */
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
 
-    /** View model manages LiveData. */
-    private lateinit var viewModel: SimulationViewModel
+    /** View model manages LiveData (exposed for Instrumented tests). */
+    lateinit var viewModel: SimulationViewModel
 
     /** Watch preference changes for simulation speed. */
     private val compositeUnsubscriber = CompositeUnsubscriber()
@@ -114,25 +116,38 @@ class MainActivity : AppCompatActivity(),
         // 2. Start: when local mode is true or a root url has been chosen.
         // 3. Stop: when the crawler is running.
         progressFab.setOnClickListener { _ ->
+            // These calls drill down into simulator so protect
+            // main thread from abnormal termination because of
+            // mistakes in assignment implementations.
             if (viewModel.simulationRunning) {
-                viewModel.stopSimulationAsync()
+                try {
+                    viewModel.stopSimulationAsync()
+                } catch (e: Exception) {
+                    logException("An exception occurred when " +
+                              "trying to stop the simulation: $e", e)
+                }
             } else {
-                viewModel.setPerformanceMode = Settings.performanceMode
-                viewModel.startSimulationAsync(Settings.beingManagerType,
-                                               Settings.PALANTIR_MANAGER_TYPE,
-                                               Settings.beingCount,
-                                               Settings.palantirCount,
-                                               Settings.gazingIterations)
+                try {
+                    viewModel.setPerformanceMode = Settings.performanceMode
+                    viewModel.startSimulationAsync(Settings.beingManagerType,
+                                                   Settings.palantirManagerType,
+                                                   Settings.beingCount,
+                                                   Settings.palantirCount,
+                                                   Settings.gazingIterations)
 
-                // Now that the simulation is running, start an
-                // asynchronous thread to periodically update
-                // the title bar performance timer.
-                startTimerAsync()
+                    // Now that the simulation is running, start an
+                    // asynchronous thread to periodically update
+                    // the title bar performance timer.
+                    startTimerAsync()
 
-                // Enable/disable model parameter settings if
-                // we've reconnected to a running simulation.
-                (settingsFragment as SettingsDialogFragment)
-                        .simulationRunning(true)
+                    // Enable/disable model parameter settings if
+                    // we've reconnected to a running simulation.
+                    (settingsFragment as SettingsDialogFragment)
+                            .simulationRunning(true)
+                } catch (e: Exception) {
+                    logException("An exception occurred when " +
+                              "trying to start the simulation: $e", e)
+                }
             }
 
             updateViewStates()
@@ -208,11 +223,16 @@ class MainActivity : AppCompatActivity(),
         // will reset the number of beings or palantiri in the
         // settings panel. The user will have to try again
         if (!viewModel.simulationRunning) {
-            viewModel.updateSimulationModel(Settings.beingManagerType,
-                                            Settings.PALANTIR_MANAGER_TYPE,
-                                            Settings.beingCount,
-                                            Settings.palantirCount,
-                                            Settings.gazingIterations)
+            try {
+                viewModel.updateSimulationModel(Settings.beingManagerType,
+                                                Settings.palantirManagerType,
+                                                Settings.beingCount,
+                                                Settings.palantirCount,
+                                                Settings.gazingIterations)
+            } catch (e: Exception) {
+                logException("An exception occurred while trying " +
+                          "to initialize the simulation model: $e", e)
+            }
         } else {
             shortSnack("Simulation is running. Your change will " +
                        "be applied when the simulation completes.") {
@@ -405,5 +425,15 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
+    }
+
+    /**
+     * Displays a toast when an exception is encountered, but also
+     * writes the exception to the log file for auditing.
+     */
+    private fun logException(msg: String, e: Exception) {
+        longToast(msg)
+        warn(msg)
+        e.printStackTrace()
     }
 }

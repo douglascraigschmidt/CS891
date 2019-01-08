@@ -31,12 +31,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        LeakCanary.install(this)
+
+        // Thinks the instrumentation runner is leaking
+        // the main activity, but this isn't true.
+        // installLeakCanary()
 
         // Let the ImageDownloader extension class do the
         // initialization of Picasso.
@@ -46,5 +44,14 @@ class App : Application() {
     override fun onTerminate() {
         compositeUnsubscriber.invoke()
         super.onTerminate()
+    }
+
+    fun installLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
+        LeakCanary.install(this)
     }
 }

@@ -26,7 +26,7 @@ import edu.vandy.app.ui.screens.settings.adapters.SpriteAdapter
 import edu.vandy.app.ui.widgets.RxMultiSlider
 import edu.vandy.app.utils.KtLogger
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantirManager
+import edu.vandy.simulator.managers.palantiri.PalantiriManager
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.settings_dialog_fragment.*
 
@@ -247,19 +247,19 @@ class SettingsDialogFragment :
         // Setup adapter and current selection.
         val adapter = ManagerTypeEnumSpinnerAdapter(
                 ContextThemeWrapper(activity, R.style.SettingsThemeDark),
-                PalantirManager.Factory.Type::class.java)
+                PalantiriManager.Factory.Type::class.java)
         settingsPalantiriManagerType.adapter = adapter
         settingsPalantiriManagerType.setSelection(
-                adapter.getPositionForValue(Settings.PALANTIR_MANAGER_TYPE))
+                adapter.getPositionForValue(Settings.palantirManagerType))
 
         // Use Rx to filter item selections and save changed value to shared preference.
         compositeDisposable.add(
                 RxAdapterView.itemSelections(settingsPalantiriManagerType)
                         .skipInitialValue()
-                        .map<PalantirManager.Factory.Type> { adapter.getItem(it) }
-                        .filter { it != Settings.PALANTIR_MANAGER_TYPE }
+                        .map<PalantiriManager.Factory.Type> { adapter.getItem(it) }
+                        .filter { it != Settings.palantirManagerType }
                         .subscribe {
-                            updatePreference { Settings.PALANTIR_MANAGER_TYPE = it }
+                            updatePreference { Settings.palantirManagerType = it }
                         })
     }
 
@@ -432,15 +432,21 @@ class SettingsDialogFragment :
                         })
     }
 
+    var ignoreGazingEvent = false
     private fun configureGazingDuration() {
         // Can't use kotlinx xml object because the RangeSeekBar class is typed.
         settingsGazingDurationSeekBar.grabTouchEvents()
         settingsGazingDurationSeekBar.min = Settings.GAZING_DURATION_RANGE.min
         settingsGazingDurationSeekBar.max = Settings.GAZING_DURATION_RANGE.max
+
+        val range = Settings.gazingDuration
         settingsGazingDurationValue.text =
-                String.format("%3d-%d",
-                              Settings.gazingDuration.min,
-                              Settings.gazingDuration.max)
+                String.format("%3d-%d", range.min, range.max)
+
+        // Since this widget has two values (min and max) set a
+        // flag to prevent calls to update the preference when
+        // the thumbs are being moved.
+        ignoreGazingEvent = true
 
         // This multiple thumb seekbar does not handle calling
         // setNumberOfThumbs more than once per session so check
@@ -454,14 +460,20 @@ class SettingsDialogFragment :
                 Settings.gazingDuration.min
         settingsGazingDurationSeekBar.getThumb(1).value =
                 Settings.gazingDuration.max
+
         compositeDisposable.add(
                 RxMultiSlider.changes(settingsGazingDurationSeekBar)
                         .skipInitialValue()
                         .subscribe {
-                            updatePreference { Settings.gazingDuration = it }
+                            if (!ignoreGazingEvent) {
+                                updatePreference { Settings.gazingDuration = it }
+                            }
                             settingsGazingDurationValue.text =
                                     String.format("%3d-%d", it.min, it.max)
                         })
+
+        // Re-enable processing of events.
+        ignoreGazingEvent = false
     }
 
 
@@ -607,6 +619,7 @@ class SettingsDialogFragment :
      * which ensures that no shared preference processing is called
      * while the configuration is running.
      */
+    @Suppress("UNUSED_PARAMETER")
     private fun configureResetToDefaults(unused: Boolean = true) {
         settingsResetToDefaults.setOnClickListener {
             updatePreference {

@@ -17,10 +17,8 @@ public class PalantirSnapshot extends
     /**
      * The id of the currently gazing being or -1 if no
      * being is currently gazing into this palantir.
-     * TODO: KLUDGE! Not declared final so that presentation
-     * layer can set this value.
      */
-    private long mBeingId;
+    private final long mBeingId;
 
     /**
      * The number of times beings have gazed at this palantir.
@@ -59,15 +57,6 @@ public class PalantirSnapshot extends
         // Set model dependant attributes.
         mBeingId = palantir.getBeingId();
         mCount = palantir.getCount();
-    }
-
-    /**
-     * TODO: KLUDGE!! Should not have setter in an immutable snapshot!
-     * Sets the id of the currently gazing being or -1 if
-     * no being is currently gazing into this palantir.
-     */
-    public void setBeingId(Long beingId) {
-        mBeingId = beingId;
     }
 
     /**

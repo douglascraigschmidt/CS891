@@ -56,7 +56,7 @@ open class Preference<T : Any>(val default: T,
     val prefs: SharedPreferences = PreferenceProvider.prefs
     lateinit var actualName: String // not currently working
 
-    operator inline fun <reified T : Any?> getValue(thisRef: Any?, property: KProperty<*>): T {
+    inline operator fun <reified T : Any?> getValue(thisRef: Any?, property: KProperty<*>): T {
         return try {
             get(name ?: "${this::class.java.name}.${property.name}", default as T)
         } catch (e: Exception) {

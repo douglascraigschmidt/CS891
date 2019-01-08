@@ -36,16 +36,18 @@ HREF="http://en.wikipedia.org/wiki/Palantir">here</a>.</P>
 <HR width=50% align=left>
 <H4>Assignment Structure and Functionality</H4>
 
-<P>The PalantiriSimulator app is packaged as a project in Android Studio
-version 3.x.  This app is written in both Kotlin and Java and
-demonstrates <EM>many</EM> Android capabilities.  For the purposes of this
-assignment, however, you just need to focus on the following directory
-at this point:</P>
+<P>The PalantiriSimulator app is packaged as a project in Android
+Studio version 3.2.x.  This app is written in both Kotlin and Java and
+demonstrates <EM>many</EM> Android capabilities.  For the purposes of
+this assignment, however, you just need to focus on the following
+directory at this point:</P>
 
 <UL> 
 
-<LI> <A HREF=" app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads</A>,
-which contains the skeleton(s) you'll need to fill in, as described <A HREF="#description">below</A>.
+<LI> <A HREF="
+app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads</A>,
+which contains the skeleton(s) you'll need to fill in, as described <A
+HREF="#description">below</A>.
 
 </UL>
 
@@ -65,7 +67,8 @@ the Android Studio IDE.</>
 <P>Nested within the <A HREF="app/src/main">app/src/main</A> directory
 you'll find many folders and files, most of which you can ignore.  In
 particular, this Android program is structured in accordance with the
-<A HREF="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter">Model-View-Presenter</A>
+<A
+HREF="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter">Model-View-Presenter</A>
 (MVP) pattern.  Most classes are already provided for you.  The
 relevant concurrent processing is performed in the Model layer.  If
 you correctly complete the implementation of skeleton(s) in the Model
@@ -99,15 +102,26 @@ wait for all the being threads to finish and returns that thread to
 the caller. </P>
 
 <LI> <A
-HREF="app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/SimpleBeingRunnable.java">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/SimpleBeingRunnable.java</A>. You'll need to complete the "TODO" tasks in (1) the <CODE>acquirePalantirAndGaze()</CODE> method, which performs a single gazing operation.
+HREF="app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/SimpleBeingRunnable.java">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/SimpleBeingRunnable.java</A>. You'll
+need to complete the "TODO" tasks in (1) the
+<CODE>acquirePalantirAndGaze()</CODE> method, which performs a single
+gazing operation.
 
-</UL>
+<LI> <A HREF="app/src/test">app/src/test</A>, which contains a set of
+unit tests that exercise many PalantiriSimulator features and can be
+used to help test the functionality you implement for the
+assignment. <P>
 
-<P>Your app will be considered "correct" if all beings successfully
-complete all their N iterations. A "correct" simulation should
-restrict the number of gazing beings to the number of palantiri.  In
-other words, if there are four palantiri in the simulation, then only
-four beings should ever be ``gazing'' on the screen at a time.</P>
+<LI> <A HREF="app/src/androidTest">app/src/androidTest</A>, which
+contains an Android Studio instrumentation test that runs your app
+automatically.  <P> </UL>
+
+<P>Your app will be considered correct if it passes all the unit and
+instrumentation tests and all beings successfully complete all their N
+iterations. A correct simulation should restrict the number of gazing
+beings to the number of palantiri.  In other words, if there are four
+palantiri in the simulation, then only four beings should ever be
+``gazing'' on the screen at a time.</P>
 
 <P>When the simulation is running, the app view will display visual
 feedback to show palantiri and being states, as well as the progress
@@ -127,7 +141,8 @@ credit) must perform the following additional task(s):</P>
 
 <UL>
 
-<LI> Enhance the beginBeingThreads() method in <A HREF="app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/RunnableThreadsMgr.java">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/RunnableThreadsMgr.java</A>
+<LI> Enhance the beginBeingThreads() method in <A
+HREF="app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/RunnableThreadsMgr.java">app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads/RunnableThreadsMgr.java</A>
 to set an "UncaughtExceptionHandler" that calls the
 BeingManager.error() to indicate an unexpected exception "ex" occurred
 for thread "thr".

@@ -15,6 +15,7 @@ import edu.vandy.app.extensions.show
 import edu.vandy.app.ui.adapters.dpToPx
 import org.jetbrains.anko.imageView
 import org.jetbrains.anko.linearLayout
+import org.jetbrains.anko.padding
 
 internal class SpriteAdapter(context: Context) : BindingAdapter<Int>(context) {
     private val sprites: List<Int>
@@ -49,8 +50,9 @@ internal class SpriteAdapter(context: Context) : BindingAdapter<Int>(context) {
             linearLayout {
                 lparams(width = MATCH_PARENT, height = WRAP_CONTENT)
                 orientation = LinearLayout.HORIZONTAL
+                padding = 4.dpToPx.toInt()
                 (1 until count).forEach {
-                    gravity = Gravity.CENTER
+                    gravity = Gravity.LEFT
                     imageView(getItem(it)!!) {
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.FIT_CENTER

@@ -12,21 +12,21 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * This BeingManager implementation manually creates a pool of Java
- * threads to run the being simulations.
+ * threads that run the being simulations.
  */
 public class RunnableThreadsMgr
-       extends BeingManager<SimpleBeingRunnable> {
+        extends BeingManager<SimpleBeingRunnable> {
     /**
      * Used for Android debugging.
      */
     private final static String TAG =
-        RunnableThreadsMgr.class.getName();
+            RunnableThreadsMgr.class.getName();
 
     /**
      * The list of beings (implemented as concurrent Java threads)
      * that are attempting to acquire palantiri for gazing.
      */
-    private List<Thread> mBeingThreads;
+    public List<Thread> mBeingThreads;
 
     /**
      * A factory method that returns a new SimpleBeingRunnable instance.
@@ -34,7 +34,7 @@ public class RunnableThreadsMgr
      * @return A new SimpleBeingRunnable instance
      */
     @Override
-    protected SimpleBeingRunnable newBeing() {
+    public SimpleBeingRunnable newBeing() {
         // Return a new SimpleBeingRunnable instance.
         // TODO -- you fill in here, replacing null with the
         // appropriate code.
@@ -50,8 +50,9 @@ public class RunnableThreadsMgr
         // Call a method to create and start a thread for each being.
         // TODO -- you fill in here.
 
-        // Call a method to start a thread to wait for all the being
-        // threads to finish.
+        // Call a method that creates and starts a thread that's then
+        //  used to wait for all the being threads to finish and
+        //  return that thread to the caller.
         // TODO -- you fill in here.
 
         // Block until the waiter thread has finished.
@@ -59,10 +60,10 @@ public class RunnableThreadsMgr
     }
 
     /**
-     * Create/start a list of threads that represent the beings in
-     * this simulation.
+     * Manually create/start a list of threads that represent the
+     * beings in .this simulation.
      */
-    private void beginBeingThreads() {
+    void beginBeingThreads() {
         // All STUDENTS:
         // Call the BeingManager.getBeings() method to iterate through
         // the beings, create a new Thread object for each one, and
@@ -82,12 +83,12 @@ public class RunnableThreadsMgr
     }
 
     /**
-     * Start a thread to wait for all the being threads to finish and
-     * return that thread to the caller.
+     * Create and start a thread that can be used to wait for all the
+     * being threads to finish and return that thread to the caller.
      *
      * @return Thread that is waiting for all the beings to complete.
      */
-    private Thread waitForBeingThreads() {
+    public Thread createAndStartWaiterForBeingThreads() {
         // Create a Java thread that waits for all being threads to
         // finish gazing.  If an interruption or exception occurs
         // while waiting for the threads to finish, call the
@@ -95,7 +96,6 @@ public class RunnableThreadsMgr
         // the catch clause, which trigger the simulator to generate a
         // shutdownNow() request.
         // TODO -- you fill in here.
-
 
         // Start running the thread.
         // TODO -- you fill in here.

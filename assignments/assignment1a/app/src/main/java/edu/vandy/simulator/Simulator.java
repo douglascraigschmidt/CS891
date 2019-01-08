@@ -1,12 +1,11 @@
 package edu.vandy.simulator;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 import edu.vandy.simulator.managers.beings.Being;
 import edu.vandy.simulator.managers.beings.BeingManager;
 import edu.vandy.simulator.managers.palantiri.Palantir;
-import edu.vandy.simulator.managers.palantiri.PalantirManager;
+import edu.vandy.simulator.managers.palantiri.PalantiriManager;
 import edu.vandy.simulator.model.base.BaseSnapshot;
 import edu.vandy.simulator.model.implementation.components.BeingComponent;
 import edu.vandy.simulator.model.implementation.components.PalantirComponent;
@@ -39,7 +38,7 @@ import static edu.vandy.simulator.model.implementation.components.SimulatorCompo
 /**
  * This class is the main controller for the simulation. It acts as a
  * mediator between the {@link BeingManager} and the {@link
- * PalantirManager} implementations. Since all requests to acquire
+ * PalantiriManager} implementations. Since all requests to acquire
  * and release Palantiri are routed through this class it is a
  * convenient place to check the running simulation for
  * inconsistencies which frees the Being manager to focus more on the
@@ -97,7 +96,7 @@ public class Simulator
      * The PalantiriManager that manages the acquisition and
      * release of all Palantiri resources.
      */
-    private PalantirManager mPalantiriManager;
+    private PalantiriManager mPalantiriManager;
     /**
      * Tracks whether a simulator is currently running, i.e,
      * whether the thread that called startSimulation has not
@@ -124,12 +123,6 @@ public class Simulator
      * it can be interrupted from the shutdown method.
      */
     private Thread mRunnerThread = null;
-
-    /**
-     * Flag set when a reset has been requested.
-     * This flag will be cleared once the reset had completed.
-     */
-    private volatile boolean mReset = false;
 
     /**
      * Saved model parameters used for model checking.
@@ -164,7 +157,7 @@ public class Simulator
      * @param gazingIterations The number of Being gazing iterations.
      */
     public void buildModel(BeingManager.Factory.Type beingManagerType,
-                           PalantirManager.Factory.Type palantiriManagerType,
+                           PalantiriManager.Factory.Type palantiriManagerType,
                            int beingCount,
                            int palantirCount,
                            int gazingIterations) {
@@ -203,7 +196,7 @@ public class Simulator
 
             // Construct an instance of the specified PalantiriManger type.
             mPalantiriManager =
-                    PalantirManager.Factory.newManager(palantiriManagerType,
+                    PalantiriManager.Factory.newManager(palantiriManagerType,
                             palantirCount,
                             this);
         }
@@ -418,51 +411,6 @@ public class Simulator
 
         require(expectedTotal == mGazingIterations * mBeingCount,
                 "Palantiri were only gazed into [%1$d/%$2d] times.");
-
-        //@@Doug: here is the Palantiri "fairness" check that
-        // unfortunately makes no sense. It's too bad because
-        // its a clever piece of testing code! Just delete the
-        // whole test from this point to the end of the method
-        // if there's no way for use to use it. Also, if you
-        // can think of any other tests that make sense, please
-        // feel free to and a new require() call with the
-        // appropriate error string for when it fails.
-        // Thanks!
-
-        // Calculate the expected estimate of gazing iterations
-        // for each Palantir. We are looking for a fair and even
-        // distribution of gazing counts for each Palantir. The
-        // min and max counts below will be at most 1 apart.
-        int minCount =
-                Math.floorDiv(
-                        mGazingIterations * mBeingCount,
-                        mPalantiriManager.getPalantirCount());
-        int maxCount =
-                (int) Math.ceil((float) (mGazingIterations * mBeingCount) /
-                        mPalantiriManager.getPalantirCount());
-
-        // Build up a list of Palantiri that do not have the
-        // expected number of gazing counts.
-        List<Palantir> errorPalantiri = getPalantiri().stream()
-                .filter(palantir ->
-                        palantir.getCount() < minCount ||
-                                palantir.getCount() > maxCount)
-                .collect(Collectors.toList());
-
-        require(errorPalantiri.size() == 0,
-                errorPalantiri.stream()
-                        .map(palantir ->
-                                String.format(
-                                        Locale.getDefault(),
-                                        "Palantiri[%1$d] was gazed into %2$d times " +
-                                                "but should have been gazed into " +
-                                                "[%3$d..%4$d] times.",
-                                        palantir.getId(),
-                                        palantir.getCount(),
-                                        minCount,
-                                        maxCount))
-                        .reduce((result, string) -> result + "\n" + string)
-                        .orElse("Impossible!"));
     }
 
     /**
@@ -503,11 +451,15 @@ public class Simulator
                 error("Palantir is still owned by another being.");
             }
 
-            // The Being now "owns" the Palantir.
-            being.setPalantirId(palantir.getId());
-
-            // The Palantir is now "owned" by the Being.
-            palantir.setBeingId(being.getId());
+            // Synchronize these 2 statements so that a snapshot
+            // will never be captured when another being triggers
+            // one between these two statements.
+            synchronized (this) {
+                // The Being now "owns" the Palantir.
+                being.setPalantirId(palantir.getId());
+                // The Palantir is now "owned" by the Being.
+                palantir.setBeingId(being.getId());
+            }
 
             // Note that we don't trigger a snapshot
             // until gazeAtPalantir is called.
@@ -539,7 +491,6 @@ public class Simulator
         // Set the being state to gazing which will immediately
         // trigger the creation of a model snapshot. This call
         // will not return until the gazing delay has completed.
-        palantir.setBeingId(being.getId());
         being.setState(BeingComponent.State.BUSY);
     }
 
@@ -554,7 +505,7 @@ public class Simulator
     public void releasePalantir(Being being, Palantir palantir) {
         if (palantir != null) {
             require(being.getPalantirId() == palantir.getId() &&
-                    palantir.getBeingId() == being.getId(),
+                            palantir.getBeingId() == being.getId(),
                     "Gazing error: being[%d] and " +
                             "palantir[%d] ids do not match.",
                     being.getId(),
@@ -563,9 +514,11 @@ public class Simulator
             // Clear linked ids and return to the IDLE state BEFORE
             // officially releasing the Palantir so that snapshots
             // capture a valid model state.
-            being.setPalantirId(-1);
-            palantir.setBeingId(-1);
-            being.setState(BeingComponent.State.IDLE);
+            synchronized (this) {
+                being.setPalantirId(-1);
+                palantir.setBeingId(-1);
+                being.setState(BeingComponent.State.IDLE);
+            }
 
             // Decrement the gazing count before releasing the palantir.
             decrementGazingCount();
@@ -585,13 +538,13 @@ public class Simulator
      */
     @Override
     public void stop() {
-        Log.i(TAG, "stop: called.");
+        Controller.log("stop: called.");
         if (isRunning()) {
             setState(CANCELLING);
             shutdown();
             setState(CANCELLED);
         }
-        Log.i(TAG, "stop: completed.");
+        Controller.log("stop: completed.");
     }
 
     /**
@@ -601,22 +554,7 @@ public class Simulator
      */
     @Override
     public void reset() {
-        synchronized (this) {
-            if (mReset) {
-                String msg = "Reset already in progress - fix this!";
-                Thread.dumpStack();
-                if (STRICT_MODE) {
-                    throw new IllegalStateException(msg);
-                } else {
-                    Log.w(TAG, msg);
-                }
-            }
-
-            mReset = true;
-        }
-
         try {
-            mReset = true;
             mGazingThreads.set(0);
 
             // For a more reliable and predictable shutdown outcome
@@ -633,9 +571,7 @@ public class Simulator
                 mPalantiriManager.reset();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Reset must never throw an exception - fix this!");
-        } finally {
-            mReset = false;
+            error("Reset must never throw an exception - fix this!: " + e);
         }
     }
 
@@ -661,7 +597,7 @@ public class Simulator
      */
     @Override
     public void shutdown() {
-        Log.i(TAG, "shutdown: entered.");
+        Controller.log("shutdown: entered.");
         if (mShutdown.getAndSet(true)) {
             warn("shutdown: already shutting down (ignoring request).");
         }
@@ -689,7 +625,7 @@ public class Simulator
 
             // Lastly, clear shutdown flag.
             mShutdown.set(false);
-            Log.i(TAG, "shutdown: exited.");
+            Controller.log("shutdown: exited.");
         }
     }
 
@@ -704,7 +640,7 @@ public class Simulator
     public void warn(String msg, Object... args) {
         // Format string if args are passed.
         msg = args.length == 0 ? msg : String.format(msg, args);
-        Log.w("Simulator", "Implementation warning: " + msg);
+        System.out.println("WARNING: " + msg);
     }
 
     /**
@@ -807,30 +743,56 @@ public class Simulator
             // Build a list of being component snapshots.
             Map<Long, BeingSnapshot> beingSnapshots =
                     getBeings().stream()
+                            .filter(Objects::nonNull)
                             .map(BeingComponent::buildSnapshot)
                             .collect(Collectors.toMap(
                                     BaseSnapshot::getId,
                                     Function.identity()));
 
+            if (beingSnapshots.size() != mBeingCount) {
+                warn("Expected %d beings but found %d!",
+                        mBeingCount, beingSnapshots.size());
+            }
+
             // Build a list of palantir component snapshots.
             Map<Long, PalantirSnapshot> palantirSnapshots =
                     getPalantiri()
                             .stream()
+                            .filter(Objects::nonNull)
                             .map(PalantirComponent::buildSnapshot)
                             .collect(Collectors.toMap(
                                     BaseSnapshot::getId,
                                     Function.identity()));
 
+            if (palantirSnapshots.size() != mPalantirCount) {
+                warn("Expected %d palantiri but found %d!",
+                        mBeingCount, beingSnapshots.size());
+            }
+
             // Package all three snapshots into a single model snapshot
             // wrapper.
-            mModelSnapshot =
+            ModelSnapshot modelSnapshot =
                     new ModelSnapshot(
                             new SimulatorSnapshot(this),
                             beingSnapshots,
                             palantirSnapshots,
                             component);
 
-            return new ModelSnapshot(mModelSnapshot);
+            if (!modelSnapshot.getBeings().isEmpty()) {
+                // Create an immutable copy of this cached model snapshot
+                // before existing this synchronized block.
+                modelSnapshot.getBeings().values().stream()
+                        .filter(b -> b.getPalantirId() != -1)
+                        .forEach(b -> {
+                            PalantirSnapshot ps =
+                                    modelSnapshot.getPalantiri().get(b.getPalantirId());
+                            if (ps.getBeingId() != b.getId()) {
+                                error("FRAMEWORK SYNCHRONIZATION ERROR!");
+                            }
+                        });
+            }
+
+            return modelSnapshot;
         }
     }
 
@@ -842,6 +804,10 @@ public class Simulator
      */
     @Override
     public ModelSnapshot updateModelSnapshot(ModelComponent component) {
+        if (true) {
+            return buildModelSnapshot(component);
+        }
+
         synchronized (this) {
             switch ((Simulator.Type) component.getType()) {
                 case BEING:
@@ -872,7 +838,17 @@ public class Simulator
 
             // Create an immutable copy of this cached model snapshot
             // before existing this synchronized block.
-            return new ModelSnapshot(mModelSnapshot);
+            ModelSnapshot modelSnapshot = new ModelSnapshot(mModelSnapshot);
+            modelSnapshot.getBeings().values().stream()
+                    .filter(b -> b.getPalantirId() != -1)
+                    .forEach(b -> {
+                        PalantirSnapshot ps =
+                                modelSnapshot.getPalantiri().get(b.getPalantirId());
+                        if (ps.getBeingId() != b.getId()) {
+                            error("FRAMEWORK SYNCHRONIZATION ERROR!");
+                        }
+                    });
+            return modelSnapshot;
         }
     }
 
@@ -932,7 +908,7 @@ public class Simulator
     /**
      * @return The current palantir manager instance.
      */
-    public PalantirManager getPalantirManager() {
+    public PalantiriManager getPalantirManager() {
         return mPalantiriManager;
     }
 }

@@ -3,11 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '27.0.2'
+    compileSdkVersion versions.compileSdk
+    //noinspection GradleDependency
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "edu.vandy.parallelstreams"
+        applicationId "edu.vandy.palantirisimulator"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode 1
@@ -23,6 +24,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        lintOptions {
+            abortOnError false
+        }
     }
 
     sourceSets {
@@ -38,7 +42,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$versions.support"
     implementation "com.android.support:support-v4:$versions.support"
     implementation "com.android.support:design:$versions.support"
@@ -47,17 +51,15 @@ dependencies {
     implementation "android.arch.lifecycle:common:$versions.archCommon"
     implementation "org.jetbrains.anko:anko-design:$versions.anko"
     implementation "org.jetbrains.anko:anko-common:$versions.anko"
-
-    //implementation "org.jetbrains.anko:anko-coroutines:$versions.anko"
     implementation "org.jetbrains.anko:anko-commons:$versions.anko"
 
     // Anko Layouts
-    compile "org.jetbrains.anko:anko-sdk25:$versions.anko"
-    compile "org.jetbrains.anko:anko-appcompat-v7:$versions.anko"
+    implementation "org.jetbrains.anko:anko-sdk25:$versions.anko"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$versions.anko"
 
     // Coroutine listeners for Anko Layouts
-    compile "org.jetbrains.anko:anko-sdk25-coroutines:$versions.anko"
-    compile "org.jetbrains.anko:anko-appcompat-v7-coroutines:$versions.anko"
+    implementation "org.jetbrains.anko:anko-sdk25-coroutines:$versions.anko"
+    implementation "org.jetbrains.anko:anko-appcompat-v7-coroutines:$versions.anko"
     implementation "com.google.code.gson:gson:$versions.gson"
     implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
     implementation "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
@@ -68,16 +70,22 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$versions.glide"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
-    testCompile "junit:junit:$versions.junit"
-    androidTestCompile("com.android.support.test.espresso:espresso-core:$versions.espresso") {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    compile "com.android.support.test:runner:$versions.testRunner"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin"
-}
-
-repositories {
-    mavenCentral()
+    implementation "com.android.support.test:runner:$versions.testRunner"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    testImplementation "junit:junit:$versions.junit"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$versions.espresso"
+    testImplementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
+	// Required by Vanderbilt autograder - do not remove
+	androidTestImplementation 'edu.vanderbilt.grader:rubric:1.1'
+	// Required by Vanderbilt autograder - do not remove
+	testImplementation 'edu.vanderbilt.grader:rubric:1.1'
 }
 
 apply plugin: 'kotlin-android-extensions'
+
+
+
+// Required by Vanderbilt autograder - do not remove
+// This apply statement MUST be be declared after the android block.
+apply plugin: 'edu.vanderbilt.grader.plugin'

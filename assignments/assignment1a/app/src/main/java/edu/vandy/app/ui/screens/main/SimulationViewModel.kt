@@ -5,17 +5,15 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.MainThread
 import android.util.Range
-import edu.vandy.R.id.settingsFragment
 import edu.vandy.app.extensions.scale
 import edu.vandy.app.ui.screens.settings.Settings
-import edu.vandy.app.ui.screens.settings.SettingsDialogFragment
 import edu.vandy.app.utils.KtLogger
 import edu.vandy.app.utils.info
 import edu.vandy.app.utils.warn
 import edu.vandy.simulator.Controller
 import edu.vandy.simulator.Simulator
 import edu.vandy.simulator.managers.beings.BeingManager
-import edu.vandy.simulator.managers.palantiri.PalantirManager
+import edu.vandy.simulator.managers.palantiri.PalantiriManager
 import edu.vandy.simulator.model.implementation.snapshots.ModelSnapshot
 import edu.vandy.simulator.model.interfaces.ModelObserver
 import org.jetbrains.anko.doAsync
@@ -24,7 +22,8 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
     /** Simulation model state live data feed. */
     private val modelStateFeed = MutableLiveData<ModelSnapshot>()
 
-    private var simulator: Simulator? = null
+    /** Simulator instance (exposed for instrumented tests). */
+    var simulator: Simulator? = null
 
     /**
      * Prevents repeated start and stop calls.
@@ -91,7 +90,9 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
     var gazingTimeRange: Range<Int> = Range(1, 4) // Arbitrary value
         set(value) {
             field = value
-            Controller.setGazingTimeRange(value.scale(1000f))
+            val scaledRange = value.scale(1000f)
+            Controller.setGazingTimeRange(
+                    scaledRange.lower, scaledRange.upper)
         }
 
     val simulationRunning: Boolean
@@ -101,7 +102,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      * Used to keep track of current model parameters.
      */
     data class ModelParameters(val beingManagerType: BeingManager.Factory.Type,
-                               val palantirManagerType: PalantirManager.Factory.Type,
+                               val palantirManagerType: PalantiriManager.Factory.Type,
                                val beings: Int,
                                val palantiri: Int,
                                val iterations: Int)
@@ -110,7 +111,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      * Initially set to empty values.
      */
     var modelParameters = ModelParameters(BeingManager.Factory.Type.NO_MANAGER,
-                                          PalantirManager.Factory.Type.NO_MANAGER,
+                                          PalantiriManager.Factory.Type.NO_MANAGER,
                                           0,
                                           0,
                                           0)
@@ -132,7 +133,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      */
     @MainThread
     fun startSimulationAsync(beingManagerType: BeingManager.Factory.Type,
-                             palantirManagerType: PalantirManager.Factory.Type,
+                             palantirManagerType: PalantiriManager.Factory.Type,
                              beings: Int,
                              palantiri: Int,
                              iterations: Int) {
@@ -157,7 +158,8 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
             simulator?.stop()
 
             Controller.setLogging(Settings.logging)
-            Controller.setGazingTimeRange(Settings.gazingDuration.scale(1000f))
+            val gazingRange = Settings.gazingDuration.scale(1000f)
+            Controller.setGazingTimeRange(gazingRange.lower, gazingRange.upper)
             Controller.setSimulationSpeed(Settings.animationSpeed / 100f)
 
             try {
@@ -224,7 +226,7 @@ class SimulationViewModel : ViewModel(), ModelObserver, KtLogger {
      */
     @MainThread
     fun updateSimulationModel(beingManagerType: BeingManager.Factory.Type,
-                              palantirManagerType: PalantirManager.Factory.Type,
+                              palantirManagerType: PalantiriManager.Factory.Type,
                               beingCount: Int,
                               palantirCount: Int,
                               gazingIterationCount: Int) {

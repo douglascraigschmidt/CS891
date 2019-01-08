@@ -330,11 +330,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
             }
         }
 
-        // Start or stop animations based on the state of each new being.
-//        snapshot.beings
-//                .filterIndexed { i, _ -> beingStateHasChanged(i) }
-//                .forEachIndexed { i, _ -> updateBeingAnimator(i) }
-
         // Only do a layout if the number of beings or palantiri have changed.
         if (prevSnapshot.beings.size != snapshot.beings.size ||
             prevSnapshot.palantiri.size != snapshot.palantiri.size) {
@@ -546,6 +541,11 @@ class SimulationView @JvmOverloads constructor(context: Context,
     private fun validateBeingState(snapshot: BeingSnapshot): Boolean {
         val s1 = snapshot.prevState
         val s2 = snapshot.state
+
+        if (s1 == s2) {
+            return true
+        }
+
         return when (s2) {
             State.HOLDING -> s1 == null || s1 == State.DONE
             State.IDLE -> s1 == null ||
@@ -670,19 +670,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
             return
         }
 
-        // Clear all palantir snapshot being id values
-        // since this view manages this field.
-        modelSnapshot.palantiri.values.forEach {
-           it.beingId = -1L
-        }
-
-        // Now link all palantiri back to their gazing beings.
-        modelSnapshot.beings.values.forEach {
-            if (it.palantirId != -1L) {
-                modelSnapshot.palantiri[it.palantirId]?.beingId = it.id
-            }
-        }
-
         modelSnapshot.beings
                 .map { it.value }
                 .forEach { snapshot ->
@@ -707,7 +694,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
                     } ?: palantiri.put(snapshot.id, PalantirSprite(this, snapshot))
                 }
 
-        // Make sure that no sprites exist that are no longer
+        // Ensure that no sprites exist that are no longer
         // represented in the current model snapshot.
         beings.filterKeys { !modelSnapshot.beings.containsKey(it) }
                 .forEach { beings.remove(it.key) }
@@ -737,7 +724,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (!oRealized || beings.count() == 0 || palantiri.count() == 0) {
+        if (!oRealized || (beings.count() == 0 && palantiri.count() == 0)) {
             return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
 
@@ -767,14 +754,22 @@ class SimulationView @JvmOverloads constructor(context: Context,
         var desiredHeight: Int
 
         val desiredBeingsHeight =
-                beings.values.last().bounds.oBottom +
-                spriteMargin +
-                oPaddingBottom
+                if (beings.count() == 0) {
+                    0
+                } else {
+                    beings.values.last().bounds.oBottom +
+                    spriteMargin +
+                    oPaddingBottom
+                }
 
         val desiredPalantiriHeight =
-                palantiri.values.last().bounds.oBottom +
-                spriteMargin +
-                oPaddingBottom
+                if (palantiri.count() == 0) {
+                    0
+                } else {
+                    palantiri.values.last().bounds.oBottom +
+                    spriteMargin +
+                    oPaddingBottom
+                }
 
         desiredWidth = maxWidth
         desiredHeight = max(maxHeight,
@@ -866,14 +861,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
      */
     private fun calcMaxSpriteCounts(portraitMode: Boolean)
             : Pair<Int, Int> {
-        // TODO: this is no longer necessary since we use
-        // context.getDisplaySize() instead of view width
-        // and height.
-        require(realized) {
-            "calcMaxSpriteCounts() should only " +
-            "be called once view has been realized."
-        }
-
         val minBeingSize = MIN_BEING_SIZE
         val minPalantirSize = (palantirScale * minBeingSize).toInt()
         val minMargin = spriteMargin
@@ -986,10 +973,6 @@ class SimulationView @JvmOverloads constructor(context: Context,
 
         // Update the maximum state text size from the latest snapshot.
         updateMaxStateSize()
-
-        if (beings.count() == 0 || palantiri.count() == 0) {
-            return
-        }
 
         // Need a valid size in the fixed dimension.
         require(width != 0 && height != 0) {
@@ -1172,8 +1155,11 @@ class SimulationView @JvmOverloads constructor(context: Context,
                                     minMargin: Int,
                                     range: Range<Int>)
             : Pair<Range<Int>, Int> {
-        // Extract the number of sprites.
-        val count = sprites.count()
+        // Extract the number of sprites. To handle case where
+        // the sprites map is empty, just use a count of 1 so
+        // that we return reasonable range values and the view
+        // will still function normally with the missing sprites.
+        val count = max(1, sprites.count())
 
         // Divide available height by number of sprites
         // yielding the maximum area available for each
@@ -1199,7 +1185,7 @@ class SimulationView @JvmOverloads constructor(context: Context,
         // the actual maximum allowable size for a sprite and
         // its optional label that will guarantee that all
         // sprites will be fully visible in the display area.
-        var size = spriteBounds
+        val size = spriteBounds
 
         // Sanity check.
         require((size * count) + minMargin * (count + 1)
@@ -1211,27 +1197,31 @@ class SimulationView @JvmOverloads constructor(context: Context,
 
         // Adjust this size to be no larger than a scaled
         // percent of the fixed dimension.
-        size = min(size, range.max.toFloat())
+        // Use a 2nd val size2 as per Google issue tracker
+        // https://issuetracker.google.com/issues/71029850
+        // or else debugger will not show local variables in
+        // this function!
+        val size2 = min(size, range.max.toFloat())
 
         // Sanity check.
-        require(size > 0) {
-            "Maximum palantir size ${size.toInt()} > 0."
+        require(size2 > 0) {
+            "Maximum palantir size ${size2.toInt()} > 0."
         }
 
         // Adjust minimum size if it now exceeds the maximum size.
         val minSize =
-                if (range.min > size) {
-                    size
+                if (range.min > size2) {
+                    size2
                 } else {
                     range.min.toFloat()
                 }
 
         // Safest way to determine the max margin is by
         // straight math (not using previous values).
-        val margin = (layoutSize - (size * count)) / (count + 1)
+        val margin = (layoutSize - (size2 * count)) / (count + 1)
 
         // Round down to ensure that total size is <= layoutSize
-        val adjustedRange = Range(minSize.toInt(), size.toInt())
+        val adjustedRange = Range(minSize.toInt(), size2.toInt())
         val requiredSize =
                 calcRequiredLayoutSize(count, adjustedRange.max, margin.toInt())
         require(requiredSize <= layoutSize) {
@@ -1339,6 +1329,16 @@ class SimulationView @JvmOverloads constructor(context: Context,
     private fun calcMaxSpriteSize(sprites: Map<Long, Sprite>,
                                   height: Float = -1f,
                                   withState: Boolean = Settings.showStates): SizeF {
+        // Return any non-zero values when the sprites map
+        // is empty. This ensures that the view will still
+        // function normally even when beings or palantiri
+        // fail to be created by the model.
+        if (sprites.isEmpty()) {
+            // Size doesn't matter, just as
+            // long as they are non-zero values.
+            return SizeF(100f, 100f)
+        }
+
         // If request is to use current height (height == -1)
         // then get the sprite height from the first sprite.
         val actualHeight =
@@ -1407,7 +1407,11 @@ class SimulationView @JvmOverloads constructor(context: Context,
      * performed in portrait mode.
      */
     private fun doLayout(bounds: Rect) {
-        require(beings.count() > 0 && palantiri.count() > 0)
+        // If we have no beings and no palantiri then
+        // there's nothing to layout so just return.
+        if (beings.count() == 0 && palantiri.count() == 0) {
+            return
+        }
 
         // Do the sprite layouts now.
         layoutRect.set(bounds)
@@ -1416,10 +1420,12 @@ class SimulationView @JvmOverloads constructor(context: Context,
         layoutRect.oRight /= 2
 
         // First layout beings.
-        doSpritesLayout(layoutRect,
-                        beings,
-                        maxBeingDim,
-                        spriteMargin)
+        if (beings.isNotEmpty()) {
+            doSpritesLayout(layoutRect,
+                            beings,
+                            maxBeingDim,
+                            spriteMargin)
+        }
 
         // Assuming that being size should remain constant,
         // determine the minimum margin to use for spacing
@@ -1438,10 +1444,12 @@ class SimulationView @JvmOverloads constructor(context: Context,
         layoutRect.oOffset(layoutRect.oRight, 0)
 
         // Now layout palantiri.
-        doSpritesLayout(layoutRect,
-                        palantiri,
-                        maxPalantirDim,
-                        minPalantirMargin)
+        if (palantiri.isNotEmpty()) {
+            doSpritesLayout(layoutRect,
+                            palantiri,
+                            maxPalantirDim,
+                            minPalantirMargin)
+        }
     }
 
     /**
@@ -1606,10 +1614,20 @@ class SimulationView @JvmOverloads constructor(context: Context,
 
     /**
      * Validates all beings and palantiri ranges and sizes.
+     * To support 0 beings and 0 palantiri, when either is
+     * detected, it doesn't really matter what the sizes
+     * and ranges are since they will never be used until
+     * that sprite count is > 0. So don't validate 0 count
+     * sprite groups.
      */
     private fun validateRanges(bounds: Size): Boolean {
-        validateBeingLayout(bounds)
-        validatePalantirLayout(bounds)
+        if (beings.count() > 0) {
+            validateBeingLayout(bounds)
+        }
+
+        if (palantiri.count() > 0) {
+            validatePalantirLayout(bounds)
+        }
         return true
     }
 
@@ -2553,11 +2571,9 @@ class SimulationView @JvmOverloads constructor(context: Context,
         private val offset = MutableOffset()
         private val rect = Rect()
         override fun draw(canvas: Canvas?) {
-            canvas!! // Never null
-
             // For wire frames, show the palantir gazing
             // wire frame for a random being sprite size.
-            if (Settings.showWireFrames) {
+            if (Settings.showWireFrames && !view.beings.isEmpty()) {
                 // Use as many beings as possible to help check
                 // out visual alignment of all possible gazing beings.
                 val index: Int =
@@ -2572,16 +2588,12 @@ class SimulationView @JvmOverloads constructor(context: Context,
                 rect.set(being.bounds)
                 calcGazeOffset(rect, offset)
                 rect.offset(offset.x, offset.y)
-                canvas.drawWireFrame(rect, Color.BLUE, true)
-
-                if (Settings.showStates) {
-
-                }
+                canvas?.drawWireFrame(rect, Color.BLUE, true)
 
                 // Draw frame around margin area.
                 rect.oTop = rect.oBottom
                 rect.oBottom = rect.oTop + view.spriteMargin
-                canvas.drawWireFrame(rect, Color.RED)
+                canvas?.drawWireFrame(rect, Color.RED)
             }
 
             super.draw(canvas)

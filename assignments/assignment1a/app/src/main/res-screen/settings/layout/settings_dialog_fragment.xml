@@ -465,17 +465,6 @@
         android:layout_gravity="start|center_vertical" />
 
     <TextView
-        android:id="@+id/settingsStrictModeLabel"
-        style="@style/Widget.Settings.RowTitle"
-        android:layout_gravity="start|center_vertical"
-        android:text="Strict Mode" />
-
-    <Switch
-        android:id="@+id/settingsStrictMode"
-        style="@style/Widget.Settings.RowWidget"
-        android:layout_gravity="start|center_vertical" />
-
-    <TextView
         android:id="@+id/settingsModelCheckerLabel"
         style="@style/Widget.Settings.RowTitle"
         android:layout_gravity="start|center_vertical"
@@ -483,6 +472,17 @@
 
     <Switch
         android:id="@+id/settingsModelChecker"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        android:id="@+id/settingsStrictModeLabel"
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Strict Mode" />
+
+    <Switch
+        android:id="@+id/settingsStrictMode"
         style="@style/Widget.Settings.RowWidget"
         android:layout_gravity="start|center_vertical" />
 

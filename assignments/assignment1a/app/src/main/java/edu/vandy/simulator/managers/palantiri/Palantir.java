@@ -12,10 +12,10 @@ import edu.vandy.simulator.model.implementation.components.PalantirComponent;
 public class Palantir
         extends PalantirComponent {
     /**
-     * PalantirManager for this Palantir. Used only for
+     * PalantiriManager for this Palantir. Used only for
      * error checking and requesting.
      */
-    private final PalantirManager mManager;
+    private final PalantiriManager mManager;
 
     /**
      * For auditing, keeps track of the number of
@@ -26,7 +26,7 @@ public class Palantir
     /**
      * Constructor initializes the fields.
      */
-    public Palantir(PalantirManager manager) {
+    public Palantir(PalantiriManager manager) {
         super(manager);
         mManager = manager;
     }

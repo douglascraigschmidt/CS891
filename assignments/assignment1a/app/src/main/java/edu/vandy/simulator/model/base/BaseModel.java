@@ -128,28 +128,17 @@ public abstract class BaseModel<Type, State>
      * this updated model snapshot to all registered model
      * observers.
      *
+     * NOTE: the above comment is outdated because a new fresh
+     * snapshot is created by updateModelSnapshot which no longer
+     * updates a cached snapshot. The comment is being kept
+     * until I'm sure that the underlying snapshot generation
+     * algorithm does not have any concurrency side-effects.
+     *
      * @param component Component that is triggering this snapshot.
      */
     @Override
     public void triggerSnapshot(ModelComponent component) {
-        // Attempt to update the cached model snapshot with
-        // a fresh snapshot from the triggering component.
-        ModelSnapshot snapshot = updateModelSnapshot(component);
-
-        // If a new snapshot was generated then forward it
-        // to the presentation layer. When the triggering
-        // component is a Palantir, the Palantir component
-        // dirty count is incremented but no new snapshot
-        // is generated. Instead, the next time a being
-        // component triggers a snapshot, the update method
-        // will check for any changed Palantiri and generate
-        // new snapshots for each one that has changed and
-        // include these snapshots along with the new Being
-        // snapshot in the model snapshot that is then
-        // pushed to the presentation layer.
-        if (snapshot != null) {
-            broadcastSnapshot(updateModelSnapshot(component));
-        }
+        broadcastSnapshot(updateModelSnapshot(component));
     }
 
     /**

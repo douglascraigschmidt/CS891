@@ -34,9 +34,9 @@ fun Color.adjustColorBrightnessRGB(color: Int, factor: Float): Int {
     val b = Color.blue(color)
 
     return Color.argb(a,
-                      Math.max((r * factor).toInt(), 0),
-                      Math.max((g * factor).toInt(), 0),
-                      Math.max((b * factor).toInt(), 0))
+            Math.max((r * factor).toInt(), 0),
+            Math.max((g * factor).toInt(), 0),
+            Math.max((b * factor).toInt(), 0))
 }
 
 fun Color.adjustColorBrightnessHSV(color: Int, factor: Float): Int {
@@ -71,12 +71,13 @@ fun Color.setStatusBarColor(window: Window, color: Int) {
  */
 private fun lerp(startValue: Float, endValue: Float, fraction: Float,
                  interpolator: Interpolator?): Float {
-    var fraction = fraction
-    if (interpolator != null) {
-        fraction = interpolator.getInterpolation(fraction)
+    var frac = if (interpolator != null) {
+        interpolator.getInterpolation(fraction)
+    } else {
+        fraction
     }
 
-    return lerp(startValue, endValue, fraction)
+    return lerp(startValue, endValue, frac)
 }
 
 /**

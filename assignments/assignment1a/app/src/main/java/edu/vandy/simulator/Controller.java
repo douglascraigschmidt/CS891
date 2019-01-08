@@ -1,7 +1,5 @@
 package edu.vandy.simulator;
 
-import android.util.Range;
-
 import java.security.InvalidParameterException;
 import java.util.Random;
 
@@ -26,8 +24,8 @@ public class Controller {
     /**
      * The min/max gazing timeout interval (randomly selected).
      */
-    private static Range<Integer> mGazingTimeRange =
-            new Range<>(1000, 4000);
+    private static int mGazingMinTime = 1000;
+    private static int mGazingMaxTime = 4000;
 
     /**
      * Flat indicating if logging output should be displayed.
@@ -96,20 +94,29 @@ public class Controller {
     }
 
     /**
-     * @return The current gazing time range.
+     * @return The current gazing range minimum bound.
      */
-    public static Range<Integer> getGazingTimeRange() {
-        return mPerformanceMode ? new Range<>(0, 0) : mGazingTimeRange;
+    public static int getGazingMinTime() {
+        return mPerformanceMode ? 0 : mGazingMinTime;
+    }
+
+    /**
+     * @return The current gazing range maximum bound.
+     */
+    public static int getGazingMaxTime() {
+        return mPerformanceMode ? 0 : mGazingMaxTime;
     }
 
     /**
      * Sets the being gazing time range from which a random value
      * is selected for each gazing iteration.
      *
-     * @param gazingTimeRange A min/max gazing time range.
+     * @param min The gazing time minimum bound.
+     * @param max The gazing time maximum bound.
      */
-    public static void setGazingTimeRange(Range<Integer> gazingTimeRange) {
-        Controller.mGazingTimeRange = gazingTimeRange;
+    public static void setGazingTimeRange(int min, int max) {
+        Controller.mGazingMinTime = min;
+        Controller.mGazingMaxTime = max;
     }
 
     /**
@@ -129,7 +136,6 @@ public class Controller {
      * @param msg  String or format string to output
      * @param args vararg substitution list if msg is a format string.
      */
-
     public static void log(String msg, Object... args) {
         if (mLogging) {
             if (args.length > 0) {
@@ -145,9 +151,7 @@ public class Controller {
      * and maximum range values.
      */
     public static long getRandomDelay() {
-        return getRandomDelay(
-                getGazingTimeRange().getLower(),
-                getGazingTimeRange().getUpper());
+        return getRandomDelay(getGazingMinTime(), getGazingMaxTime());
     }
 
     /**
