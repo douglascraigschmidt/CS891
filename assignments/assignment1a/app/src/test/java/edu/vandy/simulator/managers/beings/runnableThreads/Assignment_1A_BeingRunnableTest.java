@@ -28,7 +28,7 @@ public class Assignment_1A_BeingRunnableTest {
                     "and in the correct order.",
             reference = {"@@Unfinished"}
     )
-    @Test(timeout = 2000)
+    @Test(timeout = 4000)
     public void testBeingAcquirePalantirAndGazeMethod() {
         BeingManager beingManager = mock(RunnableThreadsMgr.class);
         Palantir palantir = mock(Palantir.class);
@@ -61,7 +61,7 @@ public class Assignment_1A_BeingRunnableTest {
                     "and in the correct order.",
             reference = {"@@Unfinished"}
     )
-    @Test(timeout = 2000)
+    @Test(timeout = 4000)
     public void testBeingRunGazingSimulationMethodErrorHandling() {
         BeingManager beingManager = mock(RunnableThreadsMgr.class);
 
