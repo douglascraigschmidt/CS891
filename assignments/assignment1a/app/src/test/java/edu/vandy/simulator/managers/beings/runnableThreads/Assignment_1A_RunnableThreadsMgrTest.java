@@ -74,7 +74,7 @@ public class Assignment_1A_RunnableThreadsMgrTest {
                     "and in the correct order.",
             reference = {"@@Unfinished"}
     )
-    @Test(timeout = 2000)
+    @Test(timeout = 4000)
     public void beginBeingThreadsTest() {
         // Setup mocks.
         RunnableThreadsMgr beingManager = mock(RunnableThreadsMgr.class);
@@ -116,7 +116,7 @@ public class Assignment_1A_RunnableThreadsMgrTest {
                     "and in the correct order.",
             reference = {"@@Unfinished"}
     )
-    @Test(timeout = 2000)
+    @Test(timeout = 4000)
     public void runSimulationTest() throws Exception {
         RunnableThreadsMgr beingManager = mock(RunnableThreadsMgr.class);
         Thread waiterThread = mock(Thread.class);
@@ -149,7 +149,7 @@ public class Assignment_1A_RunnableThreadsMgrTest {
                     "and in the correct order.",
             reference = {"@@Unfinished"}
     )
-    @Test(timeout = 2000)
+    @Test(timeout = 4000)
     public void testCreateAndStartWaiterForBeingThreadsMethod() {
         RunnableThreadsMgr beingManager = new RunnableThreadsMgr();
 
