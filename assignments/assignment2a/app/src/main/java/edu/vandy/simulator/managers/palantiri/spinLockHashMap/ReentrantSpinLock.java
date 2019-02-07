@@ -24,6 +24,15 @@ class ReentrantSpinLock
     // TODO -- you fill in here.
 
     /**
+     * @return The current recursion count. 
+     */
+    public int getRecursionCount() {
+        // TODO -- you fill in here, replacing -1 with the appropriate
+        // value.
+        return -1;
+    }
+
+    /**
      * Acquire the lock only if it is free at the time of invocation.
      * Acquire the lock if it is available and returns immediately
      * with the value true. If the lock is not available then this
