@@ -1,0 +1,17 @@
+subprojects {
+    afterEvaluate {
+        if (plugins.findPlugin('android') || plugins.findPlugin('android-library')) {
+            dependencies {
+                androidTestImplementation 'edu.vanderbilt.grader:rubric:1.1'
+            }
+            
+            if (plugins.findPlugin('android')) {
+                apply plugin: 'edu.vanderbilt.grader.plugin'
+            }
+        }
+        
+        dependencies {
+            testImplementation 'edu.vanderbilt.grader:rubric:1.1'
+        }
+    }
+}
