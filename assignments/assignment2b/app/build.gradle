@@ -85,8 +85,9 @@ dependencies {
     testImplementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
 
-	// Required by Vanderbilt autograder - do not remove
-	testImplementation 'edu.vanderbilt.grader:rubric:1.1'
+    // Required by Vanderbilt autograder - do not remove
+    testImplementation 'edu.vanderbilt.grader:rubric:1.1'
+    androidTestImplementation 'edu.vanderbilt.grader:rubric:1.1'
 }
 
 
