@@ -95,12 +95,8 @@ public class ReentrantLockHashMapSimpleSemaphoreMgr extends PalantiriManager {
         // Undergraduate students are free to use a Java 8 stream, but
         // it's not required.
 
-        // Create a new HashMap.
-        mPalantiriMap = new HashMap<>();
-
         if (Assignment.isUndergraduateTodo()) {
             // TODO -- you fill in here.
-
         } else if (Assignment.isGraduateTodo()) {
             // TODO -- you fill in here.
         } else {
