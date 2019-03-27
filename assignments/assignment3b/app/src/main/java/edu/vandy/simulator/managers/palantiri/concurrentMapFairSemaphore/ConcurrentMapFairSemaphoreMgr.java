@@ -86,24 +86,12 @@ public class ConcurrentMapFairSemaphoreMgr
 
         // TODO -- you fill in here.
 
-        // Use Java 8 streams to initialize a new ConcurrentHashMap.
-        mPalantiriMap = getPalantiri()
-            // Convert the list into a stream.
-            .stream()
-
-            // Collect palantiri into ConcurrentHashMap and initialize
-            // each key to "true" indicating it's available.
-            .collect(Collectors.toConcurrentMap(Function.identity(),
-                                                p -> true));
-
         // Initialize the Semaphore to use a "fair" implementation
         // that mediates concurrent access to the given Palantiri.
         // Grad students must use a FairSemaphoreCO, whereas ugrad
         // students must use a FairSemaphoreMO.
         if (Assignment.isUndergraduateTodo()) {
-            mAvailablePalantiri = new FairSemaphoreMO(getPalantiri().size());
         } else if (Assignment.isGraduateTodo()) {
-            mAvailablePalantiri = new FairSemaphoreCO(getPalantiri().size());
         }
     }
 
@@ -122,29 +110,6 @@ public class ConcurrentMapFairSemaphoreMgr
         // and then return that palantir to the client.  There should
         // be *no* synchronizers in this method.
         // TODO -- you fill in here.
-
-        // Acquire the Semaphore allowing for the premature
-        // termination from an Interrupted exception.
-        try {
-            mAvailablePalantiri.acquire();
-
-            // Keep iterating until we get a palantir.
-            for (; ; ) {
-                // Iterate through the concurrent hash map.
-                for (Palantir pal : mPalantiriMap.keySet()) {
-                    if (mPalantiriMap.replace(pal, true, false)) {
-                        // Return the Palantiri after finding one that
-                        // had previous value of true.
-                        return pal;
-                    }
-                }
-            }
-        } catch (InterruptedException e) {
-            // Wrap the interrupted exception in a
-            // CancellationException and throw.
-            throw new CancellationException(
-                    "ConcurrentFairSemaphoreMgr was interrupted");
-        }
     }
 
     /**
@@ -159,19 +124,6 @@ public class ConcurrentMapFairSemaphoreMgr
         // properly.  There should be *no* synchronizers in this
         // method.
         // TODO -- you fill in here.
-
-        // Do a simple sanity check!
-        if (palantir != null) {
-            // Put the "true" value back into ConcurrentHashMap for
-            // the Palantir key, which also atomically returns the
-            // LeaseState associated with the Palantir back to
-            // mNotInUse to indicate it's available again.
-            if (!mPalantiriMap.put(palantir, true)) {
-                // Release the semaphore if the @a palantir parameter
-                // was previously in use.
-                mAvailablePalantiri.release();
-            }
-        }
     }
 
     /*
