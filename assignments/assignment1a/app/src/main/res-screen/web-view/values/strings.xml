@@ -1,0 +1,9 @@
+<resources>
+    <string name="title_activity_web_view">Navigate to web page</string>
+    <string name="default_web_view">"https://www.dre.vanderbilt.edu/~schmidt/imgs"</string>
+    <string name="search">Search</string>
+    <string name="search_view_hint">Search…</string>
+    <string name="title_activity_image_picker">ImagePickerActivity</string>
+    <string name="selected_item_not_image_url">The selected item is not a valid image rootUrl.</string>
+    <string name="pick_image_hint">Long-click on an image to add to this list.</string>
+</resources>
