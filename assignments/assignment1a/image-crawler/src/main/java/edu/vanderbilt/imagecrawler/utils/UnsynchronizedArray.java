@@ -18,15 +18,18 @@ public class UnsynchronizedArray<E>
      * Default initial capacity (declared 'protected' for unit tests).
      */
     protected static final int DEFAULT_CAPACITY = 10;
+
     /**
      * Shared empty array instance used for empty instances.
      */
     private static final Object[] sEMPTY_ELEMENTDATA = {};
+
     /**
      * The array buffer that stores all the array elements.  The
      * capacity is the length of this array buffer.
      */
     private Object[] mElementData;
+
     /**
      * The size of the array (the number of elements it contains).
      * This field also indicates the next "open" slot in the array,
