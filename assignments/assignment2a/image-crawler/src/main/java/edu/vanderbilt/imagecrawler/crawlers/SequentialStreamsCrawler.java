@@ -19,7 +19,7 @@ import static edu.vanderbilt.imagecrawler.utils.Crawler.Type.PAGE;
 public class SequentialStreamsCrawler // Loaded via reflection
        extends ImageCrawler {
     /**
-     * Recursively crawls the passed page at the returning the total
+     * Recursively crawls the given page and return the total
      * number of processed images.
      *
      * @param pageUri The URI that's being crawled at this point
@@ -56,7 +56,7 @@ public class SequentialStreamsCrawler // Loaded via reflection
     /**
      * Uses a Java 8 features to (1) download and process images on
      * this page via processImage(), (2) recursively crawl other
-     * hyperlinks accessible from this page via crawlPage(), and (3)
+     * hyperlinks accessible from this page via performCrawl(), and (3)
      * return a sum of all the image counts.
      *
      * @param pageUri The page uri to crawl.
@@ -79,7 +79,7 @@ public class SequentialStreamsCrawler // Loaded via reflection
      */
     protected int processImage(URL url) {
         // Use a Java 8 sequential stream to:
-        // 1. Convert the transforms array into stream.
+        // 1. Convert the transforms list into stream.
         // 2. Try to create a new cached image item for each
         //    transform skipping any that already cached.
         // 3. Transform and store each non-cached image (via map()).
