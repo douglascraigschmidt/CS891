@@ -1,0 +1,5 @@
+<resources>
+    <string name="action_delete">Delete</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_select_all">Select all</string>
+</resources>
