@@ -25,6 +25,8 @@ import kotlin.test.fail
  */
 @InternalCoroutinesApi
 open class SynchronizedArrayTests : AssignmentTests() {
+    override val runTest: Boolean = false
+
     @Mock
     lateinit var mockArray: Array<Int>
 
@@ -116,9 +118,9 @@ open class SynchronizedArrayTests : AssignmentTests() {
 
     @Before
     fun before() {
-        if (skipTest) return
-
-        array.setField("", mockArray, Array::class.java)
+        if (runTest) {
+            array.setField("", mockArray, Array::class.java)
+        }
     }
 
     @Test

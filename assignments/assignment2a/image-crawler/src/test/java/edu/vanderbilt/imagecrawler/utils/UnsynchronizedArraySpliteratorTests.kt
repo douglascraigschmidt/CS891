@@ -14,38 +14,68 @@ import org.junit.rules.ExpectedException
  * Tests UnsynchronizedArray Spliterator inner class if base class [skipTest] flag is false.
  */
 open class UnsynchronizedArraySpliteratorTests : AssignmentTests() {
-    @DisplayName("Spliterator must properly handle sequential and parallel calculation of factorials")
-    @ParameterizedTest(name = "sequential and parallel factorial calculation of {0} must be equal to {1}")
-    @CsvSource("19, 121645100408832000", "20, 2432902008176640000")
-    fun `test spliterator using a factorials`(number: Int, factorial: Long) {
-        if (skipTest) return
+    @Test
+    fun runSpliteratorTest19() {
+        if (!Assignment.testType(Assignment.GRADUATE)) {
+            return
+        }
 
-        val array = newArray<Long>()
+        val array = UnsynchronizedArray<Long>()
 
-        for (i in 1..number) {
+        val factorialOf19 = 121645100408832000L
+
+        for (i in 1..19) {
             array.add(i.toLong())
         }
 
         val f1 = array
                 // Convert to a sequential stream.
-                .stream()
+                .stream()!!
 
                 // Perform a reduction.
-                .reduce(1L) { x, y -> x * y }
+                .reduce(1L) { x, y -> x!! * y!! }
 
-        assertEquals(factorial, f1)
+        assertEquals(factorialOf19, f1)
 
         val f2 = array
                 // Convert to a parallel stream.
-                .parallelStream()
+                .parallelStream()!!
 
                 // Perform a reduction.
-                .reduce(1L) { x, y -> x * y }
+                .reduce(1L) { x, y -> x!! * y!! }
 
-        assertEquals(factorial, f2)
+        assertEquals(factorialOf19, f2)
     }
 
-    private fun <T> newArray(): Array<T> {
-        return UnsynchronizedArray()
+    @Test
+    fun runSpliteratorTest20() {
+        if (!Assignment.testType(Assignment.GRADUATE)) {
+            return
+        }
+
+        val array = UnsynchronizedArray<Long>()
+
+        val factorialOf20 = 2432902008176640000L
+
+        for (i in 1..20)
+            array.add(i.toLong())
+
+        val f1 = array
+                // Convert to a parallel stream.
+                .stream()!!
+
+                // Perform a reduction.
+                .reduce(1L) { x, y -> x!! * y!! }
+
+        assertEquals(factorialOf20, f1)
+
+        val f2 = array
+                // Convert to a parallel stream.
+                .parallelStream()!!
+
+                // Perform a reduction.
+                .reduce(1L) { x, y -> x!! * y!! }
+
+        assertEquals(factorialOf20, f2)
     }
 }
