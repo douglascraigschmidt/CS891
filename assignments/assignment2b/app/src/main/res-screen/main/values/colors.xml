@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grid_item_pressed">@color/accentColor</color>
+    <color name="grid_item_selected_color_filter">#50FF4081</color>
+    <color name="speed_bottom_sheet_background_color">#806d6d6d</color>
+    <color name="fabProgressColor">#B38DFF</color>
+</resources>
