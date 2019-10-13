@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="edu.vanderbilt.crawler">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- As of Android 9, clear text traffic is not permitted unless specified explicitly -->
+    <application
+        android:name=".app.App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_ladybug"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_ladybug_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.screens.main.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.screens.webview.WebViewActivity"
+            android:label="@string/title_activity_web_view"
+            android:parentActivityName=".ui.screens.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.screens.pager.PagedActivity"
+            android:label="@string/title_activity_details"
+            android:theme="@style/AppTheme.NoActionBar"/>
+    </application>
+
+</manifest>

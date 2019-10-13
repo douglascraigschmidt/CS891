@@ -1,0 +1,38 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "org.jsoup:jsoup:$versions.jsoup"
+    implementation "org.jetbrains:annotations:$versions.annotations"
+    implementation "commons-io:commons-io:$versions.commons_io"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
+    testImplementation "junit:junit:$versions.junit"
+}
+
+test {
+    //For Junit5: useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
