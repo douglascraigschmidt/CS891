@@ -242,7 +242,6 @@ public class SynchronizedArray<E>
      */
     public void replaceAll(UnaryOperator<E> operator) {
         // TODO -- you fill in here.
-        return null;
     }
 
     /**
@@ -257,7 +256,6 @@ public class SynchronizedArray<E>
      */
     public void forEach(Consumer<? super E> action) {
         // TODO -- you fill in here.
-        return null;
     }
 
     /*
