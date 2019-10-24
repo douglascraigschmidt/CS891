@@ -4,8 +4,6 @@ import admin.AssignmentTests
 import admin.setField
 import kotlinx.coroutines.*
 import org.junit.Before
-import org.junit.Test
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import java.util.*
@@ -86,7 +84,7 @@ open class SynchronizedArrayTestsBase : AssignmentTests() {
     }
 
     @Before
-    fun before() {
+    open fun before() {
         array.setField("", mockArray, Array::class.java)
     }
 

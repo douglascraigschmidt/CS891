@@ -12,6 +12,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito.*
+import java.lang.Thread.sleep
 import java.net.URL
 import java.util.*
 import java.util.function.Function
@@ -261,6 +262,7 @@ class ParallelStreamsCrawler2Tests : AssignmentTests() {
             WebPageElement("$imageRoot$it", IMAGE)
         }.shuffled()
         val urlArray = UnsynchronizedArray(imageElements.map { it.getURL() })
+        val urlCount = urlArray.size()
 
         `when`(mockCrawler.processImages(urlArray)).thenCallRealMethod()
         `when`(mockCrawler.transformImage(any())).thenAnswer {
@@ -277,10 +279,11 @@ class ParallelStreamsCrawler2Tests : AssignmentTests() {
         val mockImages = mutableListOf<Image?>()
         repeat(urls) { mockImages.add(mockImage) }
         repeat(nullUrls) { mockImages.add(null) }
+        val maxDownloadCalls = mockImages.size
         mockImages.shuffle()
         `when`(mockCrawler.getOrDownloadImage(any())).thenAnswer {
             if (mockImages.isEmpty()) {
-                fail("TEST ERROR!!! Please report his error to your course instructor")
+                fail("getOrDownloadImages() should only been called $maxDownloadCalls times.")
             }
             mockImages.removeAt(0)
         }
@@ -288,8 +291,14 @@ class ParallelStreamsCrawler2Tests : AssignmentTests() {
         /******* TEST CALL ************/
         val result = mockCrawler.processImages(urlArray)
 
+        // Parallel thread issue may be resolved by waiting a short time
+        // for the last thread to complete.
+        if (result < expected) {
+            sleep(1000)
+        }
+
         /******* TEST EVALUATION ************/
-        verify(mockCrawler, times(urlArray.size())).getOrDownloadImage(any())
+        verify(mockCrawler, times(urlCount)).getOrDownloadImage(any())
         verify(mockCrawler, times(urls)).transformImage(any())
         assertEquals(expected, result)
     }

@@ -12,8 +12,9 @@ class SynchronizedArrayTestsForGrads : SynchronizedArrayTestsBase() {
      * the current project assignment does not include the GRADUATE flag.
      */
     @Before
-    fun privateBefore() {
+    override fun before() {
         graduateTest()
+        super.before()
     }
 
     @Test
