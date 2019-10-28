@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+scripts="$( cd "$(dirname "$0")" ; pwd -P )"
+root="`dirname $scripts`"
+files=`cd ${scripts}; sort -u common-files 1*-files 2[ab]-files`
+
+${scripts}/delete-branch-files
+(cd ${root}; for file in ${files}; do git checkout master $file; done)
