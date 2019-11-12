@@ -1,0 +1,33 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/accentColor</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowAnimationStyle">@style/FadeTransition.Activity</item>-->
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="FadeTransition.Activity" parent="@android:style/Animation.Activity">
+        <!--<item name="android:windowEnterAnimation">@transition/fade_in</item>-->
+        <!--<item name="android:windowExitAnimation">@transition/fade_out</item>-->
+        <!--<item name="android:activityOpenEnterAnimation">@transition/fade_in</item>-->
+        <!--<item name="android:activityOpenExitAnimation">@transition/fade_out</item>-->
+        <!--<item name="android:activityCloseEnterAnimation">@transition/fade_in</item>-->
+        <!--<item name="android:activityCloseExitAnimation">@transition/fade_out</item>-->
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+</resources>

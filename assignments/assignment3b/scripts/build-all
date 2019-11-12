@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+scripts="$( cd "$(dirname "$0")" ; pwd -P )"
+root="`dirname $scripts`"
+branches="1a 1b 2a 2b 2c 3a 3b 4"
+root=crawler-2018
+
+cleanDir()
+{
+	find . \( -name .idea -o -name build -o -name .gradle -name log -o -name logs \) -exec rm -r {} +;
+	find . -type f -a \( -name '*.iml' \) -exec rm {} +;
+}
+
+( 
+	cd ${root}
+
+	echo "*** checking out master branch ***"
+	git checkout master
+
+#	for branch in ${branches}; do
+#		echo "*** $branch: deleting ***"
+#		git branch -d ${branch}
+#	done
+
+	for branch in ${branches}; do
+		echo "*** ${branch}: checkout ***"
+		git checkout ${branch}
+
+		echo "*** ${branch}: cleaning ***"
+		cleanDir
+
+		echo "*** ${branch}: getting latest scripts ***"
+		git checkout master scripts
+
+		echo "*** ${branch}: rebuilding from master***"
+		./scripts/build-${branch}
+
+		echo "*** ${branch}: adding changes ***"
+		git add .
+
+		echo "*** ${branch}: status ***"
+		git status
+
+		echo "*** ${branch}: committing changes ***"
+		git commit -m"Rebuilt branch from master"
+
+		echo "*** ${branch}: pushing changes ***"
+		git push
+
+		echo "*** ${branch}: done ***"
+	done
+
+	echo "*** checking out master branch ***"
+	git checkout master
+)

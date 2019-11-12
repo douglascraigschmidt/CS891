@@ -1,0 +1,10 @@
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.screens.main.MainActivity">
+    <!--<item-->
+        <!--android:id="@+id/action_search"-->
+        <!--android:icon="?android:attr/actionModeWebSearchDrawable"-->
+        <!--android:title="Search"-->
+        <!--app:actionViewClass="android.support.v7.widget.SearchView"-->
+        <!--app:showAsAction="always|collapseActionView"/>-->
+</menu>

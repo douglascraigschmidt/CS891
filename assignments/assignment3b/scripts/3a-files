@@ -1,0 +1,6 @@
+README-3a.html
+image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/ForkJoinCrawler1.java
+
+app/src/androidTest/java/assignmentTests/Assignment3aTests.kt
+image-crawler/src/test/java/assignmentTests/optionalTests/ForkJoin1LocalCrawlTest.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/crawlers/ForkJoinCrawler1Tests.kt
