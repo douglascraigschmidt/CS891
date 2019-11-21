@@ -1,0 +1,13 @@
+README-2a.html
+image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/SequentialStreamsCrawler.java
+image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/ArraySpliterator.java
+image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/SynchronizedArray.java
+image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArray.java
+
+app/src/androidTest/java/assignmentTests/Assignment2aTests.kt
+image-crawler/src/test/java/assignmentTests/optionalTests/SequentialStreamsLocalCrawlTest.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/crawlers/SequentialStreamsCrawlerTests.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/SynchronizedArrayTestsBase.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/SynchronizedArrayTestsForGrads.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArraySpliteratorTestsBase.kt
+image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArraySpliteratorTestsForUndergrads.kt

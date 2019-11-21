@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteX="4dp"
+    tools:layout_editor_absoluteY="81dp">
+
+
+    <edu.vanderbilt.crawler.ui.views.AspectImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/placeholder" />
+    <!--android:layout_gravity="start|top"-->
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:padding="0dp"
+        android:progress="0"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/imageSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="8sp"
+        android:autoSizeMinTextSize="2sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:textColor="@android:color/secondary_text_light"
+        android:visibility="gone"
+        tools:text="Transforming" />
+    <!--android:layout_marginTop="2dp"-->
+
+    <TextView
+        android:id="@+id/thread"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="8sp"
+        android:autoSizeMinTextSize="2sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:textColor="@android:color/secondary_text_light"
+        android:visibility="gone"
+        tools:text="Thread: ####" />
+    <!--android:layout_marginTop="2dp"-->
+
+    <TextView
+        android:id="@+id/state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:autoSizeMaxTextSize="8sp"
+        android:autoSizeMinTextSize="2sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_horizontal"
+        android:lines="1"
+        android:textColor="@android:color/secondary_text_light"
+        android:visibility="gone"
+        tools:text="WRITE" />
+
+</LinearLayout>

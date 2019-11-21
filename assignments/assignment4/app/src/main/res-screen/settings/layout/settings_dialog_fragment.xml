@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsGridLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha=".9"
+    android:background="@color/primaryDarkColor"
+    android:columnCount="2"
+    android:padding="12dp"
+    tools:ignore="UselessParent">
+    <!--android:layout_width="match_parent"-->
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Widget.Settings.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name" />
+
+            <TextView
+                style="@style/Widget.Settings.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/development_settings" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_launcher_ladybug_round" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_crawler_configuration_group"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Crawler Configuration" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Mode" />
+
+    <RadioGroup
+        android:id="@+id/settingsImageSourceRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center_vertical|fill_horizontal"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/settingsLocalCrawl"
+            style="@style/Widget.Settings.TextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Local" />
+
+        <RadioButton
+            android:id="@+id/settingsRemoteCrawl"
+            style="@style/Widget.Settings.TextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Remote" />
+    </RadioGroup>
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Strategy" />
+
+    <Spinner
+        android:id="@+id/settingsCrawlStrategy"
+        android:layout_width="0dp"
+        android:layout_gravity="start|center_vertical|fill_horizontal" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Depth" />
+
+    <Spinner
+        android:id="@+id/settingsCrawlDepth"
+        android:layout_width="0dp"
+        android:layout_gravity="start|center_vertical|fill_horizontal" />
+
+    <TextView
+        android:id="@+id/settingsTransformsGroup"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Transforms" />
+
+    <LinearLayout
+        android:id="@+id/transformsLayoutView"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:orientation="vertical"
+        tools:listitem="@layout/settings_checked_list_item" />
+
+    <!--<edu.vanderbilt.crawler.ui.views.NoScrollListView-->
+    <!--android:id="@+id/transformsListView"-->
+    <!--style="@style/Widget.Settings.RowWidget"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_columnSpan="2"-->
+    <!--tools:listitem="@layout/settings_checked_list_item" />-->
+
+    <TextView
+        android:id="@+id/settings_appearance_group"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Appearance" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Progress" />
+
+    <Switch
+        android:id="@+id/settingsShowProgress"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Size" />
+
+    <Switch
+        android:id="@+id/settingsShowSize"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="State" />
+
+    <Switch
+        android:id="@+id/settingsShowState"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Thread" />
+
+    <Switch
+        android:id="@+id/settingsShowThread"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        android:id="@+id/viewScaleLabel"
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_width="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:text="Zoom" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical|fill_horizontal"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/viewScaleSeekBar"
+            style="@style/Widget.Settings.RowWidget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical|fill_horizontal"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_crawler_speed_group"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Crawl Speed" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Speed" />
+
+    <SeekBar
+        android:id="@+id/speedSeekBar"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical|fill_horizontal"
+        android:max="100" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Speed bar" />
+
+    <Switch
+        android:id="@+id/settingsShowSpeedBar"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+
+    <TextView
+        android:id="@+id/settingsPanel"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Settings Panel" />
+
+    <TextView
+        android:id="@+id/viewTransparencyLabel"
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_width="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:text="Transparency" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical|fill_horizontal"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/viewTransparencySeekBar"
+            style="@style/Widget.Settings.RowWidget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical|fill_horizontal"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_debug_configuration_group"
+        style="@style/Widget.Settings.Header"
+        android:layout_width="0dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="start|fill_horizontal"
+        android:text="Debug Configuration" />
+
+    <TextView
+        style="@style/Widget.Settings.RowTitle"
+        android:layout_gravity="start|center_vertical"
+        android:text="Logging" />
+
+    <Switch
+        android:id="@+id/settingsDebugOutput"
+        style="@style/Widget.Settings.RowWidget"
+        android:layout_gravity="start|center_vertical" />
+</GridLayout>
