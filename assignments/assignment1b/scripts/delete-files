@@ -1,0 +1,9 @@
+.gitignore
+build.gradle
+gradle
+gradle.properties
+gradlew
+gradlew.bat
+README*.html
+settings.gradle
+app

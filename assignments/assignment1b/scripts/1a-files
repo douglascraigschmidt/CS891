@@ -1,0 +1,8 @@
+README-1A.html
+
+app/src/main/java/edu/vandy/simulator/managers/beings/runnableThreads
+app/src/main/java/edu/vandy/simulator/managers/palantiri/arrayBlockingQueuePalantiriManager
+
+app/src/androidTest/java/edu/vandy/app/ui/screens/main/Assignment_1A_InstrumentedTests.java
+app/src/test/java/edu/vandy/simulator/Assignment_1A_IntegratedTest.kt
+app/src/test/java/edu/vandy/simulator/managers/beings/runnableThreads

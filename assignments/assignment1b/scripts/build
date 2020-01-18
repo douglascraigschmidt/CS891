@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+cleanDir()
+{
+	find . \( -name .idea -o -name build -o -name .gradle -name log -o -name logs \) -exec rm -r {} +;
+	find . -type f -a \( -name '*.iml' \) -exec rm {} +;
+}
+
+branchExists()
+{
+    if git rev-parse --quiet --verify $1 > /dev/null; then
+        return
+    fi
+
+    false
+}
+
+branches="$*"
+
+echo "Rebuilding $branches"
+
+scriptsDir="$( cd "$(dirname "$0")" ; pwd -P )"
+root="`dirname $scriptsDir`"
+
+echo "branches = $branches"
+
+(
+	cd ${root}
+	git checkout master
+
+	for branch in ${branches}; do
+        echo "=---------------------------------------"
+        echo "=------- Building branch $branch -------"
+        echo "=---------------------------------------"
+
+        if ! branchExists ${branch}; then
+            echo "Branch $branch is not a valid git branch (skipping)"
+        else
+            echo "*** ${branch}: checkout ***"
+            git checkout ${branch}
+
+            echo "*** ${branch}: cleaning ***"
+            cleanDir
+
+            echo "*** ${branch}: getting latest scripts ***"
+            git checkout master scripts
+
+            echo "*** ${branch}: rebuilding from master ***"
+            ./scripts/build-${branch}
+
+            echo "*** ${branch}: adding changes ***"
+            git add .
+
+            echo "*** ${branch}: status ***"
+            git status
+
+            echo "*** ${branch}: committing changes ***"
+            git commit -m"Rebuilt branch $branch from master"
+
+            //echo "*** ${branch}: pushing changes ***"
+            //git push
+
+            echo "*** ${branch}: done ***"
+        fi
+	done
+
+	echo "*** checking out master branch ***"
+	git checkout master
+)
