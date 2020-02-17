@@ -85,7 +85,7 @@ public class ExecutorServiceMgr
     }
 
     /**
-     * Creates a fixed-size xthread pool executor service.
+     * Creates a fixed-size thread pool executor service.
      *
      * @param size The number of threads in the thread pool
      * @return A fixed-sized thread pool executor
