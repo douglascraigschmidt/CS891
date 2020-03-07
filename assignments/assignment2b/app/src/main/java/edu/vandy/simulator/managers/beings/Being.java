@@ -1,9 +1,5 @@
 package edu.vandy.simulator.managers.beings;
 
-import android.util.Log;
-
-import androidx.annotation.CallSuper;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CancellationException;
@@ -82,7 +78,6 @@ public abstract class Being
      *
      * @param gazingIterations The number of gazing operations.
      */
-    @CallSuper
     public void runGazingSimulation(int gazingIterations) {
         if (isRunning()) {
             error("Should not be possible that 'isRunning' "
@@ -225,11 +220,7 @@ public abstract class Being
      * is no longer alive, {@code false} if the thread is still running.
      */
     public boolean interruptNow() {
-        Log.e(TAG, "interruptNow: called: " + this);
-
         if (mThread != null && mThread.isAlive()) {
-            Log.e(TAG, "interruptNow: interrupting being "
-                    + this + " thread ...");
             mThread.interrupt();
             return !mThread.isAlive();
         } else {

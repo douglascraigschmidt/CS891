@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import edu.vandy.R
 import edu.vandy.app.extensions.*
 import edu.vandy.app.preferences.CompositeUnsubscriber
@@ -69,19 +69,13 @@ class MainActivity : AppCompatActivity(),
     private var simulationTimer: Timer? = null
 
     /**
-     * Keeps track of whether or not the simulator
-     * has been run in the current session.
-     */
-    private var simulationCount = 0
-
-    /**
      * Setup all widgets and initialize the simulation model.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Connect or reconnect to view model.
-        viewModel = ViewModelProviders.of(this).get(SimulationViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SimulationViewModel::class.java)
 
         setContentView(R.layout.activity_main)
         initToolbar()
@@ -114,7 +108,7 @@ class MainActivity : AppCompatActivity(),
         // 1. Search: when local crawl setting and a root url has not been chosen.
         // 2. Start: when local mode is true or a root url has been chosen.
         // 3. Stop: when the crawler is running.
-        progressFab.setOnClickListener { _ ->
+        progressFab.setOnClickListener {
             // These calls drill down into simulator so protect
             // main thread from abnormal termination because of
             // mistakes in assignment implementations.
@@ -409,16 +403,16 @@ class MainActivity : AppCompatActivity(),
                 SIMULATION_BEING_MANAGER_TYPE_PREF -> updateSimulationModel()
                 SIMULATION_PALANTIRI_MANAGER_TYPE_PREF -> updateSimulationModel()
                 SIMULATION_ANIMATION_SPEED_PREF -> {
-                    viewModel.simulationSpeed = Settings.animationSpeed
+                    viewModel.simulationSpeed = animationSpeed
                 }
                 SIMULATION_LOGGING_PREF -> {
-                    viewModel.logging = Settings.logging
+                    viewModel.logging = logging
                 }
                 SIMULATION_GAZING_DURATION_PREF -> {
-                    viewModel.gazingTimeRange = Settings.gazingDuration
+                    viewModel.gazingTimeRange = gazingDuration
                 }
                 SIMULATION_PERFORMANCE_MODE_PREF -> {
-                    viewModel.setPerformanceMode = Settings.performanceMode
+                    viewModel.setPerformanceMode = performanceMode
                 }
             }
         }
