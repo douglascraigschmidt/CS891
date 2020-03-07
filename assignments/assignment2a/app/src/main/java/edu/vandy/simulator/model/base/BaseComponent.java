@@ -1,7 +1,5 @@
 package edu.vandy.simulator.model.base;
 
-import androidx.annotation.CallSuper;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -216,7 +214,6 @@ public abstract class BaseComponent<Type, State>
      * @return The component's new snapshot or an updated cached
      * snapshot.
      */
-    @CallSuper
     final public ComponentSnapshot<Type, State> getSnapshot() {
         if (isModified() || mSnapshot == null) {
             mSnapshot = buildSnapshot();

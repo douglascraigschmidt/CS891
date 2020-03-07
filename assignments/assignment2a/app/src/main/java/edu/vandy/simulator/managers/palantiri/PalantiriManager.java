@@ -1,9 +1,5 @@
 package edu.vandy.simulator.managers.palantiri;
 
-import android.util.Log;
-
-import androidx.annotation.CallSuper;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -200,16 +196,12 @@ public abstract class PalantiriManager
      * any allocated resources.
      */
     final public void shutdown() {
-        Log.i(TAG, "shutdown: called.");
-
         // Notify abstract implementation that a shutdown
         // is being performed.
         shutdownNow();
 
         // Clear running flag now that this component has shutdown.
         mRunning = false;
-
-        Log.i(TAG, "shutdown: completed.");
     }
 
     /**
@@ -243,7 +235,6 @@ public abstract class PalantiriManager
      * implementation has it's own fields or
      * state to reset.
      */
-    @CallSuper
     public void reset() {
         // Just reset each palantir.
         mPalantiri.forEach(Palantir::reset);
