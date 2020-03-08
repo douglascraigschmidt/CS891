@@ -1,0 +1,7 @@
+*.iml
+.gradle
+*.log
+.idea/
+/local.properties
+/AUTOGRADER_SUBMISSION
+build/
