@@ -3,33 +3,13 @@ package admin
 import org.junit.Assert
 import java.lang.reflect.Field
 
-inline fun <reified T> Any.getField(name: String): T {
-    return getField(name, T::class.java)
-}
+inline fun <reified T> Any.firstField(): Field? =
+        javaClass.declaredFields.firstOrNull { field: Field ->
+            field.type == T::class.java
+        }
 
-inline fun <reified T> Any.getJavaPrimitiveField(name: String, type: Class<*>): T {
-    return getField(name, type)
-}
-
-inline fun <reified T> Any.setField(name: String, value: T) {
-    setField(name, value, T::class.java)
-}
-
-fun Any.injectInto(parent: Any): Any {
-    val field = parent::class.java.findField("", javaClass)
-//            ?: throw Exception("${parent.javaClass.simpleName} " +
-//                    "has no ${javaClass.simpleName} property.")
-    parent.setField(field.name, this, javaClass)
-    return this
-}
-
-inline fun <reified T> Any.inject(type: Class<T>, value: T) {
-    val field = type.findField("", javaClass)
-    setField(field.name, value, T::class.java)
-}
-
-inline fun <reified T> Any.getField(name: String, type: Class<*>): T {
-    return javaClass.findField(name, type).let {
+inline fun <reified T> Any.getField(name: String, type: Class<T>): T {
+    return javaClass.findField(type, name).let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         val result = it.get(this)
@@ -38,12 +18,24 @@ inline fun <reified T> Any.getField(name: String, type: Class<*>): T {
     }
 }
 
-inline fun <reified T> Any.firstField(type: Class<T>): Field? =
-        javaClass.declaredFields.firstOrNull { field: Field ->
-            field.type == type
-        }
+inline fun <reified T> Any.setField(name: String, value: T) {
+    setField(value, T::class.java, name)
+}
 
-inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
+inline fun <reified T> T.injectInto(parent: Any, name: String = ""): T {
+    val type = when (this) {
+        is Int -> Int::class.javaPrimitiveType
+        is Float -> Float::class.javaPrimitiveType
+        is Double -> Double::class.javaPrimitiveType
+        is Short -> Short::class.javaPrimitiveType
+        else -> T::class.java
+    }
+    val field = parent::class.java.findField(type!!, name)
+    parent.setField(this, type, field.name)
+    return this
+}
+
+inline fun <reified T> Any.setJavaPrimitiveField(value: T, name: String) {
     val javaPrimitiveType = when (value) {
         is Int -> Int::class.javaPrimitiveType
         is Float -> Float::class.javaPrimitiveType
@@ -51,7 +43,7 @@ inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
         is Short -> Short::class.javaPrimitiveType
         else -> throw Exception("value is not a have an equivalent Java primitive type")
     }
-    javaClass.findField(name, javaPrimitiveType!!).let {
+    javaClass.findField(javaPrimitiveType!!, name).let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         it.set(this, value)
@@ -59,8 +51,8 @@ inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
     }
 }
 
-inline fun <reified T> Any.setField(name: String, value: T, type: Class<*>?) {
-    javaClass.findField(name, type!!).let {
+inline fun <reified T> Any.setField(value: T) {
+    javaClass.findField(T::class.java, "").let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         it.set(this, value)
@@ -68,11 +60,26 @@ inline fun <reified T> Any.setField(name: String, value: T, type: Class<*>?) {
     }
 }
 
-fun Class<*>.findField(name: String, type: Class<*>): Field {
+inline fun <reified T> Any.setField(value: T, type: Class<*>?, name: String = "") {
+    javaClass.findField(type!!, name).let {
+        val wasAccessible = it.isAccessible
+        it.isAccessible = true
+        it.set(this, value)
+        it.isAccessible = wasAccessible
+    }
+}
+
+fun Class<*>.findField(type: Class<*>, name: String = ""): Field {
     try {
         return declaredFields.firstOrNull {
-            (name.isBlank() || it.name == name) && it.type == type
-        } ?: superclass!!.findField(name, type)
+            val wasAccessible = it.isAccessible
+            try {
+                it.isAccessible = true
+                (name.isBlank() || it.name == name) && it.type == type
+            } finally {
+                it.isAccessible = wasAccessible
+            }
+        } ?: superclass!!.findField(type, name)
     } catch (e: Exception) {
         throw Exception("Class field $name with type $type does not exist")
     }
@@ -93,7 +100,7 @@ fun Any.reflectiveEquals(expected: Any): Boolean {
     val expectedFields = expected.javaClass.declaredFields
     Assert.assertEquals(expectedFields.size, fields.size)
     for (i in 0..fields.lastIndex) {
-        if (fields.get(i) != expectedFields.get(i)) {
+        if (fields[i] != expectedFields[i]) {
             return false
         }
     }

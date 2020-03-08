@@ -7,9 +7,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.*
+import java.lang.RuntimeException
 import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Supplier
@@ -82,8 +85,17 @@ class Assignment_1B_SpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun unlockTest() {
+    fun `unlock should release a held lock`() {
+        lenient().`when`(owner.get()).thenReturn(true)
+        lenient().`when`(owner.getAndSet(false)).thenReturn(true)
+
         spinLock.unlock()
-        verify(owner).set(false)
+
+        try {
+            verify(owner).get()
+            verify(owner).set(false)
+        } catch (t: Throwable) {
+            verify(owner).getAndSet(false)
+        }
     }
 }

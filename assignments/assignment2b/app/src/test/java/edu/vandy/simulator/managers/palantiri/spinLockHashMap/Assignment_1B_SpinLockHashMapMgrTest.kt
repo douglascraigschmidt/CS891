@@ -13,6 +13,7 @@ import org.junit.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.inOrder
+import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -35,6 +36,8 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
 
     // In order to put mock entries in this list, it can't be a mock.
     private var palantiri = mutableListOf<Palantir>()
+
+    class SimulatedException: RuntimeException("Simulated exception")
 
     @Before
     fun before() {
@@ -192,11 +195,11 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
 
     @Test
     fun `acquire does not call unlock if semaphore acquire fails`() {
-        doThrow(CancellationException("Test")).whenever(semaphoreMock).acquire()
+        doThrow(SimulatedException()).whenever(semaphoreMock).acquire()
         doCallRealMethod().whenever(managerMock).acquire()
 
         // SUT
-        assertThrows(CancellationException::class.java) {
+        assertThrows<SimulatedException>("Exception should have been thrown") {
             managerMock.acquire()
         }
 
@@ -206,11 +209,11 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
 
     @Test
     fun `acquire does not call unlock if lock fails`() {
-        doThrow(CancellationException("Test")).whenever(cancellableLockMock).lock(any())
+        doThrow(SimulatedException()).whenever(cancellableLockMock).lock(any())
         doCallRealMethod().whenever(managerMock).acquire()
 
         // SUT
-        assertThrows(CancellationException::class.java) {
+        assertThrows<SimulatedException>("Exception should have been thrown") {
             managerMock.acquire()
         }
 
@@ -299,13 +302,13 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
 
     @Test
     fun `release does not call unlock if lock fails`() {
-        doThrow(CancellationException("Test")).whenever(cancellableLockMock).lock(any())
+        doThrow(SimulatedException()).whenever(cancellableLockMock).lock(any())
         doCallRealMethod().whenever(managerMock).release(any())
 
         val palantir = Palantir(managerMock)
 
         // SUT
-        assertThrows(CancellationException::class.java) {
+        assertThrows<SimulatedException>("Exception should have been thrown") {
             managerMock.release(palantir)
         }
 
@@ -314,7 +317,8 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
         verifyNoMoreInteractions(managerMock, cancellableLockMock)
     }
 
-    private fun lockAllPalantiri() { // Lock all but the last Palantir in the Map.
+    private fun lockAllPalantiri() {
+        // Lock all but the last Palantir in the Map.
         for (i in 0 until PALANTIRI_COUNT) {
             val palantir = palantiri[i]
             palantiriMap[palantir] = false

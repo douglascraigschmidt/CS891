@@ -1,7 +1,5 @@
 package edu.vandy.simulator.managers.palantiri.arrayBlockingQueuePalantiriManager;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -136,6 +134,5 @@ public class ArrayBlockingQueueMgr
      */
     @Override
     public void shutdownNow() {
-        Log.d(TAG, "shutdownNow: called.");
     }
 }

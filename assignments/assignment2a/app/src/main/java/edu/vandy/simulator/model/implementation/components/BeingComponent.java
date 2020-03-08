@@ -1,7 +1,5 @@
 package edu.vandy.simulator.model.implementation.components;
 
-import androidx.annotation.CallSuper;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -230,7 +228,6 @@ public abstract class BeingComponent
      * running a being in a simulation, and/or before
      * re-running a being in a new simulation run.
      */
-    @CallSuper
     public void reset() {
         mCancelled = false;
         mPalantirId = -1;

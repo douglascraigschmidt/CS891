@@ -1,5 +1,6 @@
 package edu.vandy.simulator.managers.beings.executorService;
 
+import org.junit.After;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
@@ -50,6 +51,11 @@ public class Assignment_2A_ExecutorServiceMgrTest extends AssignmentTests {
 
     // Used to count lambda errors caught by try/catch block
     private int mErrorCount = 0;
+
+    @After
+    public void after() {
+        shutdownExecutor();
+    }
 
     @Test
     public void testNewBeing() {

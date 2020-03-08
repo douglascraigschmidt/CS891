@@ -28,7 +28,7 @@ class App : Application() {
     val compositeUnsubscriber = CompositeUnsubscriber()
 
     override fun onCreate() {
-        System.setProperty("kotlinx.coroutines.debug", "on")
+        //System.setProperty("kotlinx.coroutines.debug", "on")
         super.onCreate()
         instance = this
 

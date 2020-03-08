@@ -1,8 +1,9 @@
 package edu.vandy.simulator.managers.palantiri.spinLockHashMap
 
 import admin.AssignmentTests
+import admin.injectInto
 import com.nhaarman.mockitokotlin2.*
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.InjectMocks
@@ -10,6 +11,8 @@ import org.mockito.Mock
 import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Supplier
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 /**
  * Run with power mock and prepare the Thread
@@ -31,11 +34,10 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun testTryLock() {
+    fun `lock takes ownership of lock when lock is not owned`() {
         // Trap call to AtomicReference compareAndSet and return
         // true so that spin lock (should) only call it once.
-        whenever(owner.compareAndSet(null, Thread.currentThread()))
-                .thenReturn(true)
+        whenever(owner.compareAndSet(null, Thread.currentThread())).thenReturn(true)
 
         // SUT
         val locked = spinLock.tryLock()
@@ -46,7 +48,7 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun testLockWhenUnlocked() {
+    fun `lock increments lock count when already held by calling thread`() {
         whenever(owner.get()).thenReturn(Thread.currentThread())
 
         // SUT
@@ -59,7 +61,7 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun testLockWhenAlreadyLockedButIsReentrant() {
+    fun `lock is reentrant when called multiple times by owning thread`() {
         whenever(owner.get()).thenReturn(Thread.currentThread())
 
         // SUT
@@ -74,7 +76,7 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun testLockWhenAlreadyLockedTest() {
+    fun `lock immediately takes ownership when lock not already held`() {
         whenever(owner.get()).thenReturn(null)
         whenever(owner.compareAndSet(null, Thread.currentThread())).thenReturn(true)
 
@@ -86,7 +88,8 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
         assertEquals("Recursion count should be 0.", 0, spinLock.recursionCount.toLong())
     }
 
-    fun testLockWhenAlreadyLockedWithWaitTest() {
+    @Test
+    fun `lock spins when lock already held and then holds like once lock has been released`() {
         // Handles case where get() == null is used to
         // avoid calling tryLock's compareAndSet.
         whenever(owner.get()).thenReturn(null)
@@ -105,27 +108,25 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     }
 
     @Test
-    fun testLockWhenAlreadyLockedWithWaitTestAndThenCancelled() {
+    fun `waiting for a held lock can be cancelled`() {
         // Handles case where get() == null is used to
         // avoid calling tryLock's compareAndSet.
         whenever(owner.get()).thenReturn(null)
         whenever(isCancelled.get()).thenReturn(true)
         whenever(owner.compareAndSet(null, Thread.currentThread()))
                 .thenReturn(false)
-        try {
-            // SUT
+        // SUT
+        assertThrows<CancellationException>("should throw CancellationException") {
             spinLock.lock(isCancelled)
-
-            fail("lock() should throw a CancellationException when isCancelled() returns true.")
-        } catch (e: CancellationException) {
-            verify(isCancelled).get()
-            verify(owner).compareAndSet(null, Thread.currentThread())
-            assertEquals("Recursion count should be 0.", 0, spinLock.recursionCount.toLong())
         }
+
+        verify(isCancelled).get()
+        verify(owner).compareAndSet(null, Thread.currentThread())
+        assertEquals("Recursion count should be 0.", 0, spinLock.recursionCount.toLong())
     }
 
     @Test
-    fun testUnlock() {
+    fun `unlock releases a held lock`() {
         doReturn(Thread.currentThread()).whenever(owner).get()
 
         // SUT
@@ -135,5 +136,35 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
         verify(owner).set(null)
         verify(owner, never()).compareAndSet(any(), any())
         assertEquals("Recursion count should be 0.", 0, spinLock.recursionCount.toLong())
+    }
+
+    @Test
+    fun `unlock only release lock after recursion count reaches 0`() {
+        doReturn(Thread.currentThread()).whenever(owner).get()
+        val count = Random.nextInt(10..20)
+        (count - 1).injectInto(spinLock)
+
+        // SUT
+        repeat(count) {
+            spinLock.unlock()
+        }
+
+        verify(owner, times(count)).get()
+        verify(owner).set(null)
+        verifyNoMoreInteractions(owner)
+        assertEquals("Recursion count should be 0.", 0, spinLock.recursionCount.toLong())
+    }
+
+    @Test
+    fun `unlock should throw an exception when lock is not held`() {
+        doReturn(null).whenever(owner).get()
+
+        // SUT
+        assertThrows<IllegalMonitorStateException>("Should throw an exception") {
+            spinLock.unlock()
+        }
+
+        verify(owner).get()
+        verifyNoMoreInteractions(owner)
     }
 }
