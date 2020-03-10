@@ -8,10 +8,8 @@ inline fun <reified T> Any.firstField(): Field? =
             field.type == T::class.java
         }
 
-inline fun <reified T> Any.getField(name: String): T = getField(name, T::class.java)
-
-inline fun <reified T> Any.getField(name: String, type: Class<*>): T {
-    return javaClass.findField(name, type).let {
+inline fun <reified T> Any.getField(name: String, type: Class<T>): T {
+    return javaClass.findField(type, name).let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         val result = it.get(this)
@@ -21,26 +19,23 @@ inline fun <reified T> Any.getField(name: String, type: Class<*>): T {
 }
 
 inline fun <reified T> Any.setField(name: String, value: T) {
-    setField(name, value, T::class.java)
+    setField(value, T::class.java, name)
 }
 
-fun Any.injectInto(parent: Any): Any {
-    val field = parent::class.java.findField("", javaClass)
-    parent.setField(field.name, this, javaClass)
+inline fun <reified T> T.injectInto(parent: Any, name: String = ""): T {
+    val type = when (this) {
+        is Int -> Int::class.javaPrimitiveType
+        is Float -> Float::class.javaPrimitiveType
+        is Double -> Double::class.javaPrimitiveType
+        is Short -> Short::class.javaPrimitiveType
+        else -> T::class.java
+    }
+    val field = parent::class.java.findField(type!!, name)
+    parent.setField(this, type, field.name)
     return this
 }
 
-inline fun <reified T> Any.inject(type: Class<T>, value: T) {
-    val field = javaClass.findField("", type)
-    setField(field.name, value, type)
-}
-
-inline fun <reified T> Any.inject(value: Any) {
-    val field = javaClass.findField("", T::class.java)
-    setField(field.name, value, T::class.java)
-}
-
-inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
+inline fun <reified T> Any.setJavaPrimitiveField(value: T, name: String) {
     val javaPrimitiveType = when (value) {
         is Int -> Int::class.javaPrimitiveType
         is Float -> Float::class.javaPrimitiveType
@@ -48,7 +43,7 @@ inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
         is Short -> Short::class.javaPrimitiveType
         else -> throw Exception("value is not a have an equivalent Java primitive type")
     }
-    javaClass.findField(name, javaPrimitiveType!!).let {
+    javaClass.findField(javaPrimitiveType!!, name).let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         it.set(this, value)
@@ -56,8 +51,8 @@ inline fun <reified T> Any.setJavaPrimitiveField(name: String, value: T) {
     }
 }
 
-inline fun <reified T> Any.setField(name: String, value: T, type: Class<*>?) {
-    javaClass.findField(name, type!!).let {
+inline fun <reified T> Any.setField(value: T) {
+    javaClass.findField(T::class.java, "").let {
         val wasAccessible = it.isAccessible
         it.isAccessible = true
         it.set(this, value)
@@ -65,7 +60,16 @@ inline fun <reified T> Any.setField(name: String, value: T, type: Class<*>?) {
     }
 }
 
-fun Class<*>.findField(name: String, type: Class<*>): Field {
+inline fun <reified T> Any.setField(value: T, type: Class<*>?, name: String = "") {
+    javaClass.findField(type!!, name).let {
+        val wasAccessible = it.isAccessible
+        it.isAccessible = true
+        it.set(this, value)
+        it.isAccessible = wasAccessible
+    }
+}
+
+fun Class<*>.findField(type: Class<*>, name: String = ""): Field {
     try {
         return declaredFields.firstOrNull {
             val wasAccessible = it.isAccessible
@@ -75,7 +79,7 @@ fun Class<*>.findField(name: String, type: Class<*>): Field {
             } finally {
                 it.isAccessible = wasAccessible
             }
-        } ?: superclass!!.findField(name, type)
+        } ?: superclass!!.findField(type, name)
     } catch (e: Exception) {
         throw Exception("Class field $name with type $type does not exist")
     }
@@ -96,7 +100,7 @@ fun Any.reflectiveEquals(expected: Any): Boolean {
     val expectedFields = expected.javaClass.declaredFields
     Assert.assertEquals(expectedFields.size, fields.size)
     for (i in 0..fields.lastIndex) {
-        if (fields.get(i) != expectedFields.get(i)) {
+        if (fields[i] != expectedFields[i]) {
             return false
         }
     }

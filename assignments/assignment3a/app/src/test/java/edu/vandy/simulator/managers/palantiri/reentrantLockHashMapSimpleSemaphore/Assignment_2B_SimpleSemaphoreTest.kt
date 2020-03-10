@@ -1,10 +1,14 @@
 package edu.vandy.simulator.managers.palantiri.reentrantLockHashMapSimpleSemaphore
 
 import admin.AssignmentTests
+import admin.getField
+import admin.injectInto
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.rules.Timeout
+import org.junit.rules.Timeout.seconds
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import java.util.concurrent.locks.Condition
@@ -24,9 +28,16 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
     @InjectMocks
     lateinit var semaphore: SimpleSemaphore
 
+    private fun getPermits(): Int = semaphore.getField("", Int::class.java)
+
+    private fun setPermits(permits: Int) {
+        permits.injectInto(semaphore)
+    }
+
     @Test
     fun `acquire one permit`() {
-        semaphore.mPermits = palantirCount
+        setPermits(palantirCount)
+
         val inOrder = inOrder(lockMock)
 
         // SUT
@@ -44,10 +55,10 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
     @Test
     fun `acquire one permit when none are immediately available`() {
         val expectedAwaitCalls = Random.nextInt(100, 200)
-        semaphore.mPermits = -(expectedAwaitCalls - 1)
+        setPermits(-(expectedAwaitCalls - 1))
         whenever(notZeroMock.await()).thenAnswer {
-            if (semaphore.mPermits <= 0) {
-                semaphore.mPermits++
+            if (getPermits() <= 0) {
+                setPermits(getPermits() + 1)
             }
             Unit
         }
@@ -68,7 +79,7 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire all permits`() {
-        semaphore.mPermits = palantirCount
+        setPermits(palantirCount)
         val inOrder = inOrder(lockMock)
 
         // SUT
@@ -89,9 +100,9 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire multiple permits with await calls`() {
-        semaphore.mPermits = -palantirCount
+        setPermits(-palantirCount)
         doAnswer {
-            semaphore.mPermits++
+            setPermits(getPermits() + 1)
             null
         }.whenever(notZeroMock).await()
         val inOrder = inOrder(lockMock, notZeroMock)
@@ -111,9 +122,9 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire one permit with an await call`() {
-        semaphore.mPermits = 0
+        setPermits(0)
         doAnswer {
-            semaphore.mPermits = 1
+            setPermits(1)
             null
         }.whenever(notZeroMock).await()
         val inOrder = inOrder(lockMock, notZeroMock)
@@ -133,7 +144,7 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire permit with await call interrupted`() {
-        semaphore.mPermits = 0
+        setPermits(0)
         doThrow(InterruptedException("Mock interrupt")).whenever(notZeroMock).await()
         val inOrder = inOrder(lockMock, notZeroMock)
 
@@ -200,7 +211,7 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `release permit with signal`() {
-        semaphore.mPermits = 0
+        setPermits(0)
         val inOrder = inOrder(lockMock, notZeroMock)
 
         // SUT
@@ -218,7 +229,7 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `release permit with no signal`() {
-        semaphore.mPermits = -1
+        setPermits(-1)
         val inOrder = inOrder(lockMock, notZeroMock)
 
         // SUT

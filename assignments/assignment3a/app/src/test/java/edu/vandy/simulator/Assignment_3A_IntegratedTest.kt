@@ -4,6 +4,7 @@ import admin.AssignmentIntegratedTest
 import edu.vanderbilt.grader.rubric.Rubric
 import edu.vandy.simulator.managers.beings.BeingManager
 import edu.vandy.simulator.managers.palantiri.PalantiriManager
+import org.junit.Test
 
 /**
  * Precision of 0 means round percents up to 0 decimal places.
@@ -16,4 +17,14 @@ import edu.vandy.simulator.managers.palantiri.PalantiriManager
 class Assignment_3A_IntegratedTest : AssignmentIntegratedTest() {
     override val beingManager = BeingManager.Factory.Type.COMPLETION_SERVICE
     override val palantirManager = PalantiriManager.Factory.Type.REENTRANT_LOCK_HASH_MAP_SIMPLE_SEMAPHORE
+
+    @Test
+    override fun normalTest() {
+        super.normalTest()
+    }
+
+    @Test
+    override fun stressTest() {
+        super.stressTest()
+    }
 }

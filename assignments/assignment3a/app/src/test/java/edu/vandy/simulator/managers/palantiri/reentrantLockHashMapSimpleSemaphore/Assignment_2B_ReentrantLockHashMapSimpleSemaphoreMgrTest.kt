@@ -3,11 +3,15 @@ package edu.vandy.simulator.managers.palantiri.reentrantLockHashMapSimpleSemapho
 import admin.AssignmentTests
 import admin.ReflectionHelper.findFirstMatchingFieldValue
 import admin.firstField
+import admin.injectInto
 import com.nhaarman.mockitokotlin2.*
 import edu.vandy.simulator.managers.palantiri.Palantir
+import net.bytebuddy.implementation.bytecode.Throw
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.rules.Timeout
+import org.junit.rules.Timeout.seconds
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.lenient
@@ -34,11 +38,11 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     @Mock
     lateinit var semaphoreMock: SimpleSemaphore
     @Mock
-    lateinit var palantiriMapMock: Map<Palantir, Boolean>
+    lateinit var palantiriMapMock: MutableMap<Palantir, Boolean>
     @Mock
-    lateinit var entrySetMock: Set<Map.Entry<Palantir, Boolean>>
+    lateinit var entrySetMock: MutableSet<MutableMap.MutableEntry<Palantir, Boolean>>
     @Mock
-    lateinit var streamEntrySetMock: Stream<Map.Entry<Palantir, Boolean>>
+    lateinit var streamEntrySetMock: Stream<MutableMap.MutableEntry<Palantir, Boolean>>
     @Mock
     lateinit var palantiriListMock: MutableList<Palantir>
     @Mock
@@ -77,6 +81,10 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
         // Handles the case where the user has declared the lock field as
         // either Lock or ReentrantLock.
         lockMock = mock()
+        injectLockField(lockMock, manager)
+    }
+
+    private fun injectLockField(lockMock: ReentrantLock, manager: Any) {
         //val firstField = manager.firstField(ReentrantLock::class.java)
         val firstField = manager.firstField<ReentrantLock>()
         var field = firstField
@@ -89,7 +97,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun buildModel() {
+    fun `build model undergraduate and graduate test`() {
         // Note that the buildModel method does not use the
         // mManager created in the @Before setup
         // method because it needs to test the real Semaphore,
@@ -126,7 +134,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
      * Tests GRADUATE students use of Java 8 streams.
      */
     @Test
-    fun buildModelGraduate() {
+    fun `build model graduate only test`() {
         graduateTest()
 
         // Note that the buildModel method does not use the
@@ -155,7 +163,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun testGetSemaphore() {
+    fun `get semaphore returns expeced value`() {
         val mockPalantiri = (1..PALANTIRI_COUNT).map { mock<Palantir>() }
 
         whenever(managerMock.palantiri).thenReturn(mockPalantiri)
@@ -183,7 +191,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
      * Uses mManager instance created in the @Before setup method.
      */
     @Test
-    fun testAcquireWithAllPalantiriAvailable() {
+    fun `acquire returns locks the first available palantir`() {
         // Call SUT.
         val palantir = manager.acquire()
         assertNotNull("Acquire should return a non-null Palantir", palantir)
@@ -205,7 +213,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
      * Uses mManager instance created in the @Before setup method.
      */
     @Test
-    fun testAcquireWithOnlyOnePalantiriAvailable() { // Lock all but on Palantir.
+    fun `acquire lock the only available palantir`() {
         lockAllPalantiri()
         val unlockedPalantir = palantiri[PALANTIRI_COUNT - 1]
         unlockPalantir(unlockedPalantir)
@@ -243,7 +251,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
      * Uses mManager instance created in the @Before setup method.
      */
     @Test
-    fun testAcquireAllAvailablePalantiri() {
+    fun `acquire all available palantiri`() {
         val inOrder = inOrder(lockMock, semaphoreMock)
         for (i in 1..PALANTIRI_COUNT) {
             // Call SUT.
@@ -268,7 +276,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
      * Tests GRADUATE students use of Java 8 streams.
      */
     @Test
-    fun testAcquireAllAvailablePalantiriGraduate() {
+    fun `acquire all available palantiri graduate version`() {
         graduateTest()
 
         val inOrder = inOrder(palantiriMapMock,
@@ -356,7 +364,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun testReleaseNullPalantir() {
+    fun `release handles a null palantir`(){
         try {
             // Call SUT.
             manager.release(null)
@@ -367,7 +375,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun testReleaseOneAcquiredPalantir() {
+    fun `release an acquired palantir`() {
         val lockedPalantir = palantiri[PALANTIRI_COUNT - 1]
         lockPalantir(lockedPalantir)
 
@@ -385,7 +393,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun testReleaseAllAcquiredPalantiri() {
+    fun `release all acqquired palantiri`() {
         lockAllPalantiri()
 
         // Call SUT.
@@ -410,6 +418,31 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
 
         val count = palantiriMap.values.count { it }
         assertEquals("All $PALANTIRI_COUNT Palantiri should be unlocked.", PALANTIRI_COUNT, count)
+    }
+
+    @Test
+    fun `release only releases semaphore that was previously held`() {
+        injectLockField(lockMock, managerMock)
+        palantiriMapMock.injectInto(managerMock, "mPalantiriMap")
+        semaphoreMock.injectInto(managerMock)
+        managerMock.mPalantiriMap = palantiriMapMock
+        lenient().doReturn(false).whenever(palantiriMapMock).put(any(), any())
+        lenient().doReturn(false).whenever(palantiriMapMock).replace(any(), any())
+
+        doCallRealMethod().whenever(managerMock).release(palantirMock)
+        managerMock.release(palantirMock)
+
+        verify(managerMock).release(palantirMock)
+        verify(lockMock).lock()
+        verify(lockMock).unlock()
+        try {
+            verify(palantiriMapMock).put(any(), any())
+        } catch (t: Throwable) {
+            verify(palantiriMapMock).replace(any(), any())
+        }
+
+        verify(semaphoreMock).release()
+        verifyNoMoreInteractions(managerMock,lockMock, palantiriMapMock, semaphoreMock)
     }
 
     @Test
