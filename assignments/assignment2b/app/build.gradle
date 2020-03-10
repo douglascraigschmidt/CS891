@@ -41,6 +41,12 @@ android {
                     .each { res.srcDirs += it.path }
         }
     }
+
+    // Ensures that any Android calls in unit tests simply
+    // return a default value instead of throwing an exception.
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -92,7 +98,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin"
     testImplementation 'edu.vanderbilt.grader:rubric:2.0.0'
-    testImplementation "io.mockk:mockk:1.9.1"
 
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
     androidTestImplementation 'edu.vanderbilt.grader:rubric:2.0.0'
