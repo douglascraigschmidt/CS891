@@ -1,7 +1,7 @@
 // Required by Vanderbilt autograder - do not remove
 buildscript {
 	repositories { jcenter() }
-	dependencies { classpath 'edu.vanderbilt.grader:gradle-plugin:2.0.0' }
+	dependencies { classpath 'edu.vanderbilt.grader:gradle-plugin:2.0.3' }
 }
 
 buildscript {
