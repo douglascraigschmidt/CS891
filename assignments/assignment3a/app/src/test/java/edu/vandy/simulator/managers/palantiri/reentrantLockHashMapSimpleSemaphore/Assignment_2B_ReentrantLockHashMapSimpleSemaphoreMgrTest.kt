@@ -1,17 +1,14 @@
 package edu.vandy.simulator.managers.palantiri.reentrantLockHashMapSimpleSemaphore
 
 import admin.AssignmentTests
-import admin.ReflectionHelper.findFirstMatchingFieldValue
 import admin.firstField
 import admin.injectInto
+import admin.value
 import com.nhaarman.mockitokotlin2.*
 import edu.vandy.simulator.managers.palantiri.Palantir
-import net.bytebuddy.implementation.bytecode.Throw
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.rules.Timeout
-import org.junit.rules.Timeout.seconds
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.lenient
@@ -60,7 +57,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     private var palantiri = mutableListOf<Palantir>()
     private lateinit var lockMock: ReentrantLock
 
-    private class SimulatedException: RuntimeException("Simulated exception")
+    private class SimulatedException : RuntimeException("Simulated exception")
 
     // In order to put mock entries in this list, it can't be a mock.
 
@@ -85,7 +82,6 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     private fun injectLockField(lockMock: ReentrantLock, manager: Any) {
-        //val firstField = manager.firstField(ReentrantLock::class.java)
         val firstField = manager.firstField<ReentrantLock>()
         var field = firstField
         if (field != null) {
@@ -107,20 +103,20 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
         lenient().`when`(managerMock.palantiri).thenReturn(mockPalantiri)
         lenient().`when`(managerMock.palantirCount).thenReturn(mockPalantiri.size)
         doCallRealMethod().whenever(managerMock).buildModel()
-        doCallRealMethod().whenever(managerMock).semaphore
 
         // Call SUT method.
         managerMock.buildModel()
 
-        assertEquals(PALANTIRI_COUNT, managerMock.semaphore.availablePermits())
+        val semaphore = managerMock.value<SimpleSemaphore>()
+        assertEquals(PALANTIRI_COUNT, semaphore?.availablePermits())
 
-        try {
-            val lock = findFirstMatchingFieldValue<Lock>(managerMock, ReentrantLock::class.java)
-            assertNotNull("Lock field should exist and not be null.", lock)
+        val lock = try {
+            managerMock.value<ReentrantLock>()
         } catch (t: Throwable) {
-            val lock = findFirstMatchingFieldValue<Lock>(managerMock, Lock::class.java)
-            assertNotNull("Lock field should exist and not be null.", lock)
+            managerMock.value<Lock>()
         }
+
+        assertNotNull("Lock field should exist and not be null.", lock)
 
         val availablePalantiri = managerMock.firstField<SimpleSemaphore>()
 
@@ -153,38 +149,12 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
         // Call SUT method.
         managerMock.buildModel()
 
-
         verify(managerMock).palantiri
         verify(palantiriListMock).stream()
         verify(streamPalantiriListMock).collect(any<Collector<in Palantir, Any, Any>>())
         inOrder.verify(managerMock).palantiri
         inOrder.verify(palantiriListMock).stream()
         inOrder.verify(streamPalantiriListMock).collect(any<Collector<in Palantir, Any, Any>>())
-    }
-
-    @Test
-    fun `get semaphore returns expeced value`() {
-        val mockPalantiri = (1..PALANTIRI_COUNT).map { mock<Palantir>() }
-
-        whenever(managerMock.palantiri).thenReturn(mockPalantiri)
-        doCallRealMethod().whenever(managerMock).buildModel()
-
-        // Call SUT method.
-        try {
-            managerMock.buildModel()
-        } catch (e: Exception) { // Don't care if buildModel fails because it's only
-            // called to ensure that a simplesemaphore field has
-            // be initialized.
-        }
-
-        doCallRealMethod().whenever(managerMock).semaphore
-
-        val simpleSemaphore = managerMock.semaphore
-        assertNotNull("getSemaphore() should return a non-null SimpleSemaphore value.", simpleSemaphore)
-
-        val availablePalantiri = findFirstMatchingFieldValue<SimpleSemaphore>(managerMock, SimpleSemaphore::class.java)
-        assertSame("getSemaphore() should return the class SimpleSemaphore field value.",
-                availablePalantiri, simpleSemaphore)
     }
 
     /**
@@ -364,7 +334,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
     }
 
     @Test
-    fun `release handles a null palantir`(){
+    fun `release handles a null palantir`() {
         try {
             // Call SUT.
             manager.release(null)
@@ -433,7 +403,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
         managerMock.release(palantirMock)
 
         verify(managerMock).release(palantirMock)
-        verify(lockMock).lock()
+        verify(lockMock).lockInterruptibly()
         verify(lockMock).unlock()
         try {
             verify(palantiriMapMock).put(any(), any())
@@ -442,12 +412,12 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
         }
 
         verify(semaphoreMock).release()
-        verifyNoMoreInteractions(managerMock,lockMock, palantiriMapMock, semaphoreMock)
+        verifyNoMoreInteractions(managerMock, lockMock, palantiriMapMock, semaphoreMock)
     }
 
     @Test
     fun `release does not call unlock if lock fails`() {
-        doThrow(SimulatedException()).whenever(lockMock).lock()
+        doThrow(SimulatedException()).whenever(lockMock).lockInterruptibly()
 
         val palantir = Palantir(manager)
 
@@ -456,7 +426,7 @@ class Assignment_2B_ReentrantLockHashMapSimpleSemaphoreMgrTest : AssignmentTests
             manager.release(palantir)
         }
 
-        verify(lockMock).lock()
+        verify(lockMock).lockInterruptibly()
         verifyNoMoreInteractions(lockMock)
     }
 

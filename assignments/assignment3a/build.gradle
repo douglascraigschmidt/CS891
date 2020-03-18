@@ -1,16 +1,9 @@
 // Required by Vanderbilt autograder - do not remove
 buildscript {
 	repositories { jcenter() }
-	dependencies { classpath 'edu.vanderbilt.grader:gradle-plugin:2.0.1' }
+	dependencies { classpath 'edu.vanderbilt.grader:gradle-plugin:2.0.7' }
 }
 
-// Required by Vanderbilt autograder - do not remove
-buildscript {
-	repositories { jcenter() }
-	dependencies { classpath 'edu.vanderbilt.grader:gradle-plugin:2.0.0' }
-}
-
-// Required by Vanderbilt autograder - do not remove
 buildscript {
     ext {
         versions = [
@@ -89,7 +82,6 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
 
 // Required by Vanderbilt autograder - do not remove
 subprojects { proj ->

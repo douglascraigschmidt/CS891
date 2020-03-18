@@ -1,6 +1,7 @@
 package edu.vandy.simulator.managers.palantiri.spinLockHashMap
 
 import admin.AssignmentTests
+import admin.injectInto
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -141,7 +142,7 @@ class Assignment_1B_ReentrantSpinLockTest : AssignmentTests() {
     fun `unlock only release lock after recursion count reaches 0`() {
         doReturn(Thread.currentThread()).whenever(owner).get()
         val count = Random.nextInt(10..20)
-        spinLock.mRecursionCount = count - 1
+        (count - 1).injectInto(spinLock)
 
         // SUT
         repeat(count) {

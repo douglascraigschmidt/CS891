@@ -3,19 +3,16 @@ package edu.vandy.simulator.managers.palantiri.reentrantLockHashMapSimpleSemapho
 import admin.AssignmentTests
 import admin.getField
 import admin.injectInto
+import admin.primitiveValue
 import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Test
-import org.junit.rules.Timeout
-import org.junit.rules.Timeout.seconds
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import java.util.concurrent.locks.Condition
 import java.util.concurrent.locks.Lock
 import kotlin.random.Random
 
-@ExperimentalCoroutinesApi
 class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
     private val palantirCount = Random.nextInt(5, 20)
 
@@ -24,6 +21,9 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Mock
     lateinit var notZeroMock: Condition
+
+    @Mock
+    lateinit var semaphoreMock: SimpleSemaphore
 
     @InjectMocks
     lateinit var semaphore: SimpleSemaphore
@@ -54,7 +54,7 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire one permit when none are immediately available`() {
-        val expectedAwaitCalls = Random.nextInt(100, 200)
+        val expectedAwaitCalls = Random.nextInt(3, 5)
         setPermits(-(expectedAwaitCalls - 1))
         whenever(notZeroMock.await()).thenAnswer {
             if (getPermits() <= 0) {
@@ -166,7 +166,6 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire permit uninterruptibly with permits available`() {
-        val semaphoreMock = mock<SimpleSemaphore>()
         doCallRealMethod().whenever(semaphoreMock).acquireUninterruptibly()
 
         // SUT
@@ -180,8 +179,24 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
     }
 
     @Test
+    fun `acquire uninterruptibly should not directly modify permits`() {
+        val permits = Random.nextInt(10,20)
+        (permits).injectInto(semaphoreMock)
+        doNothing().whenever(semaphoreMock).acquire()
+        doCallRealMethod().whenever(semaphoreMock).acquireUninterruptibly()
+
+        // SUT
+        semaphoreMock.acquireUninterruptibly()
+
+        assertEquals(permits, semaphoreMock.primitiveValue<Int>(Int::class))
+
+        verify(semaphoreMock).acquireUninterruptibly()
+        verify(semaphoreMock).acquire()
+        verifyNoMoreInteractions(semaphoreMock)
+    }
+
+    @Test
     fun `acquire permit uninterruptibly should not be interruptible`() {
-        val semaphoreMock = mock<SimpleSemaphore>()
         whenever(semaphoreMock.acquire())
                 .thenThrow(InterruptedException("Mock exception"))
                 .thenAnswer { Unit }
@@ -197,7 +212,6 @@ class Assignment_2B_SimpleSemaphoreTest : AssignmentTests() {
 
     @Test
     fun `acquire permit uninterruptibly should set interrupt flag if interrupted`() {
-        val semaphoreMock = mock<SimpleSemaphore>()
         whenever(semaphoreMock.acquire())
                 .thenThrow(InterruptedException("Mock exception"))
                 .thenAnswer { Unit }

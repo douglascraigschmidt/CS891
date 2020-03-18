@@ -72,7 +72,6 @@ object TestHelper {
                 gazingRangeMin, gazingRangeMax)
 
         val allErrors = HashMap<String, Error?>()
-        println(modelParameters)
 
         buildModelAndRun(modelParameters,
                 Consumer { snapshot ->

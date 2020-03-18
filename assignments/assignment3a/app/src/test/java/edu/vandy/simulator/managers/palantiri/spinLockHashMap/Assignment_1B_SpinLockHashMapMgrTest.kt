@@ -5,7 +5,6 @@ import com.nhaarman.mockitokotlin2.*
 import edu.vandy.simulator.managers.palantiri.Palantir
 import edu.vandy.simulator.utils.Assignment.isGraduateTodo
 import edu.vandy.simulator.utils.Assignment.isUndergraduateTodo
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Before
@@ -37,7 +36,7 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
     // In order to put mock entries in this list, it can't be a mock.
     private var palantiri = mutableListOf<Palantir>()
 
-    class SimulatedException: RuntimeException("Simulated exception")
+    class SimulatedException : RuntimeException("Simulated exception")
 
     @Before
     fun before() {
@@ -106,21 +105,6 @@ class Assignment_1B_SpinLockHashMapMgrTest : AssignmentTests() {
                 "getPalantiriMap() should contain $PALANTIRI_COUNT entries.",
                 PALANTIRI_COUNT.toLong(),
                 manager.palantiriMap.size.toLong())
-    }
-
-    @Test
-    fun `available permits returns expected value`() {
-        val expected = 999
-        whenever(semaphoreMock.availablePermits()).thenReturn(expected)
-        doCallRealMethod().whenever(managerMock).availablePermits()
-
-        // SUT
-        assertEquals(expected.toLong(), managerMock.availablePermits().toLong())
-
-        verify(managerMock).availablePermits()
-        verifyNoMoreInteractions(managerMock)
-        verify(semaphoreMock).availablePermits()
-        verifyNoMoreInteractions(semaphoreMock)
     }
 
     @Test

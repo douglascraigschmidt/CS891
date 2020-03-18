@@ -35,7 +35,7 @@ public class ReentrantLockHashMapSimpleSemaphoreMgr extends PalantiriManager {
      * A map that associates the Palantir key to the Boolean values to
      * keep track of whether the key is available.
      */
-    // TODO -- you fill in here.
+    Map<Palantir, Boolean> mPalantiriMap;
 
     /**
      * A counting SimpleSemaphore that limits concurrent access to the

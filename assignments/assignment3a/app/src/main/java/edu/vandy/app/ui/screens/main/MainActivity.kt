@@ -69,12 +69,6 @@ class MainActivity : AppCompatActivity(),
     private var simulationTimer: Timer? = null
 
     /**
-     * Keeps track of whether or not the simulator
-     * has been run in the current session.
-     */
-    private var simulationCount = 0
-
-    /**
      * Setup all widgets and initialize the simulation model.
      */
     override fun onCreate(savedInstanceState: Bundle?) {

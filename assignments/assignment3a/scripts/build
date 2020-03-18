@@ -18,7 +18,7 @@ cleanWorkingTreeOnError=true
 checkoutMasterOnExit=true
 
 scripts="$( cd "$(dirname "$0")" ; pwd -P )"
-root="`dirname $scripts`"
+root="$( dirname $scripts )"
 
 # Set in main() and used in runGrader()
 sdkDir="/home/monte/tools/android/sdk"
@@ -113,12 +113,12 @@ getSdkDir() {
 getBranches() {
     local branches=`(cd ${scripts}; ls [1-9][a-z]-files | sed -e "s/-files//" | xargs)`
 
-    if [[ -z branches ]]; then
+    if [[ -z $branches ]]; then
         echo "Error: unable to find branch files matching pattern \"[1-9][a-z]-files\"."
         return 1
     fi
 
-    if [[ $# > 0 ]]; then
+    if [[ $# -gt 0 ]]; then
         if [[ $* != "all" ]]; then
             branches=$*
         fi
@@ -193,7 +193,15 @@ buildBranch() {
     echo "        Building branch ${branch}"
     echo "----------------------------------"
 
+    # always pull all branches first to avoid push confict errors.
+    # This is safe because whatever exists in the origin branch
+    # is never the ground-truth for the branch - master is the
+    # ground truth.
     if ! checkout ${branch}; then
+        return 1
+    fi
+
+    if ! pull ; then
         return 1
     fi
 
@@ -367,7 +375,7 @@ installGrader() {
 		cd ${graderInstallerPath}
     	export ANDROID_SDK_ROOT=$sdkDir
 
-		./gradlew -PtargetProjectDir="$root" runInstaller
+		./gradlew -PtargetDir="$root" runInstaller
 	)
 
 	local status=$?
@@ -402,10 +410,10 @@ runGrader() {
         return 1
     fi
 
-	(
-		export ANDROID_SDK_ROOT=$sdkDir
-		./gradlew runAutograder
-	)
+    (
+        export ANDROID_SDK_ROOT=$sdkDir
+        ./gradlew runAutograder
+    )
 
     if [[ $? != 0 || ! -f GRADE ]]; then
         echo "Grader failed"
@@ -434,6 +442,11 @@ runGrader() {
         fi
         return 1
     fi
+
+    # Always delete GRADE
+    if [[ -f GRADE ]]; then
+      rm -f GRADE
+    fi
 }
 
 unstage() {
@@ -461,6 +474,28 @@ stageChanges() {
 
     if [[ $? != 0 ]]; then
         echo "Staging failed."
+        return 1
+    fi
+}
+
+fetch() {
+    step "fetching branch $1"
+
+    git fetch origin $1
+
+    if [[ $? != 0 ]]; then
+        echo "fetch $1 failed."
+        return 1
+    fi
+}
+
+pull() {
+    step "pulling branch $(currentBranch)"
+
+    git pull -f
+
+    if [[ $? != 0 ]]; then
+        echo "pull $(currentBranch) failed."
         return 1
     fi
 }
@@ -562,4 +597,3 @@ step() {
 
 main $*
 exit $?
-

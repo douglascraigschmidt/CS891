@@ -2,6 +2,20 @@ package admin
 
 import org.junit.Assert
 import java.lang.reflect.Field
+import kotlin.reflect.KClass
+
+inline fun <reified T> Any.value(): T? = getField("", T::class.java)
+
+inline fun <reified T> Any.primitiveValue(type: KClass<*>): T {
+    return javaClass.findField(type.javaPrimitiveType!!).let {
+        val wasAccessible = it.isAccessible
+        it.isAccessible = true
+        val result = it.get(this)
+        it.isAccessible = wasAccessible
+        result as T
+    }
+}
+
 
 inline fun <reified T> Any.firstField(): Field? =
         javaClass.declaredFields.firstOrNull { field: Field ->
