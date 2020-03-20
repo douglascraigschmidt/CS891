@@ -1,0 +1,18 @@
+buildscript {
+    configurations.classpath {
+        resolutionStrategy {
+            cacheDynamicVersionsFor 0, 'seconds'
+            cacheChangingModulesFor 0, 'seconds'
+        }
+    }
+
+    repositories {
+        google()
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'edu.vanderbilt.grader:gradle-plugin:+'
+    }
+}

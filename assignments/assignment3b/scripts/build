@@ -1,0 +1,599 @@
+#!/usr/bin/env bash
+
+#---------------------------------------------------
+# Globals
+#---------------------------------------------------
+
+# Required to ensure that all branches always have latest grader built and installed.
+graderInstallerPath="/home/monte/cur/autograder"
+autograderDir="autograder"
+autograderFiles="test.jar"
+remote="origin"
+
+# Checkout master branch before exiting script.
+ask=false
+debug=false
+branchType="all"
+cleanWorkingTreeOnError=true
+checkoutMasterOnExit=true
+
+scripts="$( cd "$(dirname "$0")" ; pwd -P )"
+root="$( dirname $scripts )"
+
+# Set in main() and used in runGrader()
+sdkDir="/home/monte/tools/android/sdk"
+
+#---------------------------------------------------
+# Support functions
+#---------------------------------------------------
+
+main() {
+    while getopts "hidb:" option; do
+        case ${option} in
+            h) echo "usage: $0 [-i] [-d] [branch ... | all]";
+               echo "       [-i]: prompt to build each branch"
+               echo "       [-d]: remain on last built branch and do not clean working tree when branch build fails"
+               echo "       [branch ... | all]: list of branches or all to build all branches"
+               exit ;;
+            i) ask=true ;;
+            d) cleanWorkingTreeOnError=false
+               checkoutMasterOnExit=false
+               ;;
+            ?) echo "error: option -$OPTARG is not implemented"; exit 1 ;;
+        esac
+    done
+
+    shift $(( OPTIND - 1 ))
+
+    cd ${root}
+
+    if ! isWorkingTreeClean; then
+        return 1
+    fi
+
+    local result=$(graderProjectExists)
+    if [[ $? != 0 ]]; then
+        echo ${result}
+        return 1
+    fi
+
+    result=$(getSdkDir)
+    if [[ $? != 0 ]]; then
+        echo ${result}
+        return 1
+    fi
+    sdkDir=${result}
+
+    result=$(getBranches $*)
+    if [[ $? != 0 ]]; then
+        echo ${result}
+        return 1
+    fi
+    local branches=${result}
+
+    if ! buildBranches ${branches}; then
+        if [[ ${cleanWorkingTreeOnError} ]]; then
+            cleanup
+            if [[ $? != 0 ]]; then
+                checkoutMasterOnExit=false
+            fi
+        else
+            checkoutMasterOnExit=false
+        fi
+    fi
+
+    ${checkoutMasterOnExit} && checkout master
+}
+
+getSdkDir() {
+    if [[ -d ${sdkDir} ]]; then
+		echo ${sdkDir}
+        return
+    elif [[ -d ${ANDROID_SDK_ROOT} ]]; then
+		echo ${ANDROID_SDK_ROOT}
+		return
+	fi
+
+	if [[ -e "${root}/local.properties" ]]; then
+		line=`grep 'sdk.dir=' "${root}/local.properties"`
+		if [[ ! -z ${line} ]]; then
+			local pattern='.*sdk.dir=(.*)'
+			local path=`echo ${line} | sed -r "s/${pattern}/\1/"`
+			if [[ ${path} != ${pattern} && -d ${path} ]]; then
+				echo ${path}
+				return
+			fi
+		fi
+	fi
+
+	echo "Error: ANDROID_SDK_ROOT not set and local.properties does not contain sdk.dir entry."
+	return 1
+}
+
+getBranches() {
+    local branches=`(cd ${scripts}; ls [1-9][a-z]-files | sed -e "s/-files//" | xargs)`
+
+    if [[ -z $branches ]]; then
+        echo "Error: unable to find branch files matching pattern \"[1-9][a-z]-files\"."
+        return 1
+    fi
+
+    if [[ $# -gt 0 ]]; then
+        if [[ $* != "all" ]]; then
+            branches=$*
+        fi
+    fi
+
+    if [[ $# != 0 ]]; then
+        branches=$*
+    else
+        read -p "Build branches [${branches}]: " input
+        if [[ ! -z ${input} ]]; then
+            branches=${input}
+        fi
+    fi
+
+    branches=`echo ${branches} | xargs -n1 | sort -u | xargs`
+
+    missing=
+    for file in ${branches}; do
+        if [[ ! -f "${scripts}/${file}"-files ]]; then
+            missing="${missing} ${file}-files"
+        fi
+    done
+
+    if [[ ! -z ${missing} ]]; then
+        missing=`echo "$missing" | xargs -n1 | xargs`
+        echo "Error: missing branch files [$missing]"
+        return 1
+    fi
+
+    echo ${branches}
+}
+
+buildBranches() {
+    local branches=$*
+    local succeeded=
+
+    if [[ $? != 0 || -z ${branches} ]]; then
+        return 1
+    fi
+
+    echo "Building branches: [${branches}]"
+
+    for branch in ${branches}; do
+        if [[ ${ask} == true ]]; then
+            read -p "Build branch ${branch} [Y|n]: " input
+            if [[ ! -z ${input} && ${input} != "y" && ${input} != "Y" ]]; then
+                echo "Skipping branch ${branch}"
+                continue
+            fi
+        fi
+
+        if ! buildBranch; then
+            break;
+        fi
+
+        succeeded=`echo "${succeeded} ${branch}" | xargs`
+    done
+
+    if [[ ${branches} != ${succeeded} ]]; then
+        echo "------------------------------------"
+        echo "Succeeded: [${succeeded}]"
+        echo "Failed:    [${branch}]"
+        echo "------------------------------------"
+        return 1
+    fi
+
+    echo "Successfully built: [${succeeded}]"
+}
+
+buildBranch() {
+    echo "----------------------------------"
+    echo "        Building branch ${branch}"
+    echo "----------------------------------"
+
+    # always pull all branches first to avoid push confict errors.
+    # This is safe because whatever exists in the origin branch
+    # is never the ground-truth for the branch - master is the
+    # ground truth.
+    if ! checkout ${branch}; then
+        return 1
+    fi
+
+    if ! pull ; then
+        return 1
+    fi
+
+    if ! deleteAllFiles; then
+        return 1
+    fi
+
+    # Checkout master scripts used to build branch file list.
+    if ! checkout master scripts; then
+        return 1
+    fi
+
+    if [[ ${branch} == "master" ]]; then
+		echo "Should never happen!"
+        exit 1
+    fi
+
+    step "building branch ${branch} file list"
+    result=$(buildFileList ${branch})
+
+    if [[ $? != 0 || -z ${result} ]]; then
+        if [[ ! -z ${result} ]]; then
+            echo ${result}
+        else
+            echo "Unable to build ${branch} file list"
+        fi
+        return 1
+    fi
+
+    if ! checkout master ${result}; then
+        return 1
+    fi
+
+    if [[ ! -d ${sdkDir} ]]; then
+        echo "SDK directory ${sdkDir} does not exist"
+        exit 1
+    fi
+
+    if ! installGrader; then
+        exit 1
+    fi
+
+    if ! runGrader; then
+        return 1
+    fi
+
+    if ! unstage scripts; then
+        return 1
+    fi
+
+    if ! stageChanges; then
+        return 1
+    fi
+
+    if ! commit; then
+        return 1
+    fi
+
+    if ! push; then
+        return 1
+    fi
+
+    step "completed successfully"
+}
+
+checkout() {
+    local branch=$1
+    local files=${@:2}
+    local count=`expr $# - 1`
+
+    if (( ${count} > 0 )); then
+        step "checking out ${count} file(s) from ${branch}"
+    else
+        step "checking out branch ${branch}"
+
+        # Clean working tree required for full branch checkout.
+        if ! isWorkingTreeClean; then
+            return 1
+        fi
+    fi
+
+	if ! onBranch ${branch}; then
+        if ! branchExists ${branch}; then
+            step "creating new branch ${branch}"
+            git branch ${branch}
+
+            if [[ $? != 0 ]]; then
+                echo "Failed to create branch ${branch}"
+                return 1
+            fi
+        fi
+
+		git checkout ${branch} ${files}
+
+        if [[ $? != 0 ]]; then
+            echo "Checkout failed for ${branch}"
+            return 1
+        fi
+	elif [[ -z ${files} ]]; then
+		echo "Already on ${branch} branch."
+	fi
+}
+
+deleteAllFiles() {
+    step "deleting all files"
+
+    # Working tree must be clean
+    if ! isWorkingTreeClean; then
+        return 1
+    fi
+
+    rm -rf *
+
+    if [[ $? != 0 ]]; then
+        echo "Unable to remove all files."
+        return 1
+    fi
+}
+
+buildFileList() {
+    local branch=$*
+    local pattern='^([1-9])([a-z])?$'
+
+    if ! [[ ${branch} =~ ${pattern} ]]; then
+        echo "Branch names must be in the format: ${pattern}"
+        return 1
+    fi
+
+    local number=`echo $1 | sed -r "s/${pattern}/\1/"`
+    local letter=`echo $1 | sed -r "s/${pattern}/\2/"`
+
+    local fileList="${scripts}/${number}${letter}-files"
+
+    if [[ ! -e ${fileList} ]]; then
+        echo "Branch file list $fileList not found."
+        return 1
+    fi
+
+    local files="0-files"
+
+    if (( ${number} > 1 )); then
+        last=`expr ${number} - 1`
+        files="$files [1-$last][a-z]-files"
+    fi
+
+    if [[ -z ${letter} ]]; then
+        files="$files $number-files"
+    else
+        files="$files $number[a-${letter}]-files"
+    fi
+
+    files=`(cd ${scripts}; sort -u ${files} | xargs)`
+
+    echo ${files}
+}
+
+installGrader() {
+    step "installing grader"
+
+    if [[ ! -f "${graderInstallerPath}/build.gradle" ]]; then
+        echo "Grader project is not installed on this device."
+		return 1
+	fi
+
+    if [[ ! -d ${sdkDir} ]]; then
+        echo "SDK directory ${sdkDir} does not exist"
+        return 1
+    fi
+
+	(
+		cd ${graderInstallerPath}
+    	export ANDROID_SDK_ROOT=$sdkDir
+
+		./gradlew -PtargetDir="$root" runInstaller
+	)
+
+	local status=$?
+	if [[ ${status} != 0 ]]; then
+		echo "Autograder installation failed with status ${status}"
+		return 1
+	fi
+
+	local file
+	for file in ${autograderFiles}; do
+		if [[ ! -f "${autograderDir}/${file}" ]]; then
+			echo "Required autograder installation file ${file} is missing"
+			return 1
+		fi
+	done
+
+	step "staging autograder directory"
+
+	git add autograder
+
+	if [[ $? != 0 ]]; then
+		echo "Failed to stage autograder director"
+		return 1
+	fi
+}
+
+runGrader() {
+    step "running grader"
+
+    if [[ ! -d ${sdkDir} ]]; then
+        echo "SDK directory ${sdkDir} does not exist"
+        return 1
+    fi
+
+    (
+        export ANDROID_SDK_ROOT=$sdkDir
+        ./gradlew runAutograder
+    )
+
+    if [[ $? != 0 || ! -f GRADE ]]; then
+        echo "Grader failed"
+        return 1
+    fi
+
+    local pattern='^([0-9]+)\/([0-9]+)$'
+
+    grade=`cat GRADE`
+    if ! [[ ${grade} =~ ${pattern} ]]; then
+        echo "GRADE file must contain a single line in the format ${pattern}"
+        return 1
+    fi
+
+    echo "Grader result: ${grade}"
+
+    local score=`echo ${grade} |  sed -r "s/${pattern}/\1/"`
+    local points=`echo ${grade} |  sed -r "s/${pattern}/\2/"`
+    local failedTests=`expr ${points} - ${score}`
+
+    if [[ ${failedTests} != 0 ]]; then
+        if [[ ${failedTests} == 1 ]]; then
+            echo "The grader found ${failedTests} failed test."
+        else
+            echo "The grader found ${failedTests} failed tests."
+        fi
+        return 1
+    fi
+
+    # Always delete GRADE
+    if [[ -f GRADE ]]; then
+      rm -f GRADE
+    fi
+}
+
+unstage() {
+	files=$*
+    step "unstaging [${files}]"
+
+	if [[ -z ${files} ]]; then
+		echo "unstage called with no arguments"
+		return 1
+	fi
+
+    #git rm -rf $*
+    git reset HEAD $*
+
+    if [[ $? != 0 ]]; then
+        echo "Failed to unstage ${files}"
+        return 1
+    fi
+}
+
+stageChanges() {
+    step "staging changes"
+
+    git add .
+
+    if [[ $? != 0 ]]; then
+        echo "Staging failed."
+        return 1
+    fi
+}
+
+fetch() {
+    step "fetching branch $1"
+
+    git fetch origin $1
+
+    if [[ $? != 0 ]]; then
+        echo "fetch $1 failed."
+        return 1
+    fi
+}
+
+pull() {
+    step "pulling branch $(currentBranch)"
+
+    git pull -f
+
+    if [[ $? != 0 ]]; then
+        echo "pull $(currentBranch) failed."
+        return 1
+    fi
+}
+
+commit() {
+    step "committing changes"
+
+    git commit -m"Built branch $(currentBranch) from master"
+
+    if [[ $? != 0 ]]; then
+        echo "Commit failed."
+        return 1
+    fi
+}
+
+push() {
+    branch=$(currentBranch)
+
+    echo "*** ${branch}: pushing changes ***"
+
+    if currentBranchExistsOnRemote; then
+        git push ${remote}
+    else
+        git push --set-upstream ${remote} ${branch}
+    fi
+
+    if [[ $? != 0 ]]; then
+        echo "Failed to push ${branch}"
+        return 1
+    fi
+}
+
+cleanup() {
+    if ! isWorkingTreeClean; then
+        echo "Attempting to clean working tree ..."
+
+        cleanWorkingTree
+        if [[ $? != 0 ]]; then
+            echo "Unable to clean working tree."
+            return 1
+        fi
+    fi
+
+    if isWorkingTreeClean && [[ ${checkoutMasterOnExit} == 1 ]]; then
+        if ! checkout master; then
+            status=$?
+        fi
+    fi
+
+    echo "Current branch is now $(currentBranch)"
+
+    return ${status}
+}
+
+isWorkingTreeClean() {
+    if [[ ! -z $(git status -s) ]]; then
+        echo "Branch $(currentBranch) has uncommitted and/or unstaged changes:"
+        git status -s
+        return 1
+    fi
+}
+
+cleanWorkingTree() {
+    step "attempting to unstage changes"
+	! git reset --hard && git clean -fd
+	if [[ $? != 0 ]]; then
+    	echo "Unable to unstage changes."
+		return 1
+	fi
+}
+
+currentBranch() { echo "`git rev-parse --abbrev-ref HEAD`"; }
+
+branchExists() { if git rev-parse --quiet --verify $1 > /dev/null; then return; fi; false; }
+
+onBranch() { if [[ "$(git rev-parse --abbrev-ref HEAD)" == "$1" ]]; then return; fi; false; }
+
+currentBranchExistsOnRemote() {
+    git ls-remote --heads --exit-code ${remote} "$(git symbolic-ref --short HEAD)"
+}
+
+graderProjectExists() {
+    if [[ ! -f "${graderInstallerPath}/build.gradle" ]]; then
+        echo "Grader project ${graderInstallerPath} not found (required)."
+		return 1
+	fi
+}
+
+
+step() {
+    echo "---------------------------------------------------"
+    echo "$(currentBranch): $1"
+    echo "---------------------------------------------------"
+}
+
+#---------------------------------------------------
+# Run the main function and then exit.
+#---------------------------------------------------
+
+main $*
+exit $?
