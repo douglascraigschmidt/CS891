@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
     private static final int PALANTIRI_COUNT = 5;
-    
+
     @Mock
     private LinkedList<FairSemaphoreMO.Waiter> mQueueMock;
     @Mock
@@ -47,6 +47,8 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
      */
     @Before
     public void before() throws Exception {
+        undergraduateTest();
+
         ReflectionHelper.injectValueIntoFirstMatchingField(
                 mFairSemaphoreMock, mQueueMock, LinkedList.class);
 
@@ -60,8 +62,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAvailablePermits() {
-        undergraduateTest();
-
         int expected = 999;
         setPermits(expected);
 
@@ -73,8 +73,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testWaiterFields() {
-        undergraduateTest();
-
         FairSemaphoreMO.Waiter waiter = new FairSemaphoreMO.Waiter();
 
         // Field may be declared as Lock or ReentrantLock, so check for either.
@@ -85,8 +83,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testFairSemaphoreFields() {
-        undergraduateTest();
-
         FairSemaphoreMO fairSemaphore = new FairSemaphoreMO(PALANTIRI_COUNT);
 
         LinkedList<?> queue = ReflectionHelper.findFirstMatchingFieldValue(fairSemaphore, LinkedList.class);
@@ -97,8 +93,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireUninterruptibly() throws Exception {
-        undergraduateTest();
-
         doCallRealMethod().when(mFairSemaphoreMock).acquireUninterruptibly();
 
         try {
@@ -114,8 +108,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireUninterruptiblyWithInterrupt() {
-        undergraduateTest();
-
         LoopCounter loopCounter = new LoopCounter();
         final int interrupts = 1;
         final int expectedCount = 2;
@@ -145,8 +137,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithNoBlocking() throws Exception {
-        undergraduateTest();
-
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(true);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
         mFairSemaphoreMock.acquire();
@@ -157,8 +147,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithBlocking() throws Exception {
-        undergraduateTest();
-
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(false);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
         mFairSemaphoreMock.acquire();
@@ -169,8 +157,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithInterrupt() throws Exception {
-        undergraduateTest();
-
         Thread.currentThread().interrupt();
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(false);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
@@ -187,8 +173,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitWhenNotLocked() {
-        undergraduateTest();
-
         whenTryToGetPermitUnlockedVerify(classLockedAndWaiterNotLocked());
 
         doCallRealMethod().when(mFairSemaphoreMock).tryToGetPermit();
@@ -207,8 +191,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedEmptyQueueAndNoAvailablePermits() throws Exception {
-        undergraduateTest();
-
         int availablePermits = 0;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -219,8 +201,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedEmptyQueueAndAvailablePermits() throws Exception {
-        undergraduateTest();
-
         int availablePermits = 1;
         int expectedPermits = availablePermits - 1;
         boolean expectedResult = true;
@@ -231,8 +211,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedFullQueueAndNoAvailablePermits() throws Exception {
-        undergraduateTest();
-
         int availablePermits = 0;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -243,8 +221,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedFullQueueAndAvailablePermits() throws Exception {
-        undergraduateTest();
-
         int availablePermits = 1;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -273,8 +249,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithNoBlocking() throws Exception {
-        undergraduateTest();
-
         // Mock the Waiter.
         mWaiterMock.mReleased = true;
         when(mFairSemaphoreMock.createWaiter()).thenReturn(mWaiterMock);
@@ -294,8 +268,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithBlocking() throws Exception {
-        undergraduateTest();
-
         // Set release flag to false so that wait() will be called.
         mWaiterMock.mReleased = false;
 
@@ -326,8 +298,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithBlockingAndInterruptWhileQueued() throws Exception {
-        undergraduateTest();
-
         // Set release flag to false so that wait() will be called.
         mWaiterMock.mReleased = false;
 
@@ -369,8 +339,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithBlockingAndInterruptWhenNotQueued() throws Exception {
-        undergraduateTest();
-
         // Set release flag to false so that wait() will be called.
         mWaiterMock.mReleased = false;
 
@@ -413,8 +381,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testReleaseWithEmptyQueue() {
-        undergraduateTest();
-
         setPermits(0);
         int expectedPermits = getPermits() + 1;
 
@@ -434,8 +400,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testReleaseLockingWithNotEmptyQueue() throws Exception {
-        undergraduateTest();
-
         whenQueuePollCalledVerifyAndReturn(classLockedAndWaiterNotLocked(), mWaiterMock);
 
         whenWaiterNotifyCalledVerify(classLockedAndWaiterLocked(mWaiterMock));
@@ -446,8 +410,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxMOTest extends AssignmentTests {
 
     @Test
     public void testReleaseFIFOWithNotEmptyQueue() throws Exception {
-        undergraduateTest();
-
         int queueSize = 2;
         int expectedQueueSize = queueSize - 1;
 

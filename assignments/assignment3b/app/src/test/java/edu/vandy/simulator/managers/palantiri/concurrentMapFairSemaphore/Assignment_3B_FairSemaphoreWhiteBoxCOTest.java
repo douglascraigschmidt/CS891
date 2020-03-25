@@ -87,8 +87,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAvailablePermits() {
-        graduateTest();
-
         int expected = 999;
         setPermits(expected);
 
@@ -100,8 +98,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testWaiterFields() {
-        graduateTest();
-
         // Create real object (not a mock).
         FairSemaphoreCO.Waiter waiter = new FairSemaphoreCO.Waiter();
 
@@ -117,8 +113,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testFairSemaphoreFields() {
-        graduateTest();
-
         // Create real object (not a mock).
         FairSemaphoreCO fairSemaphore = new FairSemaphoreCO(PALANTIRI_COUNT);
 
@@ -136,8 +130,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAcquireUninterruptibly() throws Exception {
-        graduateTest();
-
         doCallRealMethod().when(mFairSemaphoreMock).acquireUninterruptibly();
 
         try {
@@ -153,8 +145,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAcquireUninterruptiblyWithInterrupt() {
-        graduateTest();
-
         LoopCounter loopCounter = new LoopCounter();
         final int interrupts = 1;
         final int expectedCount = 2;
@@ -184,8 +174,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithNoBlocking() throws Exception {
-        graduateTest();
-
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(true);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
         mFairSemaphoreMock.acquire();
@@ -196,8 +184,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithBlocking() throws Exception {
-        graduateTest();
-
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(false);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
         mFairSemaphoreMock.acquire();
@@ -208,8 +194,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitWhenLocked() {
-        graduateTest();
-
         whenTryToGetPermitUnlockedCalledEnsureClassLockedAndReturn(true);
 
         doCallRealMethod().when(mFairSemaphoreMock).tryToGetPermit();
@@ -223,8 +207,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitWhenUnlocked() {
-        graduateTest();
-
         whenTryToGetPermitUnlockedCalledEnsureClassLockedAndReturn(false);
 
         doCallRealMethod().when(mFairSemaphoreMock).tryToGetPermit();
@@ -238,8 +220,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testAcquireWithInterrupt() throws Exception {
-        graduateTest();
-
         Thread.currentThread().interrupt();
         when(mFairSemaphoreMock.tryToGetPermit()).thenReturn(false);
         doCallRealMethod().when(mFairSemaphoreMock).acquire();
@@ -256,8 +236,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedEmptyQueueAndNoAvailablePermits() throws Exception {
-        graduateTest();
-
         int availablePermits = 0;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -268,8 +246,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedEmptyQueueAndAvailablePermits() throws Exception {
-        graduateTest();
-
         int availablePermits = 1;
         int expectedPermits = availablePermits - 1;
         boolean expectedResult = true;
@@ -280,8 +256,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedFullQueueAndNoAvailablePermits() throws Exception {
-        graduateTest();
-
         int availablePermits = 0;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -292,8 +266,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testTryToGetPermitUnlockedFullQueueAndAvailablePermits() throws Exception {
-        graduateTest();
-
         int availablePermits = 1;
         int expectedPermits = availablePermits;
         boolean expectedResult = false;
@@ -304,8 +276,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithNoBlocking() throws Exception {
-        graduateTest();
-
         // IMPORTANT:
         // The waitForPermit method should only be called when the class lock has
         // been locked by the calling method.
@@ -353,8 +323,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithBlocking() throws Exception {
-        graduateTest();
-
         // IMPORTANT:
         // The waitForPermit method should only be called when the class lock has
         // been locked by the calling method.
@@ -392,8 +360,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testWaitForPermitWithInterrupt() throws Exception {
-        graduateTest();
-
         // Mock the Waiter.
         when(mFairSemaphoreMock.createWaiter()).thenReturn(mWaiterMock);
         mWaiterMock.mReleased = false;
@@ -443,8 +409,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testReleaseWithEmptyQueue() {
-        graduateTest();
-
         setPermits(0);
         int expectedPermits = getPermits() + 1;
 
@@ -479,8 +443,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testReleaseLockingWithNotEmptyQueue() throws Exception {
-        graduateTest();
-
         // Don't care about FIFO implementation here, just the locking logic
         // so always return the correct Waiter mock.
 
@@ -519,8 +481,6 @@ public class Assignment_3B_FairSemaphoreWhiteBoxCOTest extends AssignmentTests {
 
     @Test
     public void testReleaseFIFOWithNotEmptyQueue() throws Exception {
-        graduateTest();
-
         int queueSize = 2;
         int expectedQueueSize = queueSize - 1;
 

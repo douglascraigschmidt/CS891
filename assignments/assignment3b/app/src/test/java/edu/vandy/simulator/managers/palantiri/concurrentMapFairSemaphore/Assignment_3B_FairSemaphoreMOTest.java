@@ -1,5 +1,6 @@
 package edu.vandy.simulator.managers.palantiri.concurrentMapFairSemaphore;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -41,10 +42,13 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
         }
     }
 
+    @Before
+    public void before() {
+        undergraduateTest();
+    }
+
     @Test
     public void testFairSemaphore() {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(2);
         assertNotNull(fairSemaphore);
@@ -52,8 +56,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test
     public void testAcquire() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -65,8 +67,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test
     public void testAcquireUninterruptibly() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -78,8 +78,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test
     public void testRelease() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -95,8 +93,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test
     public void testAvailablePermits() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(2);
         assertEquals(fairSemaphore.availablePermits(), 2);
@@ -106,8 +102,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test(timeout = 10000)
     public void testNegativePermits() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(-1);
         assertEquals(fairSemaphore.availablePermits(), -1);
@@ -148,8 +142,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test
     public void testConcurrentAccess() {
-        undergraduateTest();
-
         // The number of threads that will be trying to run at once.
         final int THREAD_COUNT = 5;
 
@@ -242,8 +234,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test(timeout = 10000)
     public void testFairness() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(1);
 
@@ -338,8 +328,6 @@ public class Assignment_3B_FairSemaphoreMOTest extends AssignmentTests {
 
     @Test(timeout = 10000)
     public void testFairnessWithInterrupts() throws InterruptedException {
-        undergraduateTest();
-
         FairSemaphore fairSemaphore =
                 new FairSemaphoreMO(1);
 
