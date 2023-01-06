@@ -1,9 +1,0 @@
-.idea/
-.gradle/
-build/
-image-cache/
-captures/
-*.iml
-*.log
-local.properties
-AUTOGRADER_SUBMISSION/

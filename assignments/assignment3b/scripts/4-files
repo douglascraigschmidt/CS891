@@ -1,7 +1,0 @@
-README-4.html
-image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/CompletableFuturesCrawler1.java
-image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/FuturesCollectorStream.java
-
-app/src/androidTest/java/assignmentTests/Assignment4Tests.kt
-image-crawler/src/test/java/assignmentTests/optionalTests/CompletableFutures1LocalCrawlTest.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/crawlers/CompletableFuturesCrawler1Tests.kt

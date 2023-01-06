@@ -1,9 +1,0 @@
-README-1b.html
-image-crawler/src/main/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArray.java
-
-app/src/androidTest/java/assignmentTests/Assignment1bTests.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArrayIteratorTestsBase.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArrayIteratorTestsForUndergrads.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArrayJava8Tests.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArraySpliteratorTestsBase.kt
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/utils/UnsynchronizedArraySpliteratorTestsForGrads.kt

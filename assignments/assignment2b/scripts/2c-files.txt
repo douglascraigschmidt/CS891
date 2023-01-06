@@ -1,5 +1,0 @@
-README-2c.html
-app/src/androidTest/java/assignment2cTests
-image-crawler/src/test/java/assignment2cTests
-image-crawler/src/main/java/edu/vanderbilt/imagecrawler/crawlers/ParallelStreamsCrawler2.java
-image-crawler/src/test/java/edu/vanderbilt/imagecrawler/crawlers/ParallelStreamsCrawler2Tests.kt
