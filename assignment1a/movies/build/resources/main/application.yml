@@ -1,0 +1,19 @@
+# The movies microservice port.
+server:
+  port: 9002
+
+# The preconfigured set of movie cosine vectors.
+app:
+  dataset: movie-dataset.csv
+
+# Registers microservice with Eureka.
+# eureka:
+#  client:
+#    enabled: true
+#    service-url:
+#     default-zone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: movies
+
