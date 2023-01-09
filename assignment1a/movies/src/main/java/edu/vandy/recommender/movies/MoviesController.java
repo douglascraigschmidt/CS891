@@ -17,8 +17,8 @@ import static edu.vandy.recommender.movies.Constants.EndPoint.GET_SEARCHES;
 
 /**
  * The Spring controller for the {@link MoviesService}, whose endpoint
- * handler methods return {@link List} objects containing information
- * about movies.
+ * handler methods return a {@link List} of objects containing
+ * information about movies.
  *
  * {@code @RestController} is a convenience annotation for creating
  * Restful controllers. It is a specialization of {@code @Component}
@@ -69,7 +69,7 @@ public class MoviesController {
      *
      * @param query The search query
      * @return A {@link List} of movie titles containing the query
-     *         represented as {@link String} objects
+     *         represented as {@link Movie} objects
      */
     // TODO -- Create an endpoint with an annotation that maps HTTP
     // GET requests onto a handler method for "search" (GET_SEARCH)
@@ -80,12 +80,12 @@ public class MoviesController {
      * Search for movie titles in the database containing the given
      * {@link String} queries
      *
-     * @param queries The search queries
+     * @param queries The {@link List} of search queries
      * @return A {@link List} of movie titles containing the queries
-     *         represented as {@link String} objects
+     *         represented as {@link Movie} objects
      */
     // TODO -- Create an endpoint with an annotation that maps HTTP
     // GET requests onto a handler method for "searches"
     // (GET_SEARCHES) that uses a @RequestParam parameter and forwards
-    // to the MoviesService.search(List<String> queries) method.
+    // to the MoviesServices.search(List<String> queries) method.
 }

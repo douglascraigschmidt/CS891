@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  * This class defines implementation methods that are called by the
- * {@link MoviesController} to return {@link List} objects containing
- * information about movies.
+ * {@link MoviesController} to return a {@link List} of objects
+ * containing information about movies.
  *
  * This class is annotated as a Spring {@code @Service}, which enables
  * the automatic detection and wiring of dependent implementation
@@ -57,7 +57,7 @@ public class MoviesService {
 
     /**
      * Search for movie titles in the database containing the given
-     * query {@link String} using the Java sequential streams
+     * {@link String} queries using the Java sequential streams
      * framework.
      *
      * @param queries The search queries

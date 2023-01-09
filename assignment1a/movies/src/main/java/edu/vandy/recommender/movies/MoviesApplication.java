@@ -9,8 +9,8 @@ import java.util.List;
 
 /**
  * This class provides the entry point for the MoviesApplication
- * microservice, whose methods return {@link List} objects containing
- * information about movies.
+ * microservice, whose methods return a {@link List} of objects
+ * containing information about movies.
  * 
  * The {@code @SpringBootApplication} annotation enables apps to use
  * automatic configuration, component scan, and to define extra
