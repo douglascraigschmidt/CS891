@@ -32,7 +32,7 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'null' with the proper
         // code.
-        List<Movie> url = null;
+        String url = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all movies from the 'movie' microservice.
@@ -61,7 +61,7 @@ public class MoviesSyncProxy {
         // "search" endpoint of the 'movies' microservice.
         // TODO -- you fill in here, replacing 'null'
         // with the proper code.
-        List<Movie> url = null;
+        String url = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
@@ -92,7 +92,7 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'null' with
         // the proper code.
-        List<Movie> url = null;
+        String url = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
