@@ -37,7 +37,7 @@ public class MoviesController {
     /**
      * Spring-injected {@link MoviesService}.
      */
-    // TODO -- ensure that mMovies is autowired with the appropriate
+    // TODO -- ensure that 'service' is autowired with the appropriate
     // @Bean factory method.
     private MoviesService service;
 
