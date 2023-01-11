@@ -43,7 +43,7 @@ public class MovieDatasetReader {
     public static Map<String, List<Double>> loadMovieData
         (final String dataset) {
         try (InputStream inputStream = MovieDatasetReader.class
-             .getResourceAsStream(File.separator + dataset)) {
+             .getResourceAsStream("/" + dataset)) {
         
             InputStreamReader inputStreamReader = new InputStreamReader
                 (Objects.requireNonNull(inputStream));
