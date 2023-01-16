@@ -39,16 +39,14 @@ public class MoviesTest {
         var movies = mMoviesSyncProxy
             .getMovies();
 
-        assertEquals(movies.size(),
-                     4801);
+        assertEquals(4801,
+                     movies.size());
     }
 
     @Test
     public void testGetMoviesContents() {
         var movies = mMoviesSyncProxy
             .getMovies();
-
-        assertEquals(mMovies.size(), 4801);
 
         int i = 0;
         for (var movie : mMovies.entrySet()) {
@@ -65,8 +63,8 @@ public class MoviesTest {
         var matchingMovies = mMoviesSyncProxy
             .searchMovies(searchWord);
 
-        assertEquals(matchingMovies.size(),
-                     33);
+        assertEquals(33,
+                     matchingMovies.size())
     }
 
     @Test
@@ -89,8 +87,9 @@ public class MoviesTest {
                 }
             }
 
-            assertEquals(matchingMovie.id(),
-                         matchedMovie);
+            assertEquals(matchedMovie,
+                         matchingMovie.id());
+                         
         }
     }
 
@@ -102,8 +101,8 @@ public class MoviesTest {
         var matchingMovies = mMoviesSyncProxy
             .searchMovies(watchedMovies);
 
-        assertEquals(matchingMovies.size(),
-                     65);
+        assertEquals(65,
+                     matchingMovies.size());
     }
 
     @Test
@@ -132,8 +131,9 @@ public class MoviesTest {
                     }
             }
 
-            assertEquals(matchingMovie.id(),
-                         matchedMovie);
+            assertEquals(matchedMovie,
+                         matchingMovie.id());
+                         
         }
     }
 }
