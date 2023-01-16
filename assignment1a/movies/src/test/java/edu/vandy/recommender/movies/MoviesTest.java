@@ -64,7 +64,7 @@ public class MoviesTest {
             .searchMovies(searchWord);
 
         assertEquals(33,
-                     matchingMovies.size())
+                     matchingMovies.size());
     }
 
     @Test
