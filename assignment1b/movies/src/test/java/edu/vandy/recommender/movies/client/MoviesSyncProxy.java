@@ -1,14 +1,12 @@
 package edu.vandy.recommender.movies.client;
 
+import edu.vandy.recommender.movies.client.utils.WebUtils;
 import edu.vandy.recommender.movies.common.model.Movie;
-import edu.vandy.recommender.movies.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static edu.vandy.recommender.movies.common.Constants.EndPoint.*;
@@ -31,7 +29,7 @@ public class MoviesSyncProxy {
      */
     public List<Movie> getMovies() {
         // Use the UriComponentsBuilder to create a URI to the
-        // "all_movies" endpoint of the 'movies' microservice.
+        // "all-movies" endpoint of the 'movies' microservice.
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.

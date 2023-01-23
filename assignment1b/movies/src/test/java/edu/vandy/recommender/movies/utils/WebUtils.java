@@ -1,4 +1,4 @@
-package edu.vandy.recommender.movies.utils;
+package edu.vandy.recommender.movies.client.utils;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -100,13 +100,10 @@ public final class WebUtils {
      * @return A comma-separated string containing the contents of the
      *         {@link List}
      */
-    public static <T> String list2String(List<T> list) {
+    public static String list2String(List<String> list) {
         return list
             // Convert the List elements into a Stream.
             .stream()
-
-            // Convert each Stream element into a String.
-            .map(Object::toString)
 
             // Trigger intermediate operations and convert each String
             // in the Stream into a single comma-separated String.
