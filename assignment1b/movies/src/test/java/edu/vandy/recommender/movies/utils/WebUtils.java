@@ -1,4 +1,4 @@
-package edu.vandy.recommender.movies.client.utils;
+package edu.vandy.recommender.movies.utils;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

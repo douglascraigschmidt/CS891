@@ -1,6 +1,6 @@
 package edu.vandy.recommender.movies.client;
 
-import edu.vandy.recommender.movies.client.utils.WebUtils;
+import edu.vandy.recommender.movies.utils.WebUtils;
 import edu.vandy.recommender.movies.common.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
