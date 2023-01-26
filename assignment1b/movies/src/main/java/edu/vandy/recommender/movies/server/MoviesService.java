@@ -122,7 +122,7 @@ public class MoviesService {
      * @return a {@link List} of compiled regular expression {@link
      *         Pattern} objects
      */
-    private List<Pattern> makePatternList
+    protected List<Pattern> makePatternList
         (List<String> regexQueries) {
         // Use a Java sequential stream to perform the following
         // steps:
@@ -153,7 +153,7 @@ public class MoviesService {
      *         queries in {@code patternList}
      */
     @NotNull
-    private List<Future<List<Movie>>> getMatches
+    protected List<Future<List<Movie>>> getMatches
         (List<Pattern> patternList,
          StructuredTaskScope.ShutdownOnFailure scope) {
         // Use a Java sequential stream to perform the following
@@ -184,7 +184,7 @@ public class MoviesService {
      * @return A {@link Future} to an {@link List} of matching {@link
      *         Movie} objects
      */
-    private Future<List<Movie>> findMatches
+    protected Future<List<Movie>> findMatches
         (Pattern pattern,
          StructuredTaskScope.ShutdownOnFailure scope) {
         // Use the 'scope' parameter to determine if the 'pattern'
@@ -213,7 +213,7 @@ public class MoviesService {
      * @param movie The {@link Movie} to match with
      * @return True if there's a match, else false
      */
-    private boolean match(Pattern pattern,
+    protected boolean match(Pattern pattern,
                           Movie movie) {
         // Find a match between the 'pattern' and the 'movie' by
         // performing the following steps:
@@ -238,7 +238,7 @@ public class MoviesService {
      * @return A {@link List} of matching {@link Movie} objects
      */
     @NotNull
-    private List<Movie> concatMatches
+    protected List<Movie> concatMatches
         (List<Future<List<Movie>>> results) {
         // Use a Java sequential stream to perform the following
         // steps:
