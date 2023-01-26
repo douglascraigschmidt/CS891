@@ -238,7 +238,7 @@ public class MoviesService {
      * @return A {@link List} of matching {@link Movie} objects
      */
     @NotNull
-    private static List<Movie> concatMatches
+    private List<Movie> concatMatches
         (List<Future<List<Movie>>> results) {
         // Use a Java sequential stream to perform the following
         // steps:
