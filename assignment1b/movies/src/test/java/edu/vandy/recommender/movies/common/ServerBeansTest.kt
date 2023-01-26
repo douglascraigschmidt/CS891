@@ -1,5 +1,6 @@
 package edu.vandy.recommender.movies.common
 
+import edu.vandy.recommender.admin.AssignmentTests
 import edu.vandy.recommender.movies.common.model.Movie
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Bean
 import server.hasMethodAnnotation
 import java.util.stream.Stream
 
-internal class ServerBeansTest {
+internal class ServerBeansTest: AssignmentTests() {
     @Test
     fun `movieMap has correct annotation`() {
         assertThat(

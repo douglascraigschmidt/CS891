@@ -1,6 +1,5 @@
 package edu.vandy.recommender.movies.client;
 
-import edu.vandy.recommender.movies.utils.WebUtils;
 import edu.vandy.recommender.movies.common.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,18 +32,32 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        // SOLUTION-START
+        String uri = UriComponentsBuilder
+            .fromPath(GET_ALL_MOVIES)
+            .build()
+            .toUriString();
+        // SOLUTION-END String uri = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all movies from the 'movie' microservice.
 
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        // SOLUTION-START
+        List<Movie> movies = WebUtils
+            // Create and send a GET request to the server.
+            .makeGetRequestList(
+                mMoviesRestTemplate,
+                uri,
+                // Return type is a String array.
+                Movie[].class);
+        // SOLUTION-END List<Movie> movies = null;
 
-        if (movies ==null)
+        if (movies == null) {
             throw new IllegalStateException
                 ("Can't retrieve movies from 'movie' microservice.");
+        }
 
         return movies;
     }
@@ -55,28 +68,44 @@ public class MoviesSyncProxy {
      *
      * @param regex_query The search query in regular expression form
      * @return A {@link List} of {@link Movie} objects that match the
-     *         query
+     * query
      */
     public List<Movie> searchMovies(String regex_query) {
         // Use the UriComponentsBuilder to create a URI to the
         // "search" endpoint of the 'movies' microservice.  The
         // 'regex_query' should be encoded via WebUtils.encodeQuery()
         // prior to being to construct the URI.
-        
+
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        // SOLUTION-START
+        String uri = UriComponentsBuilder
+            .fromPath(GET_SEARCH
+                          + "/"
+                          + WebUtils.encodeQuery(regex_query))
+            .build()
+            .toUriString();
+        // SOLUTION-END String uri = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        // SOLUTION-START
+        List<Movie> movies = WebUtils
+            // Create and send a GET request to the server.
+            .makeGetRequestList(
+                mMoviesRestTemplate,
+                uri,
+                // Return type is a Movie array.
+                Movie[].class);
+        // SOLUTION-END List<Movie> movies = null;
 
-        if (movies ==null)
+        if (movies == null) {
             throw new IllegalStateException
                 ("Can't retrieve movies from 'movies' microservice.");
+        }
 
         return movies;
     }
@@ -88,7 +117,7 @@ public class MoviesSyncProxy {
      * @param regex_queries The {@link List} queries to search for
      *                      in regular expression form
      * @return A {@link List} of {@link Movie} objects that match the
-     *         queries
+     * queries
      */
     public List<Movie> searchMovies(List<String> regex_queries) {
         // Use the UriComponentsBuilder to create a URI to the
@@ -98,18 +127,37 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        // SOLUTION-START
+        String uri = UriComponentsBuilder
+            .fromPath(GET_SEARCHES)
+            .queryParam(
+                QUERIES_PARAM,
+                WebUtils
+                    // Convert the List to a String.
+                    .list2String(WebUtils.encodeQueries(regex_queries)))
+            .build()
+            .toUriString();
+        // SOLUTION-END String uri = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        // SOLUTION-START
+        List<Movie> movies = WebUtils
+            // Create and send a GET request to the server.
+            .makeGetRequestList(
+                mMoviesRestTemplate,
+                uri,
+                // Return type is a Movie array.
+                Movie[].class);
+        // SOLUTION-END List<Movie> movies = null;
 
-        if (movies ==null)
+        if (movies == null) {
             throw new IllegalStateException
                 ("Can't retrieve movies from 'movies' microservice.");
+        }
 
         return movies;
     }

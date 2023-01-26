@@ -1,9 +1,10 @@
 package edu.vandy.recommender.movies
 
+import edu.vandy.recommender.admin.AssignmentTests
 import edu.vandy.recommender.movies.client.MoviesSyncProxy
+import edu.vandy.recommender.movies.client.WebUtils
 import edu.vandy.recommender.movies.common.Constants.EndPoint.*
 import edu.vandy.recommender.movies.common.Constants.EndPoint.Params.QUERIES_PARAM
-import edu.vandy.recommender.movies.utils.WebUtils
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ import org.springframework.web.util.UriComponents
 import org.springframework.web.util.UriComponentsBuilder
 import server.injectInto
 
-class MoviesSyncProxyTest {
+class MoviesSyncProxyTest: AssignmentTests() {
     @Test
     fun getMovies() {
         val ucb = mockk<UriComponentsBuilder>()

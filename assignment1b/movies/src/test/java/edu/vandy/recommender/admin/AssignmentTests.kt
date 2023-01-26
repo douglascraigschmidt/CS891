@@ -2,51 +2,37 @@ package edu.vandy.recommender.admin
 
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockkStatic
-import org.junit.After
-import org.junit.Assume.assumeTrue
-import org.junit.Before
 import org.junit.Rule
+import org.junit.jupiter.api.extension.AfterEachCallback
+import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.fail
-import org.junit.rules.TestRule
 import org.junit.rules.Timeout
 import org.junit.rules.Timeout.seconds
-import org.junit.runners.model.Statement
+
 
 /**
  * Base class used for all assignment test classes
  */
+
+@ExtendWith(AssignmentTests.AssignmentTestExtensions::class)
 open class AssignmentTests(
-    timeoutSeconds: Int = if (System.getenv()["USER"] == "monte") 0 else 10) {
+    timeoutSeconds: Int = if (System.getenv()["USER"] == "monte") 0 else 10
+) {
 
-    @Rule
-    @JvmField
-    var mockkRule = TestRule { base, _ ->
-        object : Statement() {
-            override fun evaluate() {
-                MockKAnnotations.init(
-                    this,
-                    relaxUnitFun = true,
-                    overrideRecordPrivateCalls = true
-                )
-                try {
-                    base.evaluate()
-                } finally {
-                }
-            }
+    class AssignmentTestExtensions : AfterEachCallback, BeforeEachCallback {
+        override fun afterEach(context: ExtensionContext?) {
+            clearAllMocks()
         }
-    }
 
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
-    }
-
-    @After
-    fun tearDown() {
-        clearAllMocks()
+        override fun beforeEach(context: ExtensionContext?) {
+            MockKAnnotations.init(
+                this,
+                relaxUnitFun = true,
+                overrideRecordPrivateCalls = true
+            )
+        }
     }
 
     /**
