@@ -12,6 +12,8 @@ import server.hasFieldAnnotation
 import server.injectInto
 import java.net.URLDecoder
 import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
 import java.util.function.Function
@@ -85,7 +87,7 @@ class MoviesServiceTest : AssignmentTests() {
             assertThat(firstArg<Function<String, String>>().apply("")).isEqualTo("decoded")
             s2
         }
-        every { URLDecoder.decode(any(), any<Charset>()) } answers { "decoded" }
+        every { URLDecoder.decode("", any<Charset>()) } answers { "decoded" }
         every { s2.map<Pattern>(any<Function<String, Pattern>>()) } answers {
             assertThat(firstArg<Function<String, Pattern>>().apply("")).isEqualTo(p)
             sp
@@ -219,7 +221,7 @@ class MoviesServiceTest : AssignmentTests() {
     }
 
     @Test
-    fun concatMatches() {
+    fun convertMovieListMatches() {
         val ms = spyk(MoviesService())
         val lm = mockk<List<Movie>>()
         val lflm = mockk<List<Future<MutableList<Movie>>>>()
