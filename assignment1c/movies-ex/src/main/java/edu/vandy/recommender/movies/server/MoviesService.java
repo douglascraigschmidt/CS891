@@ -1,14 +1,11 @@
 package edu.vandy.recommender.movies.server;
 
 import edu.vandy.recommender.movies.common.model.Movie;
-import edu.vandy.recommender.movies.server.utils.FutureUtils;
 import jdk.incubator.concurrent.StructuredTaskScope;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.concurrent.ExecutionException;
@@ -60,7 +57,7 @@ public class MoviesService {
      * @return A {@link List} of {@link Movie} objects containing the
      * query
      */
-    public List<Movie> findMoviesMatchingQuery(String regexQuery) {
+    public List<Movie> search(String regexQuery) {
         // Use Java structured concurrency to locate all movies whose
         // 'id' matches the 'regexQuery' and return them as a List of
         // Movie objects.
@@ -107,7 +104,7 @@ public class MoviesService {
      * @return A {@link List} of {@link Movie} objects containing the
      * queries
      */
-    public List<Movie> findMoviesMatchingQueries(List<String> regexQueries) {
+    public List<Movie> search(List<String> regexQueries) {
         // Use Java structured concurrency to locate all movies whose
         // 'id' matches the List of 'regexQueries' and return them as
         // a List of Movie objects.

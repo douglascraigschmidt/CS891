@@ -67,7 +67,7 @@ class MoviesServiceTest : AssignmentTests() {
         } answers { mockk() }
         every { ms.convertMovieMatches(any()) } answers { lm }
 
-        assertThat(ms.findMoviesMatchingQuery(s)).isSameAs(lm)
+        assertThat(ms.search(s)).isSameAs(lm)
 
         verify {
             ms.makePattern(any())
@@ -75,7 +75,7 @@ class MoviesServiceTest : AssignmentTests() {
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().throwIfFailed()
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().join()
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().close()
-            ms.findMoviesMatchingQuery(any<String>())
+            ms.search(any<String>())
             ms.convertMovieMatches(any())
         }
 
@@ -102,7 +102,7 @@ class MoviesServiceTest : AssignmentTests() {
         every { anyConstructed<StructuredTaskScope.ShutdownOnFailure>().join() } answers { mockk() }
         every { anyConstructed<StructuredTaskScope.ShutdownOnFailure>().close() } answers { }
 
-        assertThat(ms.findMoviesMatchingQueries(ls)).isSameAs(lm)
+        assertThat(ms.search(ls)).isSameAs(lm)
 
         verify {
             ms.makePatterns(any<List<String>>())
@@ -111,7 +111,7 @@ class MoviesServiceTest : AssignmentTests() {
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().throwIfFailed()
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().join()
             anyConstructed<StructuredTaskScope.ShutdownOnFailure>().close()
-            ms.findMoviesMatchingQueries(ls)
+            ms.search(ls)
         }
 
         confirmVerified(ms, ls, lm, lfm)

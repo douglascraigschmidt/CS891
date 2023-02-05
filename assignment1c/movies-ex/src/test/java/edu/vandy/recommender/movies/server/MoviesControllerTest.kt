@@ -109,10 +109,10 @@ internal class MoviesControllerTest {
         val r = mockk<List<Movie>>()
         val s = mockk<MoviesService>()
         s.injectInto(c)
-        every { s.findMoviesMatchingQuery(any<String>()) } returns r
+        every { s.search(any<String>()) } returns r
         assertThat(c.search("")).isSameAs(r)
         verify {
-            s.findMoviesMatchingQuery(any<String>())
+            s.search(any<String>())
             c.search(any<String>())
         }
         confirmVerified(c, r, s)
@@ -124,10 +124,10 @@ internal class MoviesControllerTest {
         val r = mockk<List<Movie>>()
         val s = mockk<MoviesService>()
         s.injectInto(c)
-        every { s.findMoviesMatchingQueries(any<List<String>>()) } returns r
+        every { s.search(any<List<String>>()) } returns r
         assertThat(c.search(listOf())).isSameAs(r)
         verify {
-            s.findMoviesMatchingQueries(any<List<String>>())
+            s.search(any<List<String>>())
             c.search(any<List<String>>())
         }
         confirmVerified(c, r, s)
