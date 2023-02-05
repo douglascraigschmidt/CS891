@@ -73,7 +73,7 @@ public class MoviesService {
              (StructuredTaskScope<Object>)null
         ) {
             // Call a helper method to concurrently get a List of all
-            // Movie objects that match the patternList.
+            // Movie objects that match the pattern.
             // TODO -- You fill in here, replacing 'null' with
             // the proper code.
 
@@ -272,7 +272,6 @@ public class MoviesService {
                      // (StructuredTaskScope<Object>)null with the proper code.
                      (StructuredTaskScope<Object>) null
         ) {
-
             // Call a helper method to concurrently determine if any
             // Pattern objects in patternList match the Movie.
             // TODO -- you fill in here.
@@ -316,7 +315,8 @@ public class MoviesService {
         //
         // 2. Create a virtual thread that calls a helper method to
         //    determine if 'movie' matches the search query, yielding
-        //    'movie' if there's a match and 'null' otherwise.
+        //    'movie' if there's a match and throwing a
+        //    NoSuchMatchException otherwise.
 
         // TODO -- you fill in here.
     }
