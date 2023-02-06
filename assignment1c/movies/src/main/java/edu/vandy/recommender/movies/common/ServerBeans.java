@@ -24,6 +24,8 @@ public class ServerBeans {
      *                data
      * @return A {@link Map} of {@link String} and {@link List<Double>} objects
      */
+    // TODO -- Add the appropriate annotation to make this factory
+    // method a "Bean".
     public Map<String, List<Double>> movieMap
     // The @Value annotation injects values into fields in
     // Spring-managed beans.
