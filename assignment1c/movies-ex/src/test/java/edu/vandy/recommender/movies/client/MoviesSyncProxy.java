@@ -30,6 +30,8 @@ public class MoviesSyncProxy {
         // Use the UriComponentsBuilder to create a URI to the
         // "all-movies" endpoint of the 'movies' microservice.
 
+        // TODO -- you fill in here, replacing 'String uri = null'
+        // with the proper code.
         String uri = null;
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
@@ -51,14 +53,14 @@ public class MoviesSyncProxy {
      * Search for movie titles in the database containing the given
      * query {@link String}.
      *
-     * @param regex_query The search query in regular expression form
+     * @param regexQuery The search query in regular expression form
      * @return A {@link List} of {@link Movie} objects that match the
      * query
      */
     public List<Movie> searchMovies(String regexQuery) {
         // Use the UriComponentsBuilder to create a URI to the
         // "search" endpoint of the 'movies' microservice.  The
-        // 'regex_query' should be encoded via WebUtils.encodeQuery()
+        // 'regexQuery' should be encoded via WebUtils.encodeQuery()
         // prior to being to construct the URI.
 
         // TODO -- you fill in here, replacing 'String uri = null'
@@ -92,7 +94,7 @@ public class MoviesSyncProxy {
     public List<Movie> searchMovies(List<String> regexQueries) {
         // Use the UriComponentsBuilder to create a URI to the
         // "searches" endpoint of the 'movies' microservice.  You'll
-        // need to convert 'regex_queries' into a String after
+        // need to convert 'regexQueries' into a String after
         // encoding them via WebUtils.encodeQuery().
 
         // TODO -- you fill in here, replacing 'String uri = null'
