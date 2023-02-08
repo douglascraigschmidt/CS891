@@ -81,7 +81,7 @@ public class MoviesController {
      * Search for movie titles containing the given {@link String}
      * queries
      *
-     * @param regex_queries The search queries in regular expression
+     * @param regexQueries The search queries in regular expression
      *                      form
      * @return A {@link List} of movie titles containing the queries
      *         represented as {@link Movie} objects
