@@ -57,8 +57,8 @@ Functionality</H4>
 <P>The Movies microservice is packaged as a project using <A
 HREF="https://www.jetbrains.com/idea/">IntelliJ</A>.  This app is
 written in Java and demonstrates various Spring WebMVC and Java
-structured concurrency features.  For the purposes of Assignment 2a,
-however, you need to be aware of the following folders:
+concurrency and persistence features.  For the purposes of Assignment 2a, however, you
+need to be aware of the following folders:
 
 <UL>
 
@@ -75,10 +75,10 @@ fill in, as also described <A HREF="#description">below</A>. </li>
 
 </UL>
 
-You'll also need to tweak the synchronous movies-ex microservice that
-used Spring WebMVC from <a
+You'll also need to tweak the synchronous movies-ex microservice
+implementation from <a
 href="https://github.com/douglascraigschmidt/CS891/tree/master/assignment1c/">assignment
-1c</A> found in these folders:
+1c</A>, which is found in these folders:
 
 <UL>
 
@@ -91,13 +91,17 @@ HREF="#description">below</A>. </li>
 HREF="movies-ex/src/test/java/edu/vandy/recommender/moviesex">movies-ex/src/test</A>,
 which is a set of unit tests that exercise the features you're
 implementing to evaluate whether you've correctly satisfied this
-assignment's requirements.  </LI>
+earlier assignment's requirements.  </LI>
 
 </UL>
 
 <P>To compile this code you need to use the provided IntelliJ project.
-You can run this project by clicking the green arrow next to the
-"MoviesTest" dropdown menu in the IntelliJ IDE.</P>
+You can test the movies-ex portion of this project by clicking the
+green arrow next to the "Movies-ExTest" dropdown menu in the IntelliJ
+IDE.  However, you'll need to a bit more to test the database portion,
+which will involve first clicking on the green arrow next to the
+"RunMicroservice" dropdown menu followed by clicking on the green
+arrow next to the "DatabaseClientDriver" dropdown menu. </P>
 
 <hr width=50% align=left> <A name="description"> <H4>Program
 Description and "TODO" Tasks</H4>
@@ -135,22 +139,21 @@ Autowired annotation. </LI> </UL>
 <p> As usual, your solution should strive to use few (if any) loops or
 if/else statements in this assignment and instead use Java functional
 programming features (including lambda expressions, method references,
-and sequential stream aggregate operations) and Java structured
-concurrency mechanisms. Your solution will be considered correct if it
-passes all the unit tests, is commented thoroughly, and addresses my
-review comments. Solutions that are not commented thoroughly will not
-be reviewed.</p>
+and sequential/parallel stream aggregate operations). Your solution
+will be considered correct if it passes all the unit tests, is
+commented thoroughly, and addresses my review comments. Solutions that
+are not commented thoroughly will not be reviewed.</p>
 
 <hr width=50% align=left> <h4>Skeleton Code</h4>
 
 <p> Skeleton code for this assignment is available <a
 href="https://github.com/douglascraigschmidt/CS891/tree/master/assignment2a/">here</a>
 in my GitHub repository.  Please pull this skeleton code into your
-repository, read it carefully, and complete the "TODO" markers.
+GitLab repository, read it carefully, and complete the "TODO" markers.
 
 <hr width=50% align=left> <h4>Blackbox Integration Tests</h4>
 
-<p> There are blackbox integration tests here <A
+<p> There are blackbox integration tests <A
 HREF="client/src/main/java/edu/vandy/recommender">here</A> that
 increase our collective confidence that your implementation is working
 as expected.  As usual, testing only demonstrates the presence of
