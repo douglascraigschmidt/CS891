@@ -21,9 +21,6 @@ public class Movie
 // Implement an interface that enables two Movie objects to be
 // compared and checked for equality.
 // TODO -- you fill in here
-// SOLUTION-START
-    implements Comparable<Movie> 
-// SOLUTION-END
 {
     /**
      * The movie name.
@@ -49,16 +46,7 @@ public class Movie
      *         specified movie's ID
      */
     // TODO -- you fill in here.
-    // SOLUTION-START
-    @Override
-    public int compareTo(Movie other) {
-        // Compare the ID of this movie with the ID of the other movie
-        // and return the results.
-        return Objects
-            .requireNonNull(this.id)
-            .compareTo(Objects.requireNonNull(other.id));
-    }
-    // SOLUTION-END
+
 
     /**
      * Overrides the equals method to compare two {@link Movie}
@@ -68,18 +56,5 @@ public class Movie
      * @return true if the objects are equal, false otherwise.
      */
     // TODO -- you fill in here.
-    // SOLUTION-START
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        } else if (object == null
-                   || getClass() != object.getClass()) {
-            return false;
-        } else {
-            Movie movie = (Movie) object;
-            return Objects.equals(id, movie.id);
-        }
-    }
-    // SOLUTION-END
+
 }
