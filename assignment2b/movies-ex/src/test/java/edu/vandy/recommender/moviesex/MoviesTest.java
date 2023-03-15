@@ -71,7 +71,9 @@ public class MoviesTest {
         }
 
         // Sort the movies.
-        matchingMovies.sort(Comparator.comparing(movie -> movie.id));
+       matchingMovies.sort(Comparator
+                           .comparing(movie -> movie.id,
+                                      CASE_INSENSITIVE_ORDER));
 
         // Return the List of movies that match the search criteria.
         return matchingMovies;
