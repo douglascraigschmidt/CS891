@@ -12,6 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.*;
 
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIterable;
 
