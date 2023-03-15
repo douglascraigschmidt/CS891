@@ -50,28 +50,14 @@ internal class ServerBeansTest : AssignmentTests() {
         every { e.stream() } answers { xx }
         every { xx.map<Movie>(any()) } answers { sm }
         every { sm.toList() } answers { lm }
-        every { sm.sorted(any()) } answers {
-            assertThat(
-                firstArg<Comparator<Movie>>()
-                    .compare(Movie("1", null), Movie("2", null))
-            ).isEqualTo(-1)
-            assertThat(
-                firstArg<Comparator<Movie>>()
-                    .compare(Movie("2", null), Movie("1", null))
-            ).isEqualTo(1)
-            assertThat(
-                firstArg<Comparator<Movie>>()
-                    .compare(Movie("2", null), Movie("2", null))
-            ).isEqualTo(0)
-            sm
-        }
+        every { sm.sorted() } answers { sm }
         assertThat(sb.movieList(d)).isSameAs(lm)
         verify {
             MovieDatasetReader.loadMovieData(any())
             aa.entries
             e.stream()
             xx.map<Movie>(any())
-            sm.sorted(any())
+            sm.sorted()
             sm.toList()
             sb.movieList(any())
             aa.size
