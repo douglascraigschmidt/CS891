@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RunAllMicroservices" type="Multirun" separateTabs="false" reuseTabsWithFailures="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="5.0">
+    <runConfiguration name="EurekaApplication" type="Application" />
+    <runConfiguration name="GatewayApplication" type="Application" />
+    <runConfiguration name="DatabaseApplication" type="Application" />
+    <runConfiguration name="TimerApplication" type="Application" />
+    <runConfiguration name="SequentialLoopApplication" type="Application" />
+    <runConfiguration name="SequentialStreamApplication" type="Application" />
+    <runConfiguration name="ParallelStreamApplication" type="Application" />
+    <runConfiguration name="CompletableFutureApplication" type="Application" />
+    <runConfiguration name="ConcurrentFluxApplication" type="Application" />
+    <runConfiguration name="ParallelFluxApplication" type="Application" />
+    <runConfiguration name="ExecutorCompletionServiceApplication" type="Application" />
+    <runConfiguration name="ExecutorServiceApplication" type="Application" />
+    <runConfiguration name="StructuredConcurrencyApplication" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

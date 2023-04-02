@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DatabaseExApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ALTERNATIVE_JRE_PATH" value="19" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <module name="recommender-server.database-ex.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="edu.vandy.recommender.databaseex.server.DatabaseExApplication" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="edu.vandy.recommender.databaseex.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

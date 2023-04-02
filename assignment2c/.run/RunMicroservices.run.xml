@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RunMicroservices" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="10.0">
+    <runConfiguration name="EurekaApplication" type="Application" />
+    <runConfiguration name="GatewayApplication" type="Application" />
+    <runConfiguration name="TimerApplication" type="Spring Boot" />
+    <runConfiguration name="DatabaseApplication" type="Spring Boot" />
+    <method v="2" />
+  </configuration>
+</component>
