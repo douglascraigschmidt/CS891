@@ -68,9 +68,7 @@ public class DatabaseExService {
      *         title (id)
      */
     public Flux<Movie> search(List<String> queries) {
-        // Use a ParallelFlux to find all movies whose 'id' contains
-        // any the List of 'queries' and return them as a sorted List
-        // of Movie objects that contain no duplicates.
+        // Forward to the repository.
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
@@ -87,9 +85,7 @@ public class DatabaseExService {
      *         Movie} title (id)
      */
     public Flux<Movie> searchEx(List<String> queries) {
-        // Use a ParallelFlux to find movies whose 'id' contains all
-        // the List of 'queries' and return them as a sorted List of
-        // Movie objects that contain no duplicates.
+        // Forward to the repository.
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
