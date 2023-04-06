@@ -30,6 +30,8 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_19
     }
 
+    tasks.findByName("check")?.dependsOn("clean")
+
     tasks {
         withType<KotlinCompile> {
             kotlinOptions {
