@@ -1,0 +1,17 @@
+eureka:
+  client:
+    enabled: true
+
+server:
+  port: 0
+
+# cosine vector dataset
+app:
+  dataset: dataset.csv
+
+# microservice configurations.
+
+---
+spring:
+  application:
+    name: parallelflux

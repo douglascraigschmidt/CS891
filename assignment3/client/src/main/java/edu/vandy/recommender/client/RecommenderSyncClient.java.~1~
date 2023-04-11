@@ -1,0 +1,91 @@
+package edu.vandy.recommender.client;
+
+import edu.vandy.recommender.client.proxies.RecommenderSyncProxy;
+import edu.vandy.recommender.client.proxies.TimerSyncProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * This client uses Spring WebMVC features to perform synchronous
+ * remote method invocations on the {@code GatewayApplication} and
+ * various microservices that it encapsulates.
+ *
+ * The {@code @Component} annotation allows Spring to automatically
+ * detect custom beans, i.e., Spring will scan the application for
+ * classes annotated with {@code @Component}, instantiate them, and
+ * inject the specified dependencies into them without having to write
+ * any explicit code.
+ *
+ * The {@code ComponentScan} annotation instructs Spring to scan for
+ * components that are within the "edu.vandy.recommender" package.
+ */
+@Component
+@ComponentScan("edu.vandy.recommender")
+public class RecommenderSyncClient {
+    /**
+     * This auto-wired field contains all the movies.
+     */
+    @Autowired
+    Map<String, List<Double>> mMovies;
+
+    /**
+     * This auto-wired field connects the {@link RecommenderAsyncClient} to
+     * the {@link RecommenderSyncProxy} that performs HTTP requests
+     * synchronously.
+     */
+    @Autowired
+    private RecommenderSyncProxy mRecommenderSyncProxy;
+
+    /**
+     * This auto-wired field connects the {@link RecommenderAsyncClient} to
+     * the {@link TimerSyncProxy} that performs HTTP requests
+     * synchronously.
+     */
+    @Autowired
+    private TimerSyncProxy mTimerSyncProxy;
+
+    /**
+     * Run the synchronous tests.
+     */
+    public void runTests(String strategy, boolean timed) {
+        var maxCount = 25;
+
+        var movieList = mRecommenderSyncProxy.getAllMovies(strategy, timed);
+        System.out.println("size of movie list = " + movieList.size());
+
+        var searchResults = mRecommenderSyncProxy.search(strategy, "Star", timed);
+        System.out.println("Results matching \"Star\" = "
+                           + searchResults);
+
+        var recommendations = mRecommenderSyncProxy
+            .getRecommendations(strategy,
+                                "Dune",
+                                25,
+                                timed);
+        System.out.println("Results matching \"Dune\" = "
+                           + recommendations);
+
+        recommendations = mRecommenderSyncProxy
+            .getRecommendations(strategy,
+                                List.of("Dune", "Bladerunner", "Army of Darkness"),
+                                25,
+                                timed);
+        System.out.println("Results matching watched movies = "
+                           + recommendations);
+    }
+
+    /**
+     * Print the timing results.
+     */
+    public void printTestResults() {
+        var timings = mTimerSyncProxy
+            .getTimings();
+
+        System.out.println("The timing results are:");
+        System.out.println(timings);
+    }
+}

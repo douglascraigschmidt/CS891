@@ -1,0 +1,175 @@
+<html>
+
+<title>ParallelFlux Recommender Microservice (Assignment 3)</title>
+
+<body text = "#000000"
+link="#000fff"
+vlink="#ff0f0f"
+bgcolor="#ffffff">
+
+<hr>
+<h3>ParallelFlux Recommender Microservice (Assignment 3)</h3>
+
+<p>The purpose of the third assignment is to deepen your understanding
+of how to develop asynchronous microservices with <A
+HREF="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html">Spring
+WebFlux</A> and the <A HREF="https://projectreactor.io/">Project
+Reactor</a> parallel reactive programming features.  In particular,
+you'll apply the <A
+HREF="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/ParallelFlux.html">ParallelFlux</a>
+reactive type to implement a microservice that provides movie
+recommendations to clients in parallel by leveraging multiple
+processor cores. </p>
+
+<p> The code you'll write for this assignment does not have a GUI and
+runs as an Spring application with an integration main program and
+many unit tests. Please feel free to use this main program and the
+unit tests to help debug your solution. </p>
+
+<p> The following resources may be helpful in completing this
+assignment: </p>
+
+<ul>
+
+<li> Overviews of <A
+HREF="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/ParallelFlux.html">ParallelFlux</a>
+appear <A
+HREF="https://www.vinsguru.com/reactor-parallel-flux">here</A> and <A
+HREF="https://www.woolha.com/tutorials/project-reactor-processing-flux-in-parallel">here</A>.
+
+</ul>
+
+<p>Naturally, we'll cover this material in class, which will be
+available in my YouTube <A
+HREF="https://www.youtube.com/playlist?list=PLZ9NgFYEMxp5dm-JKpo8kPuS_0d2kYjHz">playlist</A>.
+</p>
+
+<HR width=50% align=left> <H4>Assignment Structure and
+Functionality</H4>
+
+<P>The ParallelFlux microservice is packaged as a project using <A
+HREF="https://www.jetbrains.com/idea/">IntelliJ</A>.  This app is
+written in Java and demonstrates various Spring WebFlux and Project
+Reactor features.  For the purposes of Assignment 3, however, just
+focus on the following directories:
+
+<UL>
+
+<li style="margin-bottom:1em"> <A
+HREF="client/src/main/java/edu/vandy/recommender/">client</A>, which
+contains a client main driver program containing proxy skeleton(s)
+you need to fill in, as described <A
+HREF="#description">below</A>. </li>
+
+<li style="margin-bottom:1em"> <A
+HREF="recommenders/src/main/java/edu/vandy/recommender/">recommenders</A>,
+which contains the <CODE>ParallelFlux</CODE> microservice server
+skeleton(s) you need to fill in, as also described <A
+HREF="#description">below</A>. </li>
+
+</UL>
+
+In addition, you need to copy and slightly extend your <A
+HREF="database">database</A> microservice implementation from <a
+href="https://github.com/douglascraigschmidt/CS891/tree/master/assignment2c/">assignment
+2c</A>.
+
+Please be careful not to overwrite the tests provided with these
+microservice implementations since they have been updated for
+assignment 3. <P>
+
+<hr width=50% align=left> <A name="description"> <H4>Program
+Description and "TODO" Tasks</H4>
+
+<P>You need to modify several files containing the skeleton Java code
+by completing the "TODO - You fill in here" tasks to provide a working
+solution.  DO NOT CHANGE THE OVERALL STRUCTURE OF THE SKELETON - just
+fill in the "TODO" tasks (and do NOT delete the "TODO" markers or your
+submission will not be reviewed)!!!  In particular, you need to finish
+implementing the "TODO" tasks for this assignment in the following
+files and folders:
+
+<UL>
+
+<li style="margin-bottom:1em"> <A
+HREF="recommenders/src/main/java/edu/vandy/recommender/">recommenders</A>,
+where you need to complete the "TODO" tasks in various fields/methods
+of the <A
+HREF="recommenders/src/main/java/edu/vandy/recommender/server/ParallelFluxServer.java">ParallelFluxService.java</A>
+and <A
+HREF="recommenders/src/main/java/edu/vandy/recommender/common/MoviesLoader.java">MoviesLoader.java</A>
+files to implement the reactive movie recommender microservice. </LI>
+
+<li style="margin-bottom:1em"> <A
+HREF="client/src/main/java/edu/vandy/recommender/">client</A>, where
+you need to complete the "TODO" tasks in various fields/methods to
+update and implement declarative client proxies using HTTP
+interface. </LI>
+
+<li style="margin-bottom:1em"> <A
+HREF="database/src/main/java/edu/vandy/recommender/database">database</A>,
+where you need to complete the "TODO" tasks in various fields/methods
+of the <A
+HREF="database/src/main/java/edu/vandy/recommender/database/server/DatabaseService.java">DatabaseService.java</A>
+file to add support for returning and caching <A
+HREF="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html">Map</A>
+objects.
+
+<li style="margin-bottom:1em"> You also need to complete the "TODO"
+tasks in factory methods in the <A
+HREF="client/src/main/java/edu/vandy/recommender/common/ClientBeans.java">ClientBeans.java</A>
+file that can be injected into Java classes using the Spring Autowired
+annotation. </LI>
+
+<li style="margin-bottom:1em">Finally, you need to implement the
+"TODO" tasks in the <A
+HREF="common/src/main/java/edu/vandy/recommender/common/model/Movie.java">Movie.java</A>
+file.  </UL>
+
+<p> As usual, your solution should strive to use no loops and few
+if/else statements in this assignment and instead use Java functional
+programming features (including lambda expressions, method references,
+and Java Stream aggregate operations), as well as Project Reactor
+reactive programming operators. Your solution will be considered
+correct if it passes all the unit tests, is commented thoroughly, and
+addresses my review comments. Solutions that are not commented
+thoroughly will not be reviewed.</p>
+
+<hr width=50% align=left> <h4>Skeleton Code</h4>
+
+<p> Skeleton code for this assignment is available <a
+href="https://github.com/douglascraigschmidt/CS891/tree/master/assignment3/">here</a>
+in my GitHub repository.  Please pull this skeleton code into your
+GitLab repository, read it carefully, and complete the "TODO" markers.
+
+<hr width=50% align=left> <h4>Integration and Unit Tests</h4>
+
+<p> There are unit tests that exercise all the "TODO" tasks you must
+complete.  To compile and run these tests you need to use the provided
+IntelliJ project.  You can run all the unit tests by opening the
+Gradle tab, followed by navigating down to the "Tasks > verification >
+check" submenu. All you need to do is double click on the "check"
+submenu and all the tests will build and run automatically. </P>
+
+<p> These tests increase our collective confidence that your solution
+is working as expected.  As usual, testing only demonstrates the
+presence of bugs, not their absence, so don't rely solely on the tests
+to detect problems in your code. In particular, I will also provide
+videos that walk through "frequently made mistakes" that you should
+address.  Please address these issues prior to your submission(s) to
+streamline our <A
+HREF="http://www.dre.vanderbilt.edu/~schmidt/cs891/assignments.html">programming
+assignment review and assessment</A> process.  </p>
+
+<hr width=50% align=left> <h4>Concluding Remarks</h4> <p>
+
+<p> Assignment 3 is designed to further deepen your understanding of
+developing asynchronous microservices using Spring WebFlux and Project
+Reactor parallel reactive programming features.  The skeletons and
+tests are extensive, though you don't need to understand them all to
+complete your solution.  This assignment may be more complicated than
+earlier assignments, so please start early and ask questions in class,
+office hours, and on the discussion forums to ensure you complete this
+assignment successfully!  </p>
+
+</body> </html>
