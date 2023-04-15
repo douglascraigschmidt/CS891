@@ -43,28 +43,54 @@ public class MultiQueryRepositoryImpl
         // create the criteria query that will be used to search for
         // movies.
         // TODO -- you fill in here.
+        // SOLUTION-START
+        CriteriaBuilder criteriaBuilder = mEntityManager
+            .getCriteriaBuilder();
+        // SOLUTION-END
 
         // Create a new criteria query of type Movie that's used to
         // specify the search criteria for the movies.
         // TODO -- you fill in here.
+        // SOLUTION-START
+        CriteriaQuery<Movie> criteriaQuery = criteriaBuilder
+            .createQuery(Movie.class);
+        // SOLUTION-END
 
         // Create a Root object for the Movie entity that specifies
         // the entity to query.
         // TODO -- you fill in here.
+        // SOLUTION-START
+        Root<Movie> movie = criteriaQuery
+            .from(Movie.class);
+        // SOLUTION-END
 
         // Create an Expression object that represents the lower-cased
         // ID (title) field of the Movie entity that's used to create
         // the search predicate that matches the specified queries.
         // TODO -- you fill in here.
+        // SOLUTION-START
+        var idExpression
+            = criteriaBuilder.lower(movie.get("id"));
+        // SOLUTION-END
 
         // Call a helper method to get a Predicate that "ands" all the
         // queries together.
+        // TODO -- you fill in here.
+        // SOLUTION-START
+        var andPredicate =
+            getPredicate(queries, criteriaBuilder, idExpression);
+        // SOLUTION-END
 
         // Call a helper method that performs the query and returns
         // the results.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper solution.
-        return null;
+        // SOLUTION-START
+        return getQueryResults(criteriaQuery,
+                               criteriaBuilder,
+                               andPredicate,
+                               idExpression);
+        // SOLUTION-END return null;
     }
 
     /**
@@ -88,7 +114,25 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        // SOLUTION-START
+        return queries
+            // Convert the List to a Stream.
+            .stream()
+
+            // Lower case each query.
+            .map(String::toLowerCase)
+
+            // Map each query to a "like" predicate that matches the
+            // ID (title) field of the Movie entity.
+            .map(query -> criteriaBuilder
+                 .like(idExpression,
+                       "%" + query + "%"))
+
+            // Reduce the list of predicates to a single conjunction
+            // (and) predicate.
+            .reduce(criteriaBuilder.conjunction(), 
+                    criteriaBuilder::and);
+        // SOLUTION-END return null;
     }
 
     /**
@@ -119,6 +163,26 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        // SOLUTION-START
+        return mEntityManager
+            // Create a Query object from the specified criteria
+            // query.
+            .createQuery(criteriaQuery
+                         // Add the andPredicate to the CriteriaQuery
+                         // "where" clause which returns each movie
+                         // that matches all the specified queries.
+                         .where(andPredicate)
+
+                         // Group the results by the idExpression
+                         // field to ensure non-duplicate results;
+                         .groupBy(idExpression)
+
+                         // Orders the results by the idExpression
+                         // field in ascending order.
+                         .orderBy(criteriaBuilder.asc(idExpression)))
+
+            // Execute the query and return the result as a List.
+            .getResultList();
+        // SOLUTION-END return null;
     }
 }

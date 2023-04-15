@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * This abstract class defines the methods that are called by the
@@ -28,13 +27,13 @@ public abstract class BaseService<T> {
      * ascending order (ignoring case).
      */
     @Autowired
-    /**
+    /*
      * This annotation may be used on a field or parameter as a qualifier
      * for candidate beans when autowiring. It may also be used to annotate
      * other custom annotations that can then in turn be used as qualifiers.
      */
     @Qualifier("movieMap")
-    protected Map<String, List<Double>> mMoviesMap;
+    protected Map<String, List<Double>> mMovieMap;
 
     /**
      * Get a {@link Collection} of all movies represented as {@link

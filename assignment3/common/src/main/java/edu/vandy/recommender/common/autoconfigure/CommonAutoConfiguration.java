@@ -1,11 +1,9 @@
 package edu.vandy.recommender.common.autoconfigure;
 
 import edu.vandy.recommender.common.RunTimer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Executors;
 
-import static edu.vandy.recommender.common.Constants.Service.TIMER;
+import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME;
 
 /**
  * This class provides auto-configuration for the application,
@@ -49,5 +47,29 @@ public class CommonAutoConfiguration {
     @ConditionalOnMissingBean
     RunTimer runTimer(RestTemplateBuilder restTemplateBuilder) {
         return new RunTimer(restTemplateBuilder.build());
+    }
+
+    /**
+     * Configure the use of Java virtual threads to handle all
+     * incoming HTTP requests.
+     */
+    @Bean(APPLICATION_TASK_EXECUTOR_BEAN_NAME)
+    @ConditionalOnMissingBean
+    public AsyncTaskExecutor asyncTaskExecutor() {
+        return new TaskExecutorAdapter(Executors
+                                           .newVirtualThreadPerTaskExecutor());
+    }
+
+    /**
+     * Customize the Protocol Handler on the TomCat Connector to
+     * use Java virtual threads to handle all incoming HTTP requests.
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() {
+        return protocolHandler -> {
+            protocolHandler
+                .setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+        };
     }
 }

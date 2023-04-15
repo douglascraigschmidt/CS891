@@ -1,29 +1,22 @@
 package edu.vandy.recommender.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import edu.vandy.recommender.common.RunTimer;
-
 import static edu.vandy.recommender.common.Constants.EndPoint.*;
-import static edu.vandy.recommender.common.Constants.Params.MAX_COUNT_PARAM;
-import static edu.vandy.recommender.common.Constants.Params.WATCHED_MOVIE_PARAM;
 
 /**
- * A common controller implementation that redirects all requests to custom
- * services (e.g., sequential, concurrent, parallel, reactive, asynchronous,
- * etc.) to perform.
+ * A common controller implementation that computes the time needed to
+ * perform the endpoint handler methods defined below.
  */
-// @RestController
-// @RequestMapping(TIMED)
 public abstract class BaseControllerTimed<T> {
     /**
      * Spring injected {@link BaseController}.
-
+     */
+    @Lazy
     @Autowired
     private BaseController<T> mController;
 
@@ -31,7 +24,7 @@ public abstract class BaseControllerTimed<T> {
      * The {@link RunTimer} bridge that determines the elapsed run
      * time of each end point call and then posts the timing results
      * to the timer service to record for future analysis.
-
+     */
     @Autowired
     private RunTimer mRunTimer;
 
@@ -41,7 +34,7 @@ public abstract class BaseControllerTimed<T> {
      * This endpoint also records the execution run time of this call.
      *
      * @return A list of all movie titles in the database
-
+     */
     @GetMapping(GET_ALL_MOVIES)
     public T allMoviesTimed() {
         System.out.println("allMoviesTimed()");
@@ -64,7 +57,7 @@ public abstract class BaseControllerTimed<T> {
      * @return A {@link List} of movie titles containing the query represented as
      * {@link String} objects in ascending
      * sorted order (ignoring case).
-
+     */
     @GetMapping(GET_SEARCH + "/" + SEARCH_QUERY)
     public T searchTimed(@PathVariable String query) {
         System.out.println("searchTimed()");
@@ -90,8 +83,8 @@ public abstract class BaseControllerTimed<T> {
      *                     recommendations returned
      * @return A {@link T} of movie titles most similar to the
      * {@code watchedMovie}
-
-    @GetMapping(GET_RECOMMENDATION)
+     */
+    @GetMapping(GET_RECOMMENDATIONS)
     public T recommendationsTimed(@RequestParam String watchedMovie,
                                   @RequestParam int maxCount) {
         System.out.println("recommendationsTimed()");
@@ -99,7 +92,7 @@ public abstract class BaseControllerTimed<T> {
             // Delegate request to service.
             .runAndRecordTime(mController.getId()
                               + ":"
-                              + GET_RECOMMENDATION,
+                              + GET_RECOMMENDATIONS,
                 () -> mController.recommendations(watchedMovie,
                     maxCount));
     }
@@ -118,10 +111,10 @@ public abstract class BaseControllerTimed<T> {
      *                      returned
      * @return A {@link T} of movie titles most similar to
      * those in {@code watchedMovies}
-
+     */
     @PostMapping(POST_RECOMMENDATIONS)
     public T recommendationsTimed(@RequestBody List<String> watchedMovies,
-                                  @RequestParam(MAX_COUNT_PARAM) int maxCount) {
+                                  @RequestParam int maxCount) {
         System.out.println("recommendationsTimedMany()");
         return mRunTimer
             // Delegate request to service.
@@ -131,5 +124,4 @@ public abstract class BaseControllerTimed<T> {
                 () -> mController.recommendations(watchedMovies,
                     maxCount));
     }
-                                  */
 }

@@ -9,12 +9,16 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static edu.vandy.recommender.common.Constants.*;
 import static edu.vandy.recommender.common.Constants.EndPoint.GET_MOVIES_MAP;
+import static edu.vandy.recommender.common.Constants.GATEWAY_PORT;
+import static edu.vandy.recommender.common.Constants.LOCAL_HOST;
 import static edu.vandy.recommender.common.Constants.Service.DATABASE;
 import static java.util.stream.Collectors.toMap;
 
@@ -55,21 +59,21 @@ public class MoviesLoader {
         // Use a helper method from WebUtils to get the List of all
         // Movie objects from the database microservice.
         // TODO -- you fill in here, replacing 'Map<String,
-        // List<Double>> moviesMap = null' with the proper code.
-        Map<String, List<Double>> moviesMap = null;
+        // List<Double>> movieMap = null' with the proper code.
+        Map<String, List<Double>> movieMap = null;
 
-        if (moviesMap == null) {
+        if (movieMap == null) {
             throw new IllegalStateException
                 ("Unable to retrieve movies from database microservice.");
         }
 
         System.out.println("Successfully loaded "
-                           + moviesMap.size()
+                           + movieMap.size()
                            + " movies from the database microservice at "
                            + url);
 
         // Return the Map.
-        return moviesMap;
+        return movieMap;
     }
 
     /**

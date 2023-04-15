@@ -15,7 +15,6 @@ import static edu.vandy.recommender.common.CosineSimilarityUtils.cosineSimilarit
 import static edu.vandy.recommender.common.CosineSimilarityUtils.sumOfCosines;
 import static edu.vandy.recommender.common.GetTopRecommendationsFlux.getTopRecommendationsHeap;
 import static edu.vandy.recommender.common.GetTopRecommendationsFlux.getTopRecommendationsSort;
-import static java.util.stream.Collectors.toList;
 
 /**
  * This class defines implementation methods that are called by the
@@ -46,7 +45,7 @@ public class ParallelFluxService
      */
     @Override
     public Flux<Ranking> getAllMovies() {
-        // Convert the mMoviesMap keyset into a Flux via a helper
+        // Convert the mMovieMap keyset into a Flux via a helper
         // method in the Converters class.
 
         // TODO -- you fill in here, replacing 'return null'
@@ -70,7 +69,7 @@ public class ParallelFluxService
         // ParallelFlux.
         // 
         // 1. Create a Flux of Ranking objects containing movie titles
-        //    from mMoviesMap using a helper method in the Converters class.
+        //    from mMovieMap using a helper method in the Converters class.
         // 2. Convert Flux to a ParallelFlux.
         // 3. Run each rail in the parallel thread pool.
         // 4. Only keep titles that contain the search query (ignore
@@ -105,7 +104,7 @@ public class ParallelFluxService
         // watchedMovie param.
 
         // Start by checking that the 'watchedMovie' exists in
-        // mMoviesMap, returning an empty Flux if it's not there.
+        // mMovieMap, returning an empty Flux if it's not there.
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
@@ -125,6 +124,9 @@ public class ParallelFluxService
 
         // Call a helper method that return the top maxCount
         // recommendations in the Flux of entries.
+
+        // TODO -- you fill in here, replacing 'return null' with the
+        // proper code.
         return null;
     }
 
@@ -146,12 +148,13 @@ public class ParallelFluxService
         // Remove all movies from the watchedMovies List that do not
         // have a corresponding Movie in the mMovieMap map *without*
         // affecting the original contents of the watchedMovies List.
+        // If the resulting List is empty, return an empty Flux.
         // TODO -- you fill in here.
 
         // Perform the following steps using a Project Reactor
         // ParallelFlux.
         //
-        // 1. Convert mMoviesMap into a flux.
+        // 1. Convert mMovieMap into a flux.
         // 2. Convert the Flux to a ParallelFlux.
         // 3. Run the ParallelFlux on the parallel() Scheduler.
         // 4. Filter out 'watchedMovies' from the stream since they
@@ -187,7 +190,7 @@ public class ParallelFluxService
         // Perform the following steps using a Project Reactor
         // ParallelFlux.
         //
-        // 1. Convert mMoviesMap to a Flux.
+        // 1. Convert mMovieMap to a Flux.
         // 2. Convert the Flux to a ParallelFlux.
         // 3. Run the ParallelFlux on the parallel() Scheduler.
         // 4. Call the cosineSimilarity() helper method to create a

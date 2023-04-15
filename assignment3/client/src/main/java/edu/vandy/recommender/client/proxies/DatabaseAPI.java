@@ -2,13 +2,16 @@ package edu.vandy.recommender.client.proxies;
 
 import edu.vandy.recommender.common.model.Movie;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 import java.util.List;
 import java.util.Map;
 
-import static edu.vandy.recommender.common.Constants.Params.ROUTE_NAME;
 import static edu.vandy.recommender.common.Constants.EndPoint.*;
+import static edu.vandy.recommender.common.Constants.Params.ROUTE_NAME;
 
 /**
  * This interface provides the contract for the RESTful {@code

@@ -1,11 +1,12 @@
 package edu.vandy.recommender.common;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.support.TaskExecutorAdapter;
 
@@ -38,7 +39,7 @@ public class BaseApplication {
             .properties(singletonMap("spring.application.name", name))
             .build();
         app.setAdditionalProfiles(name);
-        // app.setLazyInitialization(true);
+        app.setLazyInitialization(true);
         app.run(args);
     }
 
@@ -56,28 +57,5 @@ public class BaseApplication {
 
         // Return the last part of the package name.
         return pkg.substring(pkg.lastIndexOf('.') + 1);
-    }
-
-
-    /**
-     * Configure the use of Java virtual threads to handle all
-     * incoming HTTP requests.
-     */
-    @Bean(APPLICATION_TASK_EXECUTOR_BEAN_NAME)
-    public AsyncTaskExecutor asyncTaskExecutor() {
-        return new TaskExecutorAdapter(Executors
-            .newVirtualThreadPerTaskExecutor());
-    }
-
-    /**
-     * Customize the Protocol Handler on the TomCat Connector to
-     * use Java virtual threads to handle all incoming HTTP requests.
-     */
-    @Bean
-    public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() {
-        return protocolHandler -> {
-            protocolHandler
-                .setExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        };
     }
 }

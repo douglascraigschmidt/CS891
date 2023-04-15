@@ -9,15 +9,10 @@ import java.util.List;
 /**
  * This Java utility class defines static methods that convert between
  * various representations, e.g., {@link Movie} objects to {@link
- * String} titles, {@link String} titles to {@link
- * Ranking} objects and vice versa, etc.
+ * String} titles, {@link String} titles to {@link Ranking} objects
+ * and vice versa, etc.
  */
 public final class Converters {
-    /**
-     * A Java utility class should have a private constructor.
-     */
-    private Converters() {}
-
     /**
      * Extract out the {@link Movie} titles from a {@link List}
      * of {@link Movie} objects.

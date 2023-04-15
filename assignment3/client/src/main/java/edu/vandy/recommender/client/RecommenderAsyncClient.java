@@ -1,6 +1,7 @@
 package edu.vandy.recommender.client;
 
 import edu.vandy.recommender.client.proxies.RecommenderAsyncProxy;
+import edu.vandy.recommender.client.proxies.TimerSyncProxy;
 import edu.vandy.recommender.common.MovieTestCheckers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static edu.vandy.recommender.common.Converters.rankings2titles;
-import static edu.vandy.recommender.common.MovieTestCheckers.*;
+import static edu.vandy.recommender.common.MovieTestCheckers.checkResults;
 
 /**
  * This client uses Spring WebMVC features to perform synchronous
@@ -44,6 +45,14 @@ public class RecommenderAsyncClient {
      */
     @Autowired
     private RecommenderAsyncProxy mRecommenderAsyncProxy;
+
+    /**
+     * This auto-wired field connects the {@link RecommenderAsyncClient} to
+     * the {@link TimerSyncProxy} that performs HTTP requests
+     * synchronously.
+     */
+    @Autowired
+    private TimerSyncProxy mTimerSyncProxy;
 
     public void testGetMoviesSize(String strategy, boolean timed) {
         StepVerifier
@@ -161,5 +170,16 @@ public class RecommenderAsyncClient {
         testSearchMoviesSize(strategy, true);
         testMovieRecommendationSize(strategy, true);
         testMovieRecommendationManySize(strategy, true);
+    }
+
+    /**
+     * Print the timing results.
+     */
+    public void printTestResults() {
+        var timings = mTimerSyncProxy
+            .getTimings();
+
+        System.out.println("The timing results are:");
+        System.out.println(timings);
     }
 }

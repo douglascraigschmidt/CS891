@@ -1,7 +1,6 @@
 package edu.vandy.recommender;
 
 import edu.vandy.recommender.client.RecommenderAsyncClient;
-import edu.vandy.recommender.client.RecommenderSyncClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,13 +21,6 @@ public class RecommenderClientDriver
     private RecommenderAsyncClient testAsyncClient;
 
     /**
-     * This object connects {@link RecommenderClientDriver} to the
-     * {@code RecommenderSyncClient}.
-     */
-    @Autowired
-    private RecommenderSyncClient testSyncClient;
-
-    /**
      * The main entry point into the Spring applicaition.
      */
     public static void main(String[] args) {
@@ -47,14 +39,7 @@ public class RecommenderClientDriver
 
         testAsyncClient.runTests("parallelflux");
 
-        /*
-        testClient.runSyncTests("sequentialloop", true);
-        testClient.runSyncTests("structuredconcurrency", true);
-        testClient.runSyncTests("sequentialstream", true);
-        testClient.runSyncTests("parallelstream", true);
-         */
-
-        testSyncClient.printTestResults();
+        testAsyncClient.printTestResults();
 
         System.out.println("Leaving the RecommenderClientDriver tests");
         System.exit(0);

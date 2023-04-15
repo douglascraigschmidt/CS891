@@ -1,6 +1,7 @@
 package edu.vandy.recommender.common
 
 import edu.vandy.recommender.client.proxies.DatabaseAPI
+import edu.vandy.recommender.client.proxies.ParallelFluxAPI
 import edu.vandy.recommender.client.proxies.TimerAPI
 import io.mockk.*
 import io.mockk.impl.annotations.SpyK
@@ -34,6 +35,41 @@ class ClientBeansTest : AssignmentTests() {
             cb.databaseAPI
         }
         confirmVerified(a, r, cb)
+    }
+
+    @Test
+    fun getParallelFluxAPI() {
+        mockkStatic(WebClient::class)
+        mockkStatic(WebClientAdapter::class)
+        mockkStatic(HttpServiceProxyFactory::class)
+        val f = mockk<HttpServiceProxyFactory>()
+        val a = mockk<WebClientAdapter>()
+        val b = mockk<WebClient.Builder>()
+        val wc = mockk<WebClient>()
+        val hb = mockk<HttpServiceProxyFactory.Builder>()
+        val api = mockk<ParallelFluxAPI>()
+        every { WebClient.builder() } answers { b }
+        every { b.baseUrl(any()) } answers {
+            assertThat(firstArg<String>().toByteArray().toList()).isEqualTo(x1)
+            b
+        }
+        every { b.build() } answers { wc }
+        every { WebClientAdapter.forClient(any()) } answers { a }
+        every { HttpServiceProxyFactory.builder(any()) } answers { hb }
+        every { hb.build() } answers { f }
+        every { f.createClient<ParallelFluxAPI>(any()) } answers { api }
+        assertThat(cb.parallelFluxAPI).isSameAs(api)
+        verify {
+            WebClientAdapter.forClient(any())
+            b.baseUrl(any())
+            cb.parallelFluxAPI
+            b.build()
+            HttpServiceProxyFactory.builder(any())
+            f.createClient<ParallelFluxAPI>(any())
+            hb.build()
+            WebClient.builder()
+        }
+        confirmVerified(f, api, wc, hb, b, a, cb)
     }
 
     @Test

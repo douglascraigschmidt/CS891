@@ -1,7 +1,5 @@
-package edu.vandy.recommender.client
+package edu.vandy.recommender.client.proxies
 
-import edu.vandy.recommender.client.proxies.TimerAPI
-import edu.vandy.recommender.client.proxies.TimerSyncProxy
 import edu.vandy.recommender.utils.CallUtils
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

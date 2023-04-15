@@ -1,6 +1,5 @@
 package edu.vandy.recommender.client.proxies;
 
-import edu.vandy.recommender.client.proxies.TimerAPI;
 import edu.vandy.recommender.utils.CallUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +29,8 @@ public class TimerSyncProxy {
      *         timings ordered from fastest to slowest
      */
     public String getTimings() {
+        // TODO -- you fill in here by replacing 'return null' with
+        // the appropriate helper method provided by CallUtils.
         return null;
     }
 }

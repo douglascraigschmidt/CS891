@@ -5,7 +5,6 @@ import edu.vandy.recommender.utils.GetTopK;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -29,20 +28,18 @@ public class GetTopRecommendationsStream {
      * @param similarityStream A {@link Stream} of {@link Ranking} objects
      * @param maxCount The upper limit for the number of recommendations
      *                 returned
-     * @return A {@link List} of movie titles judged most similar
+     * @return A {@link List} of {@link Ranking} objects whose
+     *         titles are judged most similar
      */
-    public static List<String> getTopRecommendationsHeap
+    public static List<Ranking> getTopRecommendationsHeap
         (Stream<Ranking> similarityStream,
          int maxCount) {
         return GetTopK
             // Get the top maxCount entries.
             .getTopK(similarityStream, maxCount)
 
-            // Extract just the movie titles.
-            .map(Ranking::getTitle)
-
             // Collect and return ordered movie title list.
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -55,9 +52,10 @@ public class GetTopRecommendationsStream {
      * @param similarityStream A {@link Stream} of {@link Ranking} objects
      * @param maxCount The upper limit for the number of recommendations
      *                 returned
-     * @return A {@link List} of movie titles judged most similar
+     * @return A {@link List} of {@link Ranking} objects whose
+     *         titles are judged most similar
      */
-    public static List<String> getTopRecommendationsSort
+    public static List<Ranking> getTopRecommendationsSort
         (Stream<Ranking> similarityStream,
          int maxCount) {
         return similarityStream
@@ -71,10 +69,7 @@ public class GetTopRecommendationsStream {
             // Limit the List of movies to just maxCount.
             .limit(maxCount)
 
-            // Extract just the movie titles.
-            .map(Ranking::getTitle)
-
             // Collect and return ordered movie title list.
-            .collect(Collectors.toList());
+            .toList();
     }
 }

@@ -7,8 +7,6 @@ import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Movie title and vector as stored and returned from the database

@@ -1,6 +1,5 @@
 package edu.vandy.recommender.client.proxies;
 
-import edu.vandy.recommender.client.proxies.ParallelFluxAPI;
 import edu.vandy.recommender.common.model.Ranking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,10 +29,10 @@ public class RecommenderAsyncProxy {
      * @param strategy The implementation strategy to invoke (e.g.,
      *                 "structureconcurrency", "parallelstream",
      *                 "sequentialloop", etc.)
-     * @param timed True if the implementation strategy should be
-     *              timed, else false
+     * @param timed    True if the implementation strategy should be
+     *                 timed, else false
      * @return A {@link Flux} that emits {@link Ranking} objects
-     *         containing the movie titles
+     * containing the movie titles
      */
     public Flux<Ranking> getMovies(String strategy,
                                    boolean timed) {
@@ -49,11 +48,11 @@ public class RecommenderAsyncProxy {
      * @param strategy The implementation strategy to invoke (e.g.,
      *                 "structureconcurrency", "parallelstream",
      *                 "sequentialloop", etc.)
-     * @param query The {@link String} to search for
-     * @param timed True if the implementation strategy should be
-     *              timed, else false
+     * @param query    The {@link String} to search for
+     * @param timed    True if the implementation strategy should be
+     *                 timed, else false
      * @return A {@link Flux} that emits {@link Ranking} objects
-     *         containing movie titles that match the {@code query}
+     * containing movie titles that match the {@code query}
      */
     public Flux<Ranking> search(String strategy,
                                 String query,
@@ -69,15 +68,15 @@ public class RecommenderAsyncProxy {
      * parameter containing the title of the movie that has been
      * watched.
      *
-     * @param strategy The implementation strategy to invoke (e.g.,
-     *                 "parallelflux", "concurrentflux", etc.)
+     * @param strategy     The implementation strategy to invoke (e.g.,
+     *                     "parallelflux", "concurrentflux", etc.)
      * @param watchedMovie A {@link String} indicating the title of
      *                     the movie that has been watched
-     * @param maxCount The upper limit for the number of
-     *                 recommendations returned
+     * @param maxCount     The upper limit for the number of
+     *                     recommendations returned
      * @return A {@link Flux} that emits {@link Ranking} objects whose
-     *         movie titles are most similar to the {@code
-     *         watchedMovie}
+     * movie titles are most similar to the {@code
+     * watchedMovie}
      */
     public Flux<Ranking> getRecommendations(String strategy,
                                             String watchedMovie,
@@ -93,15 +92,15 @@ public class RecommenderAsyncProxy {
      * function of movies the user has watched previously, indicated
      * by a {@link List} of movie titles in the request body.
      *
-     * @param strategy The implementation strategy to invoke (e.g.,
-     *                 "parallelflux", "concurrentflux", etc.)
+     * @param strategy      The implementation strategy to invoke (e.g.,
+     *                      "parallelflux", "concurrentflux", etc.)
      * @param watchedMovies A {@link List} of titles of movies the
      *                      user has watched
-     * @param maxCount The upper limit for the number of
-     *                 recommendations returned
+     * @param maxCount      The upper limit for the number of
+     *                      recommendations returned
      * @return A {@link Flux} that emits {@link Ranking} objects whose
-     *         movie titles are most similar to those in {@code
-     *         watchedMovies}
+     * movie titles are most similar to those in {@code
+     * watchedMovies}
      */
     public Flux<Ranking> getRecommendations(String strategy,
                                             List<String> watchedMovies,

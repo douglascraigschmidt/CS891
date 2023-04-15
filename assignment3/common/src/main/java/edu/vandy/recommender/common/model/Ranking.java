@@ -2,7 +2,6 @@ package edu.vandy.recommender.common.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -10,13 +9,9 @@ import java.util.Objects;
  * when calculating recommendations.  This class is {@link Comparable} based on
  * the {@link Ranking#cosineSimilarity} attribute, whereas equality is based
  * on the movie {@link Ranking#movieTitle} attribute.
- *
- * Instances of this class are temporary and therefore only keep track of a
- * single movie that was used in the comparison of two movies. The missing movie
- * title is managed by the owner of instances of this class.
  */
 public class Ranking
-       implements Comparable<Ranking>, Comparator<Ranking> {
+       implements Comparable<Ranking> {
     /**
      * The movie title.
      */
@@ -61,33 +56,6 @@ public class Ranking
      */
     public String getTitle() {
         return movieTitle;
-    }
-
-    /**
-     * Compares its two {@link Ranking} arguments for order.  Returns a negative
-     * integer, zero, or a positive integer as the first argument is less than,
-     * equal to, or greater than the second.
-     *
-     * @param ranking1 The first object to compare
-     * @param ranking2 The second object to compare
-     * @return A negative integer, zero, or a positive integer as the first
-     * argument is less than, equal to, or greater than the second
-     * @throws NullPointerException if an argument is null and this comparator
-     *                              does not permit null arguments
-     */
-    @Override
-    public int compare(Ranking ranking1,
-                       Ranking ranking2) {
-        if (ranking1 == null || ranking2 == null)
-            throw new NullPointerException(
-                "compare(ranking == "
-                    + ranking1
-                    + ", other = "
-                    + ranking2
-                    + ")");
-        else
-            return Double.compare(ranking1.getCosineSimilarity(),
-                                  ranking2.getCosineSimilarity());
     }
 
     /**

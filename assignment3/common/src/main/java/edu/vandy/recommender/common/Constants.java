@@ -26,7 +26,7 @@ public class Constants {
          * Database[ex] microservice endpoints.
          */
         public static final String GET_ALL_MOVIES = "allMovies";
-        public static final String GET_MOVIES_MAP = "moviesMap";
+        public static final String GET_MOVIES_MAP = "movieMap";
         public static final String GET_SEARCH = "search";
         public static final String POST_SEARCHES = "searches";
         public static final String GET_SEARCHES = "searches";
@@ -37,7 +37,7 @@ public class Constants {
         /*
         * Recommender microservice endponts.
          */
-        public static final String GET_RECOMMENDATION = "getRecommendation";
+        public static final String GET_RECOMMENDATIONS = "getRecommendations";
         public static final String POST_RECOMMENDATIONS = "postRecommendations";
 
         /*

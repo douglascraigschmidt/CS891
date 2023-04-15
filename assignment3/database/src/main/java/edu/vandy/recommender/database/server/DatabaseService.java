@@ -2,15 +2,15 @@ package edu.vandy.recommender.database.server;
 
 import edu.vandy.recommender.common.model.Movie;
 import edu.vandy.recommender.database.repository.DatabaseRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static edu.vandy.recommender.common.Constants.Params.MOVIES_CACHE;
-import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -43,6 +43,9 @@ public class DatabaseService {
      */
     // TODO -- you fill in here, making the getMovies() method
     // cacheable in the MOVIES_CACHE.
+    // START-SOLUTION
+    @Cacheable(MOVIES_CACHE)
+    // END_SOLUTION
     public Map<String, List<Double>> getMoviesMap() {
         System.out.println("DatabaseService.getMoviesMap()");
         // Return a Map (implemented as a TreeMap) that
@@ -55,7 +58,20 @@ public class DatabaseService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        // SOLUTION-BEGIN
+        return mRepository
+            // Get a List of all the Movies.
+            .findAllByOrderByIdAsc()
+
+            // Convert List to Stream.
+            .stream()
+
+            // Collect the results into TreeMap.
+            .collect(toMap(m -> m.id,
+                           m -> m.vector,
+                           (v1, v2) -> v1,
+                           TreeMap::new));
+        // SOLUTION-END return null;
     }
 
     /**
@@ -66,7 +82,9 @@ public class DatabaseService {
         // Forward to the repository.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        // SOLUTION-BEGIN
+        return mRepository.findAllByOrderByIdAsc();
+        // SOLUTION-END return null;
     }
 
     /**
@@ -82,7 +100,10 @@ public class DatabaseService {
         // Forward to the repository.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        // SOLUTION-START
+        return mRepository
+            .findByIdContainingIgnoreCaseOrderByIdAsc(query);
+        // SOLUTION-END return null;
     }
 
     /**
@@ -100,7 +121,28 @@ public class DatabaseService {
         // whose 'id' matches the List of 'queries' and return them
         // as a List of Movie objects.
         // TODO -- you fill in here.
-        return null;
+        // SOLUTION-START
+        return queries
+            // Convert the List to a Stream.
+            .parallelStream()
+                                
+            // Flatten the Stream of Streams into a Stream.
+            .flatMap(query ->
+                     // Forward to the search() method
+                     search(query)
+
+                     // Convert List to a Stream.
+                     .stream())
+
+            // Eliminate any duplicates.
+            .distinct()
+
+            // Sort the Movies.
+            .sorted()
+
+            // Convert Stream to a List.
+            .toList();
+        // SOLUTION-END return null;
     }
 
     /**
@@ -118,6 +160,9 @@ public class DatabaseService {
         // List of Movie objects that contain no duplicates.
 
         // TODO -- you fill in here.
-        return null;
+        // SOLUTION-START
+        return mRepository
+            .findAllByIdContainingInOrderByAsc(queries);
+        // SOLUTION-END return null;
     }
 }

@@ -1,6 +1,5 @@
-package edu.vandy.recommender.client;
+package edu.vandy.recommender.client.proxies;
 
-import edu.vandy.recommender.client.proxies.DatabaseAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import retrofit2.http.Body

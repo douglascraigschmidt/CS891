@@ -30,15 +30,16 @@ public class GetTopRecommendations {
      *                         returned
      * @return A {@link Collection} of movie titles judged most similar
      */
-    public static Collection<String> getTopRecommendationsHeap
+    public static Collection<Ranking> getTopRecommendationsHeap
         (Collection<Ranking> similarityCollection,
          int maxCount) {
-        var results = new ArrayList<String>();
+        var results = new ArrayList<Ranking>();
 
         // Iterate through the top maxCount entries.
         for (var entry : GetTopK.getTopK(similarityCollection, maxCount))
             // Add just the movie titles.
-            results.add(entry.getTitle());
+            results.add(new Ranking(entry.getTitle(),
+                       0.0));
 
         // Return the Collection of movie titles judged most similar.
         return results;
@@ -55,12 +56,12 @@ public class GetTopRecommendations {
      *                         returned
      * @return A {@link Collection} of movie titles judged most similar
      */
-    public static Collection<String> getTopRecommendationsSort
+    public static Collection<Ranking> getTopRecommendationsSort
         (Collection<Ranking> similarityCollection,
          int maxCount) {
 
         // List to hold the results.
-        var results = new ArrayList<String>();
+        var results = new ArrayList<Ranking>();
 
         // Get a List whose unique elements are sorted in reverse order.
         var collection =
@@ -69,8 +70,8 @@ public class GetTopRecommendations {
         // Limit the results Collection of movies to a total of maxCount.
         for (int i = 0; i < maxCount; i++)
             // Add just the title to the results List.
-            results.add(Objects.requireNonNull(collection.pollFirst())
-                               .getTitle());
+            results.add(new Ranking(Objects.requireNonNull(collection.pollFirst())
+                               .getTitle(), 0.0));
 
         // Return a Collection of movie titles judged most similar.
         return results;

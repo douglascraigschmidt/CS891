@@ -23,7 +23,11 @@ public class ClientBeans {
      * @return A new {@link RestTemplate} that knows how to connect to
      * the 'movies' microservice.
      */
+    // TODO -- Add the appropriate annotation to make this factory
+    // method a "Bean".
+    // SOLUTION-START
     @Bean
+    // SOLUTION-END
     @Qualifier(DATABASE)
     public RestTemplate getMoviesRestTemplate() {
         var restTemplate = new RestTemplate();
@@ -45,7 +49,11 @@ public class ClientBeans {
      *                data
      * @return A {@link Map} of {@link String} and {@link List<Double>} objects
      */
+    // TODO -- Add the appropriate annotation to make this factory
+    // method a "Bean".
+    // SOLUTION-START
     @Bean
+    // SOLUTION-END
     public Map<String, List<Double>> movieMap
     // The @Value annotation injects values into fields in
     // Spring-managed beans.

@@ -1,7 +1,5 @@
-package edu.vandy.recommender.client
+package edu.vandy.recommender.client.proxies
 
-import edu.vandy.recommender.client.proxies.DatabaseAPI
-import edu.vandy.recommender.client.proxies.DatabaseSyncProxy
 import edu.vandy.recommender.common.model.Movie
 import io.mockk.confirmVerified
 import io.mockk.every

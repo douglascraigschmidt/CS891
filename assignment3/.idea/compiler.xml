@@ -17,10 +17,13 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
         </processorPath>
         <module name="assignment3.eureka.main" />
+        <module name="assignment3.movies-ex.main" />
         <module name="assignment3.gateway.main" />
         <module name="assignment3.timer.main" />
+        <module name="assignment3.movies.main" />
         <module name="assignment3.testing.main" />
         <module name="assignment3.client.main" />
+        <module name="assignment3.database-ex.main" />
         <module name="assignment3.common.main" />
         <module name="assignment3.database.main" />
         <module name="assignment3.recommenders.main" />
