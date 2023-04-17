@@ -61,6 +61,7 @@ internal class ParallelFluxServiceTest : AssignmentTests() {
         mockkStatic(Converters::class)
         every { Converters.titles2Rankings(any()) } answers { lr }
         vectorMap.injectInto(service)
+        mockkStatic(CosineSimilarityUtils::class)
     }
 
     @Test
@@ -232,12 +233,14 @@ internal class ParallelFluxServiceTest : AssignmentTests() {
         val input = spyk(mutableListOf("m1", "?", "m3"))
         val o = mockk<Flux<Ranking>>()
         val count = 99
+        val e = mockk<Entry>()
         val fe = mockk<Flux<Entry>>()
         val fs = mockk<Flux<String>>()
         val pfe = mockk<ParallelFlux<Entry>>()
         val pfr = mockk<ParallelFlux<Ranking>>()
         val fr = mockk<Flux<Ranking>>()
         val r = mockk<Ranking>()
+        val ld = mockk<List<Double>>()
         val map = (1..10).map { "m$it" to listOf(1.0, 2.0, 3.0) }.toMap()
             .toMutableMap().also {
                 it.injectInto(service)
@@ -259,7 +262,12 @@ internal class ParallelFluxServiceTest : AssignmentTests() {
             assertThat(firstArg<Predicate<Entry>>().test(x)).isTrue
             pfe
         }
-        every { pfe.map<Ranking>(any()) } answers { pfr }
+        every {e.key} answers { "x" }
+        every {e.value} answers { ld }
+        every { pfe.map<Ranking>(any()) } answers {
+            firstArg<Function<Entry, Ranking>>().apply(e)
+            pfr
+        }
 
         every { vectorMap.containsKey(any()) } returnsMany listOf(
             true,
@@ -268,17 +276,23 @@ internal class ParallelFluxServiceTest : AssignmentTests() {
         )
         every { pfr.sequential() } answers { fr }
         every { getTopRecommendationsSort(fr, count) } answers { o }
+        every {
+            CosineSimilarityUtils.sumOfCosines(any(), any(), any(), any())
+        } answers { -99.9 }
 
         assertThat(service.getRecommendations(input, count)).isSameAs(o)
 
         verify(exactly = 1) {
             Schedulers.parallel()
+            e.key
+            e.value
             Flux.fromIterable<Entry>(any())
             fe.parallel()
             pfe.runOn(any())
             service.getRecommendations(any<List<String>>(), any())
             pfe.filter(any())
             pfe.map<Ranking>(any())
+            CosineSimilarityUtils.sumOfCosines(any(), any(), any(), any())
             pfr.sequential()
             getTopRecommendationsSort(fr, count)
         }
