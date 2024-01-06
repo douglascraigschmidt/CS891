@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/movies-ex/assignment1c.movies-ex.main.iml" filepath="$PROJECT_DIR$/.idea/modules/movies-ex/assignment1c.movies-ex.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/movies/assignment1c.movies.main.iml" filepath="$PROJECT_DIR$/.idea/modules/movies/assignment1c.movies.main.iml" />
-    </modules>
-  </component>
-</project>
