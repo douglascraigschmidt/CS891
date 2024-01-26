@@ -5,6 +5,7 @@ import edu.vandy.recommender.movies.client.MoviesSyncProxy
 import edu.vandy.recommender.movies.client.WebUtils
 import edu.vandy.recommender.movies.common.Constants.EndPoint.*
 import edu.vandy.recommender.movies.common.Constants.EndPoint.Params.QUERIES_PARAM
+import edu.vandy.recommender.movies.common.model.Movie
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -26,12 +27,16 @@ class MoviesSyncProxyTest: AssignmentTests() {
         mockkStatic(WebUtils::class)
 
         every { UriComponentsBuilder.fromPath(any()) } answers {
-            assertThat(firstArg<String>()).isEqualTo("${GET_ALL_MOVIES}/b")
+            assertThat(firstArg<String>()).isEqualTo("$GET_ALL_MOVIES")
             ucb
         }
-        every { UriComponentsBuilder.fromPath(any()) } returns ucb
-        every { ucb.build() } returns uc
-        every { uc.toUriString() } returns "a"
+
+        every { ucb.build() } answers {
+            uc
+        }
+        every { uc.toUriString() } answers {
+            "a"
+        }
         every { WebUtils.makeGetRequestList<Any>(rt, "a", any()) } answers {
             assertThat(thirdArg<Class<*>>().simpleName).isEqualTo("Movie[]")
             ml
@@ -108,6 +113,11 @@ class MoviesSyncProxyTest: AssignmentTests() {
             assertThat(firstArg<String>()).isEqualTo(GET_SEARCHES)
             ucb
         }
+
+        every { WebUtils.encodeQueries(rq) } answers {
+            assertThat(firstArg<List<String>>()).isSameAs(rq)
+            ls
+        }
         every { ucb.queryParam(any(), "b") } answers {
             assertThat(firstArg<String>()).isEqualTo(QUERIES_PARAM)
             ucb
@@ -120,10 +130,8 @@ class MoviesSyncProxyTest: AssignmentTests() {
         every { uc.toUriString() } answers {
             "a"
         }
-        every { WebUtils.encodeQueries(rq) } answers {
-            assertThat(firstArg<List<String>>()).isSameAs(rq)
-            ls
-        }
+
+
         every { WebUtils.makeGetRequestList<Any>(rt, "a", any()) } answers {
             assertThat(thirdArg<Class<*>>().simpleName).isEqualTo("Movie[]")
             ml
