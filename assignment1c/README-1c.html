@@ -63,12 +63,12 @@ however, you only need to be aware of the following directories:
 <UL>
 
 <li style="margin-bottom:1em"> <A
-HREF="movies/src/main/java/edu/vandy/recommender/movies">recommender/movies</A>,
+HREF="movies-ex/src/main/java/edu/vandy/recommender/movies">recommender/movies</A>,
 which contains the skeleton(s) you'll need to fill in, as described <A
 HREF="#description">below</A>. </li>
 
 <LI style="margin-bottom:1em"> <A
-HREF="movies/src/test/java/edu/vandy/recommender/movies">movies/src/test</A>,
+HREF="movies-ex/src/test/java/edu/vandy/recommender/movies">movies-ex/src/test</A>,
 which is a set of unit tests that exercise the features you're
 implementing to evaluate whether you've correctly satisfied this
 assignment's requirements.  </LI>
@@ -93,13 +93,13 @@ the following files and folders:
 <UL>
 
 <LI style="margin-bottom:1em"> <A
-HREF="movies/src/main/java/edu/vandy/recommender/movies/MoviesController.java">MoviesController.java</A>.
+HREF="movies-ex/src/main/java/edu/vandy/recommender/movies/server/MoviesController.java">MoviesController.java</A>.
 You'll need to complete the "TODO" tasks in various fields/methods to
 define endpoint handler methods that return Lists of objects
 containing information about movies. </LI>
 
 <LI style="margin-bottom:1em"> <A
-HREF="movies/src/main/java/edu/vandy/recommender/movies/MoviesService.java">MoviesService.java</A>.
+HREF="movies-ex/src/main/java/edu/vandy/recommender/movies/server/MoviesService.java">MoviesService.java</A>.
 You'll need to complete the "TODO" tasks in various fields/methods
 called by the <code>MoviesController</code> that use the Java
 structured concurrency <A
@@ -111,14 +111,14 @@ containing information about movies.  You'll also use Java regular
 expressions to get more precise control over searches.
 
 <LI style="margin-bottom:1em"> <A
-HREF="movies/src/main/java/edu/vandy/recommender/movies/ServerBeans.java">ServerBeans.java</A>.
+HREF="movies-ex/src/main/java/edu/vandy/recommender/movies/common/ServerBeans.java">ServerBeans.java</A>.
 You'll need to complete the "TODO" tasks in factory methods (known as
 "Beans") that can be injected into Java classes using the Spring
 Autowired annotation to load a dataset containing movie titles and
 descriptive vectors. </LI>
 
 <LI style="margin-bottom:1em"> <A
-HREF="movies/src/test/java/edu/vandy/recommender/movies/MoviesSyncProxy.java">MoviesSyncProxy.java</A>.
+HREF="movies-ex/src/test/java/edu/vandy/recommender/movies/clients/MoviesSyncProxy.java">MoviesSyncProxy.java</A>.
 You'll need to complete the "TODO" tasks to implement proxies to
 various endpoints in the Movies microservice. You'll also use Java
 regular expressions to get more precise control over searches. </LI>
@@ -146,7 +146,7 @@ the "TODO" markers.
 <hr width=50% align=left> <h4>Unit Tests</h4>
 
 <p> The unit tests in the <A
-HREF="movies/src/test/java/edu/vandy/recommender/movies">movies/src/test</A>
+HREF="movies-ex/src/test/java/edu/vandy/recommender/movies">movies-ex/src/test</A>
 folder are provided to increase our collective confidence that your
 implementation is working as expected.  As usual, testing only
 demonstrates the presence of bugs, not their absence, so don't rely
