@@ -36,6 +36,8 @@ public class DatabaseService {
      */
     public List<Movie> getMovies() {
         // Forward to the repository.
+        // TODO -- you fill in here, replacing 'return null' with
+        // the proper code.
         return null;
     }
 
