@@ -31,7 +31,7 @@ import static edu.vandy.recommender.common.Constants.EndPoint.*;
  */
 public interface DatabaseAPI {
     /**
-     * Get a {@link List} containing the requested quotes.
+     * Get a {@link List} containing the requested {@link Movie} objects.
      *
      * @param routename The microservice that performs the request,
      *                  which is dynamically inserted into the URI via
@@ -57,8 +57,8 @@ public interface DatabaseAPI {
     // TODO -- you fill in here.
 
     /**
-     * Search for quotes containing the given {@link List} of {@code
-     * queries}.
+     * Search for {@link Movie} objects containing the given {@link
+     * List} of {@code queries}.
      *
      * @param routename The microservice that performs the request,
      *                  which is dynamically inserted into the URI via
@@ -73,7 +73,8 @@ public interface DatabaseAPI {
     // TODO -- you fill in here.
 
     /**
-     * Get a {@link List} containing the requested quotes.
+     * Get a {@link List} containing the requested {@link Movie}
+     * objects.
      *
      * This endpoint also records the execution run time of this call
      * via the {@code Timer} microservice.
@@ -105,8 +106,8 @@ public interface DatabaseAPI {
     // TODO -- you fill in here.
 
     /**
-     * Search for quotes containing the given {@link List} of {@code
-     * queries}.
+     * Search for {@link Movie objects containing the given {@link
+     * List} of {@code queries}.
      *
      * This endpoint also records the execution run time of this call
      * via the {@code Timer} microservice.
