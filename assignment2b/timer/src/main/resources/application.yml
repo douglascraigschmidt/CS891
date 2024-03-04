@@ -1,0 +1,16 @@
+# Application port.
+server:
+  port: 0
+
+spring:
+  application:
+    name: timer
+
+# Registers Gateway Application with Eureka.
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: false
+    service-url:
+      default-zone: http://localhost:8761/eureka

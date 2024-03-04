@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/48e4e5d60309ebd833bc528dcf77668eab3cd72c/lombok-1.18.12.jar" />
+        </processorPath>
+        <module name="assignment2b.test" />
+        <module name="assignment2b.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
+        </processorPath>
+        <module name="CS891.assignment2b.gateway.main" />
+        <module name="CS891.assignment2b.eureka.main" />
+        <module name="edu.vandy.recommender.assignment2b.movies-ex.main" />
+        <module name="edu.vandy.recommender.assignment2b.database.main" />
+        <module name="CS891.assignment2b.timer.main" />
+        <module name="edu.vandy.recommender.assignment2b.client.main" />
+        <module name="edu.vandy.recommender.assignment2b.common.main" />
+        <module name="assignment2b.testing.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="19" />
+  </component>
+</project>
