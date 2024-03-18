@@ -1,17 +1,17 @@
 package edu.vandy.recommender.database.server
 
 import edu.vandy.recommender.common.model.Movie
-import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import test.admin.AssignmentTests
 import test.admin.injectInto
 import java.util.*
+import java.util.function.BiConsumer
+import java.util.function.Consumer
 import java.util.function.Function
 import java.util.stream.Stream
 
@@ -71,27 +71,27 @@ class DatabaseServiceTest : AssignmentTests() {
     @Test
     fun `search(list) is implemented correctly`() {
         every { ls.parallelStream() } answers { ss }
-        every { ss.flatMap<Movie>(any()) } answers {
-            firstArg<Function<String, Stream<Movie>>>().apply("")
+        every { ss.mapMulti<Movie>(any()) } answers {
+            firstArg<BiConsumer<String, Consumer<Stream<Movie>>>>().accept("", mockk())
             sm
         }
-        every { lm.stream() } answers { sm }
+        every { lm.forEach(any<Consumer<Movie>>()) } just Runs
+        every { sm.distinct() } answers { sm }
         every { sm.sorted() } answers { sm }
         every { s.search(any<String>()) } answers { lm }
-        every { sm.distinct() } answers { sm }
         every { sm.toList() } answers { lm }
 
         assertThat(s.search(ls)).isSameAs(lm)
 
-        verify {
-            ls.parallelStream()
-            ss.flatMap<Movie>(any())
-            lm.stream()
-            sm.sorted()
+        verify(exactly = 1) {
+            s.search(ls)
             s.search(any<String>())
+            ls.parallelStream()
+            lm.forEach(any<Consumer<Movie>>())
+            ss.mapMulti<Movie>(any())
             sm.distinct()
+            sm.sorted()
             sm.toList()
-            s.search(any<List<String>>())
         }
         doConfirmVerified()
     }
