@@ -36,6 +36,7 @@ public class DatabaseService {
      */
     public List<Movie> getMovies() {
         // Forward to the repository.
+        // TODO -- you fill in here.
         return null;
     }
 
@@ -50,6 +51,7 @@ public class DatabaseService {
      */
     public List<Movie> search(String query) {
         // Forward to the repository.
+        // TODO -- you fill in here.
         return null;
     }
 
