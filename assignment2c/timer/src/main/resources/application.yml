@@ -1,0 +1,12 @@
+# Use the Eureka discovery service.
+eureka:
+  client:
+    enabled: true
+
+# Application port.
+server:
+  port: 0
+
+spring:
+  application:
+    name: timer
