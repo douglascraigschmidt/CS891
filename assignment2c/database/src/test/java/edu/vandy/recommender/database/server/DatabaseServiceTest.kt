@@ -1,6 +1,7 @@
 package edu.vandy.recommender.database.server
 
 import edu.vandy.recommender.common.model.Movie
+import edu.vandy.recommender.database.repository.DatabaseRepository
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
