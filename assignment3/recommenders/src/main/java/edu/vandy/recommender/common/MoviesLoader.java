@@ -49,11 +49,11 @@ public class MoviesLoader {
      * the cosine vector for each movie
      */
     public static Map<String, List<Double>> loadMoviesFromDatabase() {
-        // Use a helper method from WebUtils to get a URL string
-        // to database microservice URL accessed via the API
-        // gateway on the localhost at the GET_ALL_MOVIES path.
-        // TODO -- you fill in here, replacing 'String url = null' with
-        // the proper code.
+        // Use a helper method from WebUtils to get a URL string to
+        // database microservice URL accessed via the API gateway on
+        // the localhost at the GET_MOVIES_MAP path.
+        // TODO -- you fill in here, replacing 'String url = null'
+        // with the proper code.
         String url = null;
 
         // Use a helper method from WebUtils to get the List of all
